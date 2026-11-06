@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Anybody, Hanken_Grotesk, Martian_Mono } from "next/font/google";
-import { MOTION_KEY } from "@/lib/story";
 import "./globals.css";
 
 const display = Anybody({
@@ -22,12 +21,11 @@ const ticket = Martian_Mono({
 export const metadata: Metadata = {
   title: "Cisco NetConnect PUP - Manila",
   description:
-    "A student community at PUP - Manila for networking, cybersecurity, data analytics and IoT.",
+    "A student community at PUP - Manila for enterprise networking, cybersecurity operations and development networking.",
 };
 
-// Runs before first paint so visitors without motion or WebGL never see the stacked layout.
-// Visitors asking for reduced motion can still opt in, which the show's button stores.
-const chooseLayout = `try{var o=false;try{o=localStorage.getItem("${MOTION_KEY}")==="on"}catch(e){}if((o||!matchMedia("(prefers-reduced-motion: reduce)").matches)&&document.createElement("canvas").getContext("webgl2"))document.documentElement.classList.add("live")}catch(e){}`;
+// Runs before first paint so only browsers that can't run the show get the stacked layout.
+const chooseLayout = `try{if(document.createElement("canvas").getContext("webgl2"))document.documentElement.classList.add("live")}catch(e){}`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

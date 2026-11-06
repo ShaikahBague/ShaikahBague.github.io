@@ -6,8 +6,7 @@ import {
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
-  Color,
-  ConeGeometry,
+  CatmullRomCurve3,
   CylinderGeometry,
   DirectionalLight,
   DoubleSide,
@@ -15,8 +14,6 @@ import {
   Float32BufferAttribute,
   Group,
   IcosahedronGeometry,
-  InstancedBufferAttribute,
-  InstancedMesh,
   LatheGeometry,
   LinearMipmapLinearFilter,
   LineBasicMaterial,
@@ -24,7 +21,6 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
-  Object3D,
   OrthographicCamera,
   PerspectiveCamera,
   PlaneGeometry,
@@ -36,7 +32,7 @@ import {
   ShaderMaterial,
   SphereGeometry,
   SRGBColorSpace,
-  TorusGeometry,
+  TextureLoader,
   Vector2,
   Vector3,
   WebGLRenderer,
@@ -45,7 +41,8 @@ import {
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import gsap from "gsap";
-import { seats as seatPlan, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, STOP, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { createRocket } from "./rocket";
 
 const NOISE = /* glsl */ `
 float hash(vec3 p){p=fract(p*vec3(.1031,.1030,.0973));p+=dot(p,p.yxz+33.33);return fract((p.x+p.y)*p.z);}
@@ -124,163 +121,6 @@ function buildEnvironment(renderer: WebGLRenderer) {
   return env;
 }
 
-function buildProjector(low: boolean) {
-  const silver = new MeshStandardMaterial({ color: "#d8dcff", metalness: 0.92, roughness: 0.3 });
-  const paint = new MeshStandardMaterial({ color: "#6d55d8", metalness: 0.55, roughness: 0.42 });
-  const dark = new MeshStandardMaterial({ color: "#1c0e45", metalness: 0.7, roughness: 0.5 });
-
-  const baseProfile = [
-    [0, -3.1], [1.75, -3.1], [1.75, -2.92], [1.35, -2.8], [1.3, -2.55], [0.72, -2.32], [0.5, -1.9], [0.42, -0.6], [0.5, -0.35], [0.38, 0.1], [0, 0.1],
-  ].map(([x, y]) => new Vector2(x, y));
-  const base = new Mesh(new LatheGeometry(baseProfile, 40), paint);
-  const collar = new Mesh(new TorusGeometry(1.32, 0.05, 8, 40).rotateX(Math.PI / 2).translate(0, -2.7, 0), silver);
-  const yokeA = new BoxGeometry(0.16, 1.5, 0.5).translate(-0.62, 0.72, 0);
-  const yokeB = new BoxGeometry(0.16, 1.5, 0.5).translate(0.62, 0.72, 0);
-  const yokeC = new BoxGeometry(1.4, 0.18, 0.56).translate(0, 0.1, 0);
-  const yoke = new Mesh(mergeGeometries([yokeA, yokeB, yokeC]), dark);
-
-  const head = new Group();
-  head.position.y = 1.35;
-  head.rotation.z = 0.42;
-
-  const chromeParts: BufferGeometry[] = [];
-  const darkParts: BufferGeometry[] = [new CylinderGeometry(0.34, 0.34, 2.2, 20).rotateZ(Math.PI / 2)];
-  for (let x = -1; x <= 1.01; x += 0.33) {
-    chromeParts.push(new TorusGeometry(0.42, 0.045, 8, 28).rotateY(Math.PI / 2).translate(x, 0, 0));
-  }
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2;
-    chromeParts.push(new CylinderGeometry(0.035, 0.035, 2.2, 6).rotateZ(Math.PI / 2).translate(0, Math.cos(a) * 0.42, Math.sin(a) * 0.42));
-  }
-  const globeParts: BufferGeometry[] = [];
-  [-1.72, 1.72].forEach((x) => {
-    globeParts.push(new SphereGeometry(0.98, low ? 28 : 40, low ? 20 : 28).translate(x, 0, 0));
-    chromeParts.push(new TorusGeometry(1, 0.035, 8, 44).rotateY(Math.PI / 2).translate(x, 0, 0));
-    chromeParts.push(new TorusGeometry(0.72, 0.05, 8, 32).rotateY(Math.PI / 2).translate(x * 0.62, 0, 0));
-  });
-  head.add(
-    new Mesh(mergeGeometries(chromeParts), silver),
-    new Mesh(mergeGeometries(darkParts), dark),
-    new Mesh(mergeGeometries(globeParts), new MeshStandardMaterial({ color: "#c9c6f5", metalness: 0.78, roughness: 0.34 })),
-  );
-
-  const lensCount = low ? 200 : 400;
-  const lensMaterial = new MeshBasicMaterial({ color: "#150a35" });
-  const lenses = new InstancedMesh(new CylinderGeometry(0.022, 0.03, 0.03, low ? 6 : 10), lensMaterial, lensCount);
-  const dummy = new Object3D();
-  const up = new Vector3(0, 1, 0);
-  for (let i = 0; i < lensCount; i++) {
-    const dir = fibonacci(i % (lensCount / 2), lensCount / 2);
-    dummy.position.copy(dir).multiplyScalar(0.98).add(new Vector3(i < lensCount / 2 ? -1.72 : 1.72, 0, 0));
-    dummy.quaternion.setFromUnitVectors(up, dir);
-    dummy.updateMatrix();
-    lenses.setMatrixAt(i, dummy.matrix);
-  }
-  head.add(lenses);
-
-  // Beam brightness lives in a vertex attribute, and the shader feathers the edges so cones read as dusty light
-  const beamParts: BufferGeometry[] = [];
-  if (!low) {
-    const random = seeded(5);
-    for (let i = 0; i < 18; i++) {
-      const side = i % 2 ? 1 : -1;
-      const dir = fibonacci(i, 18);
-      const cone = new ConeGeometry(0.5, 11, 14, 1, true).translate(0, -5.5, 0).rotateX(Math.PI);
-      const count = cone.attributes.position.count;
-      const colors = new Float32Array(count * 3);
-      const y = cone.attributes.position.array;
-      for (let v = 0; v < count; v++) {
-        const t = 1 - y[v * 3 + 1] / 11;
-        const strength = t * t * (0.09 + random() * 0.05);
-        colors.set([0.66 * strength, 0.7 * strength, strength], v * 3);
-      }
-      cone.setAttribute("aGlow", new BufferAttribute(colors, 3));
-      dummy.position.set(side * 1.72, 0, 0);
-      dummy.quaternion.setFromUnitVectors(up, dir);
-      dummy.updateMatrix();
-      beamParts.push(cone.applyMatrix4(dummy.matrix));
-    }
-  }
-  const beamMaterial = new ShaderMaterial({
-    blending: AdditiveBlending,
-    transparent: true,
-    depthWrite: false,
-    side: DoubleSide,
-    uniforms: { uOpacity: { value: 0 } },
-    vertexShader: /* glsl */ `
-      attribute vec3 aGlow; varying vec3 vG,vN,vV;
-      void main(){vG=aGlow;vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalMatrix*normal;vV=-mv.xyz;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader: /* glsl */ `
-      uniform float uOpacity; varying vec3 vG,vN,vV;
-      void main(){float edge=pow(abs(dot(normalize(vN),normalize(vV))),2.6);gl_FragColor=vec4(vG*edge*uOpacity,1.);}`,
-  });
-  if (beamParts.length) head.add(new Mesh(mergeGeometries(beamParts), beamMaterial));
-
-  const group = new Group();
-  group.add(base, collar, yoke, head);
-  return { group, head, lensMaterial, beamMaterial };
-}
-
-// The house: the same 55 seats as the printed plan, facing the projector
-function buildSeats() {
-  const parts = [
-    new BoxGeometry(0.72, 0.16, 0.62).translate(0, 0.42, 0),
-    new BoxGeometry(0.72, 0.86, 0.14).translate(0, 0.76, 0.3),
-    new BoxGeometry(0.1, 0.42, 0.5).translate(-0.33, 0.2, 0),
-    new BoxGeometry(0.1, 0.42, 0.5).translate(0.33, 0.2, 0),
-  ];
-  const material = new ShaderMaterial({
-    uniforms: { uLit: { value: 0 } },
-    vertexShader: /* glsl */ `
-      attribute float aOrder; uniform float uLit; varying float vLit,vOpen,vY;
-      void main(){
-        vOpen=step(aOrder,-.5)*smoothstep(.85,1.,uLit);
-        vLit=aOrder<0.?0.:smoothstep(aOrder,aOrder+.04,uLit);
-        vY=position.y;
-        gl_Position=projectionMatrix*modelViewMatrix*instanceMatrix*vec4(position,1.);
-      }`,
-    fragmentShader: /* glsl */ `
-      varying float vLit,vOpen,vY;
-      void main(){
-        vec3 c=mix(vec3(.05,.02,.15),vec3(.94,.9,1.),vLit);
-        c=mix(c,vec3(.66,.71,1.),vOpen);
-        gl_FragColor=vec4(c*(.62+vY*.42),1.);
-      }`,
-  });
-  const mesh = new InstancedMesh(mergeGeometries(parts), material, seatPlan.length);
-  const order = new Float32Array(seatPlan.length);
-  const random = seeded(41);
-  const dummy = new Object3D();
-  const openSeat = new Vector3();
-  seatPlan.forEach((seat, i) => {
-    const x = (seat.x - 320) / 26;
-    const z = (350 - seat.y) / 26;
-    dummy.position.set(x, -2.6, z);
-    dummy.rotation.y = Math.atan2(x, z) + Math.PI;
-    dummy.updateMatrix();
-    mesh.setMatrixAt(i, dummy.matrix);
-    order[i] = seat.open ? -1 : random() * 0.96;
-    if (seat.open) openSeat.set(x, -1.9, z);
-  });
-  mesh.geometry.setAttribute("aOrder", new InstancedBufferAttribute(order, 1));
-  mesh.frustumCulled = false;
-
-  // A soft spotlight singles out the one seat still open
-  const spotGeometry = new ConeGeometry(1.15, 11, 20, 1, true).translate(openSeat.x, openSeat.y + 5.2, openSeat.z);
-  const spotMaterial = new ShaderMaterial({
-    blending: AdditiveBlending,
-    transparent: true,
-    depthWrite: false,
-    side: DoubleSide,
-    uniforms: { uOpacity: { value: 0 } },
-    vertexShader: "varying vec3 vN,vV;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalMatrix*normal;vV=-mv.xyz;gl_Position=projectionMatrix*mv;}",
-    fragmentShader: "uniform float uOpacity;varying vec3 vN,vV;void main(){float e=pow(abs(dot(normalize(vN),normalize(vV))),2.2);gl_FragColor=vec4(vec3(.66,.71,1.)*e*.55*uOpacity,1.);}",
-  });
-  const spot = new Mesh(spotGeometry, spotMaterial);
-  spot.frustumCulled = false;
-  return { mesh, material, openSeat, spot, spotMaterial };
-}
-
 function buildSatellite() {
   const body = new MeshStandardMaterial({ color: "#cfd4ff", metalness: 0.85, roughness: 0.32 });
   const trim = new MeshStandardMaterial({ color: "#2a1a70", metalness: 0.8, roughness: 0.4 });
@@ -355,19 +195,16 @@ function buildStars(count: number, px: number) {
     transparent: true,
     depthWrite: false,
     blending: AdditiveBlending,
-    uniforms: { uBurst: { value: 0 }, uTime: { value: 0 }, uPx: { value: px }, uHouse: { value: 1 } },
+    uniforms: { uTime: { value: 0 }, uPx: { value: px }, uHouse: { value: 1 } },
     vertexShader: /* glsl */ `
       attribute vec3 aColor; attribute float aSize; attribute float aSeed;
-      uniform float uBurst,uTime,uPx,uHouse;
+      uniform float uTime,uPx,uHouse;
       varying vec3 vC; varying float vA;
       void main(){
-        float e=smoothstep(aSeed*.6,aSeed*.6+.4,uBurst);
-        vec3 origin=vec3(aSeed>.5?1.72:-1.72,1.35,0.);
-        vec3 p=mix(origin,position,1.-pow(1.-e,3.));
-        vec4 mv=modelViewMatrix*vec4(p,1.);
+        vec4 mv=modelViewMatrix*vec4(position,1.);
         float tw=.72+.28*sin(uTime*(.8+aSeed*1.6)+aSeed*40.);
         gl_PointSize=clamp(aSize*uPx*(150./-mv.z),1.,5.*uPx);
-        vA=smoothstep(0.,.12,e)*tw*(1.-uHouse*.8);
+        vA=tw*(1.-uHouse*.8);
         vC=aColor;
         gl_Position=projectionMatrix*mv;
       }`,
@@ -477,25 +314,11 @@ const PLANET_BAKE = /* glsl */ `
     gl_FragColor=vec4(col,1.);
   }`;
 
-function buildPlanet(
-  renderer: WebGLRenderer,
-  size: number,
-  radius: number,
-  segments: number,
-  look: { a: string; b: string; c: string; scale: number; bands: number; seed: number; rim: string },
-) {
-  const map = bake(renderer, size, size / 2, PLANET_BAKE, {
-    uA: { value: hex(look.a) },
-    uB: { value: hex(look.b) },
-    uC: { value: hex(look.c) },
-    uScale: { value: look.scale },
-    uBands: { value: look.bands },
-    uSeed: { value: look.seed },
-  });
+function planetMesh(map: Texture, radius: number, segments: number, rim: string) {
   return new Mesh(
     new SphereGeometry(radius, segments, Math.round(segments * 0.66)),
     new ShaderMaterial({
-      uniforms: { uMap: { value: map }, uRim: { value: hex(look.rim) }, uLight: { value: new Vector3(-0.55, 0.5, 0.67).normalize() } },
+      uniforms: { uMap: { value: map }, uRim: { value: hex(rim) }, uLight: { value: new Vector3(-0.55, 0.5, 0.67).normalize() } },
       vertexShader: /* glsl */ `
         varying vec3 vN,vV; varying vec2 vUv;
         void main(){vUv=uv;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=normalize(cameraPosition-w.xyz);gl_Position=projectionMatrix*viewMatrix*w;}`,
@@ -514,25 +337,287 @@ function buildPlanet(
   );
 }
 
-function bridgeGeometry() {
-  const segments: number[][] = [];
-  const nodes: number[][] = [];
-  const add = (a: number[], b: number[]) => {
-    segments.push(a, b);
-    nodes.push(a, b);
-  };
-  const deck = -9;
-  const top = 15;
-  const cable = (x: number) => 15 - 16 * (1 - Math.pow(x / 20, 2));
-  [-20, 20].forEach((x) => add([x, deck, 0], [x, top, 0]));
-  for (let x = -20; x < 20; x += 4) add([x, cable(x), 0], [x + 4, cable(x + 4), 0]);
-  add([-20, top, 0], [-40, deck, 0]);
-  add([20, top, 0], [40, deck, 0]);
-  for (let x = -40; x < 40; x += 8) add([x, deck, 0], [x + 8, deck, 0]);
-  for (let x = -16; x <= 16; x += 4) add([x, cable(x), 0], [x, deck, 0]);
-  const lineGeo = new BufferGeometry().setAttribute("position", new Float32BufferAttribute(segments.flat(), 3));
-  const dotGeo = new BufferGeometry().setAttribute("position", new Float32BufferAttribute(nodes.flat(), 3));
-  return { lineGeo, dotGeo, count: segments.length };
+function buildPlanet(
+  renderer: WebGLRenderer,
+  size: number,
+  radius: number,
+  segments: number,
+  look: { a: string; b: string; c: string; scale: number; bands: number; seed: number; rim: string },
+) {
+  const map = bake(renderer, size, size / 2, PLANET_BAKE, {
+    uA: { value: hex(look.a) },
+    uB: { value: hex(look.b) },
+    uC: { value: hex(look.c) },
+    uScale: { value: look.scale },
+    uBands: { value: look.bands },
+    uSeed: { value: look.seed },
+  });
+  return planetMesh(map, radius, segments, look.rim);
+}
+
+// Manila, enlarged so the pad has land to stand on when seen from the ground
+const HOME = { lon: 121, lat: 14.6 };
+
+// Continents as rough ellipses: longitude, latitude, half-width and half-height in degrees. The bake's noise roughens the coasts
+const LAND = [
+  [-100, 50, 32, 20], [-80, 65, 35, 10], [-112, 38, 14, 12], [-95, 20, 8, 8], [-88, 14, 5, 7], [-40, 72, 12, 9],
+  [-60, -8, 16, 16], [-66, -30, 8, 18], [-70, -48, 3, 8],
+  [18, 10, 24, 16], [25, -12, 14, 18], [45, 8, 6, 5], [22, -28, 8, 6], [47, -19, 2.5, 6],
+  [15, 50, 18, 9], [30, 58, 22, 10], [-3, 42, 5, 5], [-2, 54, 2, 4],
+  [90, 55, 55, 18], [100, 35, 38, 14], [78, 20, 9, 10], [105, 15, 8, 10], [45, 28, 10, 9], [135, 62, 20, 8],
+  [112, -2, 9, 3], [HOME.lon, HOME.lat, 9, 12], [138, 36, 3, 6], [134, -25, 18, 11], [172, -42, 2, 5], [0, -85, 180, 8],
+];
+
+const EARTH_BAKE = /* glsl */ `
+  varying vec2 vUv;
+  uniform sampler2D uMask; uniform vec2 uHome;
+  void main(){
+    vec3 d=sphereDir(vUv);
+    float warp=fbm(d*3.2+4.)-.5;
+    float coast=texture2D(uMask,vUv+vec2(warp*.035,warp*.05)).r+(fbm(d*11.+warp)-.5)*.28;
+    float land=smoothstep(.46,.54,coast);
+    vec3 sea=mix(vec3(.04,.13,.42),vec3(.07,.33,.68),fbm(d*4.+9.));
+    vec3 ground=mix(vec3(.13,.46,.3),vec3(.52,.48,.27),smoothstep(.42,.66,fbm(d*6.+2.)));
+    vec3 c=mix(sea,ground,land);
+    c=mix(c,vec3(.93,.96,1.),smoothstep(.86,.92,abs(vUv.y-.5)*2.+warp*.2));
+    // Clear skies over home, so seen from the pad the ground is ground
+    float clear=smoothstep(.03,.12,length((vUv-uHome)*vec2(2.,1.)));
+    float cloud=smoothstep(.54,.72,fbm(d*5.+warp*2.+20.))*clear;
+    gl_FragColor=vec4(mix(c,vec3(.95,.93,1.),cloud*.72),1.);
+  }`;
+
+function buildEarth(renderer: WebGLRenderer, size: number, segments: number) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1024;
+  canvas.height = 512;
+  const c = canvas.getContext("2d")!;
+  c.fillStyle = "#000";
+  c.fillRect(0, 0, 1024, 512);
+  c.filter = "blur(3px)";
+  c.fillStyle = "#fff";
+  LAND.forEach(([lon, lat, rx, ry]) => {
+    c.beginPath();
+    c.ellipse(((lon + 180) / 360) * 1024, ((90 - lat) / 180) * 512, (rx / 360) * 1024, (ry / 180) * 512, 0, 0, Math.PI * 2);
+    c.fill();
+  });
+  const u = (HOME.lon + 180) / 360;
+  const v = (HOME.lat + 90) / 180;
+  const map = bake(renderer, size, size / 2, EARTH_BAKE, { uMask: { value: new CanvasTexture(canvas) }, uHome: { value: new Vector2(u, v) } });
+  const mesh = planetMesh(map, EARTH_RADIUS, segments, "#8fc7ff");
+  mesh.position.y = GROUND_Y - EARTH_RADIUS;
+  // SphereGeometry's own mapping of a texture point onto the sphere, turned so that point is the top, under the pad
+  const phi = u * Math.PI * 2;
+  const theta = (1 - v) * Math.PI;
+  mesh.quaternion.setFromUnitVectors(new Vector3(-Math.cos(phi) * Math.sin(theta), Math.cos(theta), Math.sin(phi) * Math.sin(theta)), new Vector3(0, 1, 0));
+  return mesh;
+}
+
+// The logo's neon line drawn as a star chart, tracing itself stroke by stroke as the scroll moves
+function buildConstellation(px: number) {
+  const scale = 55 / 860;
+  const toWorld = (x: number, y: number) => new Vector3((x - 500) * scale, (380 - y) * scale, 0);
+  const curves = LOGO_STROKES.map((stroke) => new CatmullRomCurve3(stroke.map(([x, y]) => toWorld(x, y)), false, "centripetal"));
+  const lengths = curves.map((curve) => curve.getLength());
+  const total = lengths.reduce((sum, length) => sum + length, 0);
+  // Leaves the last of the scroll for the finished figure to sit and glow
+  const drawn = 0.86;
+
+  const stars: { x: number; y: number; size: number; at: number; warm: number }[] = [];
+  const positions: number[] = [];
+  const uvs: number[] = [];
+  const times: number[] = [];
+  const indices: number[] = [];
+  const width = 0.42;
+  let run = 0;
+  curves.forEach((curve, i) => {
+    const stroke = LOGO_STROKES[i];
+    const steps = (stroke.length - 1) * 8;
+    const points = curve.getPoints(steps);
+    // One unbroken ribbon per stroke: quads that only meet at their edges leave a visible tick at every join
+    points.forEach((point, n) => {
+      const a = points[Math.max(0, n - 1)];
+      const b = points[Math.min(steps, n + 1)];
+      const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      const nx = (-(b.y - a.y) / length) * width;
+      const ny = ((b.x - a.x) / length) * width;
+      const first = positions.length / 3;
+      positions.push(point.x + nx, point.y + ny, 0, point.x - nx, point.y - ny, 0);
+      uvs.push(0, -1, 0, 1);
+      const time = ((run + (lengths[i] * n) / steps) / total) * drawn;
+      times.push(time, time);
+      if (n < steps) indices.push(first, first + 1, first + 2, first + 2, first + 1, first + 3);
+    });
+    stroke.forEach(([x, y, size], n) => {
+      if (!size) return;
+      const point = toWorld(x, y);
+      stars.push({ x: point.x, y: point.y, size, at: ((run + (lengths[i] * n) / (stroke.length - 1)) / total) * drawn, warm: 0 });
+    });
+    run += lengths[i];
+  });
+  const random = seeded(7);
+  for (let i = 0; i < 170; i++) {
+    // The reference's scattered amber stars are every twelfth one
+    const warm = i % 12 === 0 ? 1 : 0;
+    stars.push({ x: (random() - 0.5) * 100, y: (random() - 0.5) * 58, size: warm ? 0.7 : 0.26 + random() * 0.4, at: random() * 0.8, warm });
+  }
+
+  const lineGeometry = new BufferGeometry();
+  lineGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  lineGeometry.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+  lineGeometry.setAttribute("aTime", new Float32BufferAttribute(times, 1));
+  lineGeometry.setIndex(indices);
+  const uniforms = { uP: { value: 0 }, uTime: { value: 0 }, uPx: { value: px } };
+  const lines = new Mesh(
+    lineGeometry,
+    new ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      side: DoubleSide,
+      uniforms,
+      vertexShader: "attribute float aTime;varying vec2 vU;varying float vTime;void main(){vU=uv;vTime=aTime;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+      fragmentShader: /* glsl */ `
+        uniform float uP; varying vec2 vU; varying float vTime;
+        void main(){
+          if(vTime>uP) discard;
+          float across=abs(vU.y);
+          float core=exp(-across*across*30.);
+          float halo=exp(-across*2.8)*.3;
+          gl_FragColor=vec4(vec3(.95,.93,1.)*core+vec3(.32,.66,1.)*halo,1.);
+        }`,
+    }),
+  );
+
+  const starGeometry = new BufferGeometry();
+  starGeometry.setAttribute("position", new Float32BufferAttribute(stars.flatMap((star) => [star.x, star.y, 0]), 3));
+  starGeometry.setAttribute("aAt", new Float32BufferAttribute(stars.map((star) => star.at), 1));
+  starGeometry.setAttribute("aSize", new Float32BufferAttribute(stars.map((star) => star.size), 1));
+  starGeometry.setAttribute("aWarm", new Float32BufferAttribute(stars.map((star) => star.warm), 1));
+  const points = new Points(
+    starGeometry,
+    new ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      uniforms,
+      vertexShader: /* glsl */ `
+        attribute float aAt,aSize,aWarm; uniform float uP,uTime,uPx; varying float vPop,vSize,vWarm;
+        void main(){
+          float t=clamp((uP-aAt)/.05,0.,1.);
+          // Each star overshoots as the line reaches it, then settles
+          vPop=t*(1.+sin(t*3.1416)*.9);
+          vSize=aSize;
+          vWarm=aWarm;
+          vec4 mv=modelViewMatrix*vec4(position,1.);
+          float tw=.86+.14*sin(uTime*1.7+position.x*3.+position.y*2.);
+          gl_PointSize=aSize*uPx*(2100./-mv.z)*vPop*tw;
+          gl_Position=projectionMatrix*mv;
+        }`,
+      fragmentShader: /* glsl */ `
+        varying float vPop,vSize,vWarm;
+        void main(){
+          vec2 c=gl_PointCoord*2.-1.;
+          float d=length(c);
+          float core=exp(-d*d*42.);
+          float halo=exp(-d*5.)*.45;
+          // Only the brightest stars carry a four-point flare
+          float flare=smoothstep(1.6,2.2,vSize)*(exp(-abs(c.x)*48.)*exp(-abs(c.y)*3.6)+exp(-abs(c.y)*48.)*exp(-abs(c.x)*3.6));
+          vec3 tint=mix(vec3(.55,.72,1.),vec3(1.,.7,.3),vWarm);
+          gl_FragColor=vec4((vec3(1.)*core+tint*(halo+flare*.9))*smoothstep(1.,.72,d)*min(vPop,1.),1.);
+        }`,
+    }),
+  );
+  points.frustumCulled = false;
+
+  // The logo itself: a wide blur is its cyan glow behind the chart, and once the line is drawn it shows through faintly
+  const logoMap = { value: null as Texture | null };
+  new TextureLoader().load("/cncp-decal.webp", (texture) => (logoMap.value = texture), undefined, (error) => console.error(error));
+  const glow = new Mesh(
+    new PlaneGeometry(1000 * scale, 773 * scale),
+    new ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      uniforms: { ...uniforms, uLogo: logoMap },
+      vertexShader: "varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+      fragmentShader: /* glsl */ `
+        uniform sampler2D uLogo; uniform float uP; varying vec2 vU;
+        void main(){
+          float wide=textureLod(uLogo,vU,3.5).a;
+          vec4 sharp=textureLod(uLogo,vU,0.);
+          vec3 c=vec3(.14,.5,1.)*wide*.42*smoothstep(.1,.86,uP)+sharp.rgb*sharp.a*.12*smoothstep(.7,1.,uP);
+          gl_FragColor=vec4(c,1.);
+        }`,
+    }),
+  );
+  glow.position.set(0, (380 - 386.5) * scale, -1);
+
+  const group = new Group();
+  group.add(glow, lines, points);
+  return { group, uniforms };
+}
+
+// Exhaust: dust left along the path already flown, so it holds still when the rocket does
+function buildTrail(count: number, px: number) {
+  const positions = new Float32Array(count * 3);
+  const random = seeded(23);
+  const age = new Float32Array(count);
+  const jitter = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    age[i] = i / count;
+    jitter.set([random() - 0.5, random() - 0.5, random() - 0.5], i * 3);
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new BufferAttribute(positions, 3));
+  geometry.setAttribute("aAge", new BufferAttribute(age, 1));
+  const material = new ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: AdditiveBlending,
+    uniforms: { uPx: { value: px }, uAlpha: { value: 0 } },
+    vertexShader: /* glsl */ `
+      attribute float aAge; uniform float uPx; varying float vAge;
+      void main(){vAge=aAge;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(uPx*(26.+aAge*150.)/-mv.z*3.,2.,46.*uPx);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: /* glsl */ `
+      uniform float uAlpha; varying float vAge;
+      void main(){float d=length(gl_PointCoord-.5);float a=smoothstep(.5,0.,d);vec3 c=mix(vec3(.9,.86,1.),vec3(.42,.26,.95),vAge);gl_FragColor=vec4(c*a*a*(1.-vAge)*.55*uAlpha,1.);}`,
+  });
+  const points = new Points(geometry, material);
+  points.frustumCulled = false;
+  return { points, material, positions, jitter };
+}
+
+// Pad smoke, thrown outward along the floor at ignition
+function buildSmoke(count: number, px: number) {
+  const random = seeded(29);
+  const dirs = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const a = random() * Math.PI * 2;
+    const r = 0.25 + random() * 0.75;
+    dirs.set([Math.cos(a) * r, 0.04 + random() * 0.22, Math.sin(a) * r], i * 3);
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(new Float32Array(count * 3), 3));
+  geometry.setAttribute("aDir", new BufferAttribute(dirs, 3));
+  const material = new ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: AdditiveBlending,
+    uniforms: { uSmoke: { value: 0 }, uPx: { value: px } },
+    vertexShader: /* glsl */ `
+      attribute vec3 aDir; uniform float uSmoke,uPx; varying float vA;
+      void main(){
+        vec3 p=vec3(0.,-2.3,0.)+aDir*uSmoke*17.;
+        vec4 mv=modelViewMatrix*vec4(p,1.);
+        gl_PointSize=clamp(uPx*(120.+uSmoke*780.)/-mv.z,4.,140.*uPx);
+        vA=sin(min(uSmoke*1.15,1.)*3.1416);
+        gl_Position=projectionMatrix*mv;
+      }`,
+    fragmentShader: "varying float vA;void main(){float a=smoothstep(.5,0.,length(gl_PointCoord-.5));gl_FragColor=vec4(vec3(.74,.62,1.)*a*a*.16*vA,1.);}",
+  });
+  const points = new Points(geometry, material);
+  points.frustumCulled = false;
+  return { points, material };
 }
 
 export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
@@ -566,22 +651,17 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const skyMaterial = new ShaderMaterial({
     side: BackSide,
     depthWrite: false,
-    uniforms: { uMap: { value: nebula }, uHouse: { value: 1 }, uDawn: { value: 0 } },
+    uniforms: { uMap: { value: nebula }, uHouse: { value: 1 } },
     vertexShader: "varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
     fragmentShader: /* glsl */ `
-      uniform sampler2D uMap; uniform float uHouse,uDawn; varying vec3 vD;
+      uniform sampler2D uMap; uniform float uHouse; varying vec3 vD;
       void main(){
         vec3 d=normalize(vD);
         vec2 uv=vec2(atan(d.z,d.x)/6.2831853+.5,asin(d.y)/3.1415927+.5);
         vec3 space=textureLod(uMap,uv,0.).rgb;
-        vec3 dawn=mix(vec3(.37,.2,.72),vec3(.2,.08,.5),smoothstep(-.1,.55,d.y));
-        space=mix(space,space*.3+dawn,uDawn);
         float e=max(d.y,0.);
-        vec3 dome=mix(vec3(.42,.17,.86),vec3(.14,.055,.36),pow(e,.62));
-        float lon=fract(atan(d.z,d.x)*7.6394)-.5, lat=fract(e*9.)-.5;
-        float rib=smoothstep(.04,0.,abs(lon)*.6)+smoothstep(.04,0.,abs(lat));
-        dome+=rib*.035;
-        vec3 c=mix(space,dome,uHouse);
+        vec3 dusk=mix(vec3(.42,.17,.86),vec3(.14,.055,.36),pow(e,.62));
+        vec3 c=mix(space,dusk,uHouse);
         float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
         gl_FragColor=vec4(c+(n-.5)/180.,1.);
       }`,
@@ -595,46 +675,34 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const stars = buildStars(starCount, dpr);
   scene.add(stars.points);
 
-  const projector = buildProjector(low);
-  projector.group.position.y = -0.2;
-  scene.add(projector.group);
+  const curve = new CatmullRomCurve3(FLIGHT.map(([x, y, z]) => new Vector3(x, y, z)), false, "centripetal");
+  const lastStop = FLIGHT.length - 1;
+  const rocket = createRocket();
+  scene.add(rocket.group);
+  const trailCount = low ? 50 : 90;
+  const trail = buildTrail(trailCount, dpr);
+  scene.add(trail.points);
+  const smoke = buildSmoke(low ? 70 : 140, dpr);
+  scene.add(smoke.points);
 
   const satellite = buildSatellite();
   scene.add(satellite);
   const relay = satellite.clone();
   relay.scale.setScalar(0.55);
 
-  // Links and nodes share one reveal, so the bridge draws on as the scroll moves
-  const seats = buildSeats();
-  scene.add(seats.mesh, seats.spot);
+  const earth = buildEarth(renderer, low ? 1024 : 2048, low ? 64 : 112);
+  const pad = new Mesh(new CylinderGeometry(3.5, 4, 0.5, 48).translate(0, GROUND_Y + 0.05, 0), new MeshStandardMaterial({ color: "#4a3aa8", metalness: 0.5, roughness: 0.55 }));
+  scene.add(earth, pad);
 
-  const bridge = bridgeGeometry();
-  const bridgeLines = new LineSegments(
-    bridge.lineGeo,
-    new LineBasicMaterial({ color: new Color("#efe6ff"), transparent: true, blending: AdditiveBlending, depthWrite: false }),
-  );
-  const bridgeDots = new Points(
-    bridge.dotGeo,
-    new ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: AdditiveBlending,
-      uniforms: { uPx: { value: dpr }, uAlpha: { value: 0 } },
-      vertexShader: "uniform float uPx;void main(){gl_PointSize=6.*uPx;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
-      fragmentShader: "uniform float uAlpha;void main(){float a=smoothstep(.5,.1,length(gl_PointCoord-.5));gl_FragColor=vec4(.95,.93,1.,a*uAlpha);}",
-    }),
-  );
-  const bridgeGroup = new Group();
-  bridgeGroup.add(bridgeLines, bridgeDots);
-  bridgeGroup.position.set(0, 11, -110);
-  scene.add(bridgeGroup);
+  const constellation = buildConstellation(dpr);
+  constellation.group.position.set(0, 6.6, -110);
+  scene.add(constellation.group);
 
   const texSize = low ? 384 : 768;
   const segments = low ? 40 : 64;
   const looks = [
     { a: "#2c1570", b: "#5a37c8", c: "#a48cf2", scale: 2.2, bands: 34, seed: 2, rim: "#a9b4ff" },
     { a: "#120829", b: "#32206e", c: "#7c6be0", scale: 3.4, bands: 0, seed: 9, rim: "#7c8bff" },
-    { a: "#2a1060", b: "#7a3bd0", c: "#d6a8ff", scale: 2.6, bands: 0, seed: 15, rim: "#c084fc" },
     { a: "#1c1f6e", b: "#4650d8", c: "#9aa6ff", scale: 2, bands: 9, seed: 22, rim: "#9fd0ff" },
   ];
   const worlds = looks.map((look, i) => {
@@ -646,7 +714,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     return { group, planet };
   });
 
-  // Networking: packets travelling round one link, with a relay satellite on it
+  // Enterprise Networking: packets travelling round one link, with a relay satellite on it
   const packets = buildOrbiters(low ? 70 : 130, WORLD_RADIUS * 1.5, WORLD_RADIUS * 1.5, true, "#ffffff", dpr, 3);
   const linkRing = new Mesh(
     new RingGeometry(WORLD_RADIUS * 1.495, WORLD_RADIUS * 1.505, 128).rotateX(Math.PI / 2),
@@ -657,58 +725,14 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   linkPlane.add(linkRing, packets.points, relay);
   worlds[0].group.add(linkPlane);
 
-  // Cybersecurity: a lattice shell that closes as you arrive
+  // Cybersecurity Operations: a lattice shell that closes as you arrive
   const shellMaterial = new LineBasicMaterial({ color: "#a9b4ff", transparent: true, opacity: 0.75, blending: AdditiveBlending, depthWrite: false });
   const shell = new LineSegments(new EdgesGeometry(new IcosahedronGeometry(WORLD_RADIUS * 1.14, 2)), shellMaterial);
   worlds[1].group.add(shell);
 
-  // Data analytics: a histogram wrapped round the equator
-  const barCount = low ? 90 : 150;
-  const bars = new InstancedMesh(
-    new BoxGeometry(0.46, 1, 0.46).translate(0, 0.5, 0),
-    new ShaderMaterial({
-      uniforms: { uGrow: { value: 0 } },
-      vertexShader: /* glsl */ `
-        attribute float aH; uniform float uGrow; varying float vH; varying float vY;
-        void main(){vec3 p=position;p.y*=.04+aH*5.5*uGrow;vH=aH;vY=position.y;gl_Position=projectionMatrix*modelViewMatrix*instanceMatrix*vec4(p,1.);}`,
-      fragmentShader: /* glsl */ `
-        varying float vH,vY;
-        void main(){vec3 c=mix(vec3(.5,.3,.85),vec3(.93,.88,1.),vH);gl_FragColor=vec4(c*(.45+.55*vY),1.);}`,
-    }),
-    barCount,
-  );
-  const heights = new Float32Array(barCount);
-  const barDummy = new Object3D();
-  for (let i = 0; i < barCount; i++) {
-    const lon = (i / barCount) * Math.PI * 2;
-    const dir = new Vector3(Math.cos(lon), 0, Math.sin(lon));
-    barDummy.position.copy(dir).multiplyScalar(WORLD_RADIUS * 0.995);
-    barDummy.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir);
-    barDummy.updateMatrix();
-    bars.setMatrixAt(i, barDummy.matrix);
-    heights[i] = 0.18 + 0.82 * Math.abs(Math.sin(lon * 3) * Math.sin(lon * 7 + 1));
-  }
-  bars.geometry.setAttribute("aH", new InstancedBufferAttribute(heights, 1));
-  bars.frustumCulled = false;
-  const barTilt = new Group();
-  barTilt.rotation.set(0.42, 0, 0.2);
-  barTilt.add(bars);
-  worlds[2].group.add(barTilt);
-
+  // Development Networking: nodes joined by the links code can reach and automate
   const things = buildThingNetwork(low ? 44 : 70, WORLD_RADIUS, dpr);
-  worlds[3].group.add(things);
-
-  const ground = buildPlanet(renderer, low ? 768 : 1280, 400, low ? 72 : 112, {
-    a: "#24105a",
-    b: "#5b2ab0",
-    c: "#a98af0",
-    scale: 7,
-    bands: 0,
-    seed: 31,
-    rim: "#b9a0ff",
-  });
-  ground.position.set(0, -430, -760);
-  scene.add(ground);
+  worlds[2].group.add(things);
 
   let width = 1;
   let height = 1;
@@ -718,7 +742,9 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     height = parent.clientHeight;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
-    bridgeGroup.scale.setScalar(Math.min(0.82, camera.aspect * 0.95));
+    constellation.group.scale.setScalar(Math.min(1, camera.aspect * 0.87));
+    // On a wide screen it sits a little right, clear of the copy in the bottom left
+    constellation.group.position.x = camera.aspect >= 1 ? 5 : 0;
   };
   const observer = new ResizeObserver(resize);
   observer.observe(canvas.parentElement!);
@@ -729,7 +755,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   seen.observe(canvas);
 
   const stage = canvas.parentElement!;
-  const fly = stage.querySelector<HTMLElement>(".seat-fly");
+  const signal = stage.querySelector<HTMLElement>('[data-beat="signal"]');
   const dish = new Vector3();
   let screenX = 0;
   let screenY = 0;
@@ -740,12 +766,28 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   };
 
   let lastKey = "";
+  let lastDraw = 0;
+  let wasMoving = false;
   let frame = 0;
   let slow = 16;
   let level = 0;
+  let lastFly = s.fly;
+  let speed = 0;
+  const craft = new Vector3();
+  const heading = new Vector3();
+  const dust = new Vector3();
+  const aim = new Vector3();
+  const ahead = new Vector3();
+  const behind = new Vector3();
+  const beside = new Vector3();
+  const worldUp = new Vector3(0, 1, 0);
 
-  const tick = (time: number, delta: number) => {
+  const tick = (time: number) => {
     if (!inView || document.hidden) return;
+    // Drawing on every tick of a 120 or 240Hz display floods the GPU queue and stalls the page
+    if (time - lastDraw < 0.0145) return;
+    const gap = (time - lastDraw) * 1000;
+    lastDraw = time;
     const key = Object.values(s).join();
     const moving = key !== lastKey;
     lastKey = key;
@@ -753,7 +795,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     // Twinkle does not need 60fps, so an idle page draws half the frames
     if (!moving && frame % 2) return;
 
-    slow += (delta - slow) * 0.04;
+    if (moving && wasMoving) slow += (gap - slow) * 0.04;
+    wasMoving = moving;
     if (frame > 120 && slow > 30 && level < 2) {
       // Trade sharpness and star count for frame rate on hardware that is struggling
       level++;
@@ -765,55 +808,89 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       frame = 0;
     }
 
+    const u = s.fly / lastStop;
+    curve.getPoint(u, craft);
+    curve.getTangent(u, heading);
+    // Coming home the rocket backs down on its flame, so its nose points back along the path
+    if (s.retro > 0.5) heading.negate();
+    if (s.house < 0.5) {
+      // Hanging in space it drifts a little, which sitting on the pad it would not
+      const drift = 1 - s.house * 2;
+      craft.x += Math.sin(time * 0.7) * 0.18 * drift;
+      craft.y += Math.sin(time * 1.1) * 0.22 * drift;
+    }
+
     camera.position.set(s.cx, s.cy, s.cz);
-    camera.lookAt(s.lx, s.ly, s.lz);
+    aim.set(s.lx, s.ly, s.lz);
+    // Between chapters the camera follows off the rocket's shoulder, close enough to the side that the cabin still shows
+    if (s.chase > 0) {
+      beside.crossVectors(heading, worldUp).normalize();
+      // A narrow screen has less width to fit the rocket in, so it follows from further out
+      const reach = camera.aspect >= 1 ? 1 : 1.9;
+      behind.copy(craft).addScaledVector(heading, -8 * reach).addScaledVector(beside, 20 * reach);
+      behind.y += 5;
+      camera.position.lerp(behind, s.chase);
+      aim.lerp(ahead.copy(craft).addScaledVector(heading, camera.aspect >= 1 ? 8 : 3), s.chase);
+    }
+    camera.lookAt(aim);
+    const side = s.side * (1 - s.chase);
     // Narrow screens pull back a little so a whole world still fits across the width
-    camera.fov = camera.aspect >= 1 ? s.fov : s.fov + Math.abs(s.side) * 22;
-    if (camera.aspect >= 1) camera.setViewOffset(width, height, -s.side * 0.24 * width, 0, width, height);
-    else camera.setViewOffset(width, height, 0, Math.abs(s.side) * 0.17 * height, width, height);
+    camera.fov = camera.aspect >= 1 ? s.fov : s.fov + Math.abs(side) * 22;
+    if (camera.aspect >= 1) camera.setViewOffset(width, height, -side * 0.24 * width, 0, width, height);
+    else camera.setViewOffset(width, height, 0, Math.abs(side) * 0.17 * height, width, height);
 
     sky.position.copy(camera.position);
     skyMaterial.uniforms.uHouse.value = s.house;
-    skyMaterial.uniforms.uDawn.value = s.dawn;
-    stars.material.uniforms.uBurst.value = s.burst;
     stars.material.uniforms.uTime.value = time;
     stars.material.uniforms.uHouse.value = s.house;
-    scene.environmentIntensity = 0.45 + s.house * 0.75 + s.lamp * 0.25;
+    scene.environmentIntensity = 0.75 + s.house * 0.45;
 
-    const nearDome = s.cz > -70;
-    projector.group.visible = nearDome;
-    if (nearDome) {
-      projector.head.rotation.y = s.spin;
-      const lit = s.lamp;
-      projector.lensMaterial.color.setRGB(0.008 + lit * 0.99, 0.003 + lit * 0.97, 0.035 + lit * 0.96);
-      projector.beamMaterial.uniforms.uOpacity.value = lit * (1 - s.house * 0.6);
+    const dt = Math.min(gap / 1000, 0.1);
+    // Thrust follows the scroll: the flame stretches while the visitor moves and idles when they stop
+    speed += (Math.abs(s.fly - lastFly) / Math.max(dt, 0.001) - speed) * 0.18;
+    lastFly = s.fly;
+    rocket.place(craft, heading, camera);
+    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), Math.min(speed, 2), s.wave, s.out);
+
+    // The jump home is not a stretch of path, so no dust is drawn across it
+    const trailStart = s.retro > 0.5 ? STOP.descent : 0;
+    trail.points.visible = s.house < 0.95 && s.burn > 0;
+    if (trail.points.visible) {
+      trail.material.uniforms.uAlpha.value = s.burn;
+      for (let i = 0; i < trailCount; i++) {
+        const back = Math.max(trailStart, s.fly - 0.05 - i * 0.022) / lastStop;
+        curve.getPoint(back, dust);
+        const spread = 0.15 + (i / trailCount) * 1.5;
+        trail.positions[i * 3] = dust.x + trail.jitter[i * 3] * spread;
+        trail.positions[i * 3 + 1] = dust.y + trail.jitter[i * 3 + 1] * spread;
+        trail.positions[i * 3 + 2] = dust.z + trail.jitter[i * 3 + 2] * spread;
+      }
+      trail.points.geometry.attributes.position.needsUpdate = true;
     }
-    // The camera flies through the rows once the lights drop, so the seats leave with the house lights
-    seats.mesh.visible = nearDome && (s.house > 0.45 || s.seats > 0);
-    seats.material.uniforms.uLit.value = s.seats;
-    seats.spot.visible = s.seats > 0.85;
-    seats.spotMaterial.uniforms.uOpacity.value = Math.min(1, (s.seats - 0.85) / 0.15);
+    smoke.points.visible = s.smoke > 0 && s.smoke < 1;
+    smoke.material.uniforms.uSmoke.value = s.smoke;
+
+    earth.visible = pad.visible = s.cz > -200;
 
     satellite.visible = s.sat > 0 && s.sat < 1;
     if (satellite.visible) {
       satellite.scale.setScalar(camera.aspect >= 1 ? 1 : 0.55);
-      satellite.position.set((-24 + s.sat * 50) * Math.min(1, camera.aspect * 1.1), 8 - s.sat * 9, -44 - s.sat * 8);
+      // On narrow screens the path stays on the camera's line of sight so the craft is never cut off
+      satellite.position.set(camera.aspect >= 1 ? -24 + s.sat * 50 : s.cx * 0.6 + (s.sat - 0.5) * 10, 8 - s.sat * 9, -44 - s.sat * 8);
       satellite.rotation.set(0.5 + s.sat * 0.8, -0.6 + s.sat * 1.4, 0.25);
     }
 
-    bridgeGroup.visible = s.links > 0.001 && s.cz > -112;
-    if (bridgeGroup.visible) {
-      bridgeLines.geometry.setDrawRange(0, Math.floor(bridge.count * s.links * 0.5) * 2);
-      bridgeDots.geometry.setDrawRange(0, Math.floor(bridge.count * s.links));
-      (bridgeDots.material as ShaderMaterial).uniforms.uAlpha.value = s.links;
-      (bridgeLines.material as LineBasicMaterial).opacity = s.links;
+    constellation.group.visible = s.links > 0.001 && s.cz > -112;
+    if (constellation.group.visible) {
+      constellation.uniforms.uP.value = s.links;
+      constellation.uniforms.uTime.value = time;
     }
 
     worlds.forEach(({ group, planet }, i) => {
       group.visible = Math.abs(s.cz - WORLD_POS[i][2]) < 150;
       if (group.visible) planet.rotation.y = time * 0.03 + i;
     });
-    // The first world grows in once the camera leaves the bridge, so it never sits behind a heading
+    // The first world grows in once the camera leaves the constellation, so it never sits behind a heading
     worlds[0].group.scale.setScalar(Math.min(1, Math.max(0.001, (-s.cz - 41) / 30)));
     if (worlds[0].group.visible) {
       packets.material.uniforms.uTime.value = time;
@@ -826,26 +903,16 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       shellMaterial.opacity = s.shell * 0.8;
       shell.rotation.y = time * 0.05;
     }
-    if (worlds[2].group.visible) {
-      (bars.material as ShaderMaterial).uniforms.uGrow.value = s.bars;
-      bars.rotation.y = time * 0.05;
-    }
-    if (worlds[3].group.visible) things.rotation.y = time * 0.06;
-    ground.visible = s.cz < -560;
-    if (ground.visible) ground.rotation.y = time * 0.004;
+    if (worlds[2].group.visible) things.rotation.y = time * 0.06;
 
     renderer.render(scene, camera);
 
     // DOM pieces that belong to 3D objects follow them on screen
-    if (satellite.visible) {
+    // Written to the small element that uses them: on the stage they would restyle every beat
+    if (satellite.visible && signal) {
       place(satellite.localToWorld(dish.set(0, 1.6, 0)));
-      stage.style.setProperty("--sat-x", `${screenX}px`);
-      stage.style.setProperty("--sat-y", `${screenY}px`);
-    }
-    if (s.seats > 0 && fly) {
-      place(dish.copy(seats.openSeat));
-      fly.style.setProperty("--fly-x", `${screenX - fly.offsetLeft - fly.offsetWidth / 2}px`);
-      fly.style.setProperty("--fly-y", `${screenY - fly.offsetTop - fly.offsetHeight / 2}px`);
+      signal.style.setProperty("--sat-x", `${screenX}px`);
+      signal.style.setProperty("--sat-y", `${screenY}px`);
     }
   };
 
@@ -855,6 +922,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     gsap.ticker.remove(tick);
     observer.disconnect();
     seen.disconnect();
+    rocket.dispose();
     renderer.dispose();
   };
 }

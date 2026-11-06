@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { cues, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
-import { initialSky, MOTION_KEY, seats } from "@/lib/story";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crew, cues, events, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
+import { initialSky } from "@/lib/story";
 
-const TITLE = "NETCONNECT".split("");
+// A no-break space, because SVG text collapses a normal one that sits alone in its own tspan
+const TITLE = "CISCO\u00A0NETCONNECT".split("");
 
 function Origin({ label = "Source: launch page" }: { label?: string }) {
   return (
@@ -15,27 +16,98 @@ function Origin({ label = "Source: launch page" }: { label?: string }) {
   );
 }
 
-function Ticket({ href, seat, label }: { href: string; seat: string; label: string }) {
+// A frame on the film: the print being shown, a contact strip to pick another, and the notes beside it
+function LogStop({ event }: { event: (typeof events)[number] }) {
+  const [shown, setShown] = useState(0);
+  const photo = event.photos[shown];
   return (
-    <a className="ticket" href={href}>
-      <span className="ticket-body">
-        <small>{seat}</small>
-        <strong>Admit one student</strong>
-      </span>
-      <span className="ticket-stub">{label}</span>
-    </a>
+    <li className={`log-stop ${event.confirmed ? "" : "log-pending"}`}>
+      <div className="log-frame">
+        <figure className="log-print">
+          {photo.src ? (
+            <Image src={photo.src} alt={photo.alt} fill sizes="(max-aspect-ratio: 1/1) 84vw, 26rem" />
+          ) : (
+            <figcaption className="log-empty">
+              <small>Photo to come</small>
+              {photo.alt}
+            </figcaption>
+          )}
+          <span className="log-develop" aria-hidden="true" />
+        </figure>
+        {event.photos.length > 1 ? (
+          <div className="log-contact" role="group" aria-label={`Photos of ${event.title}`}>
+            {event.photos.map((item, i) => (
+              <button className="log-thumb" type="button" key={item.alt} aria-pressed={i === shown} aria-label={`Show photo ${i + 1}: ${item.alt}`} onClick={() => setShown(i)}>
+                {item.src ? <Image src={item.src} alt="" fill sizes="4rem" /> : i + 1}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <div className="log-notes">
+        <small>{event.when}</small>
+        <h3>{event.title}</h3>
+        <p>{event.note}</p>
+        {event.went ? (
+          <p className="log-went">
+            <strong className="launch-count">{event.went}</strong> people went
+          </p>
+        ) : null}
+        {event.confirmed ? event.went ? <Origin /> : null : <span className="origin unissued">Unissued</span>}
+      </div>
+    </li>
   );
 }
 
-function toggleMotion() {
-  const playing = document.documentElement.classList.contains("live");
-  try {
-    localStorage.setItem(MOTION_KEY, playing ? "off" : "on");
-  } catch {
-    // Storage blocked: the visitor stays on the page they already have
-    return;
-  }
-  location.reload();
+// placeholder: answers come from a keyword lookup in lib/content.ts until the real chatbot exists
+function AxieChat() {
+  const [messages, setMessages] = useState([{ from: "axie", text: AXIE_GREETING }]);
+  const [draft, setDraft] = useState("");
+  const log = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    log.current?.scrollTo({ top: log.current.scrollHeight });
+  }, [messages]);
+
+  const ask = (text: string) => {
+    const question = text.trim();
+    if (!question) return;
+    setMessages((all) => [...all, { from: "you", text: question }, { from: "axie", text: axieReply(question) }]);
+    setDraft("");
+  };
+
+  return (
+    <div className="chat">
+      <div className="chat-head">
+        <strong>Axie</strong>
+        <span className="origin unissued">Placeholder</span>
+      </div>
+      <div className="chat-log" ref={log} role="log" aria-label="Conversation with Axie">
+        {messages.map((message, i) => (
+          <p className={`chat-line chat-${message.from}`} key={i}>
+            {message.text}
+          </p>
+        ))}
+      </div>
+      <div className="chat-suggest">
+        {AXIE_SUGGESTIONS.map((suggestion) => (
+          <button type="button" key={suggestion} onClick={() => ask(suggestion)}>
+            {suggestion}
+          </button>
+        ))}
+      </div>
+      <form
+        className="chat-form"
+        onSubmit={(e: FormEvent) => {
+          e.preventDefault();
+          ask(draft);
+        }}
+      >
+        <input aria-label="Message Axie" placeholder="Ask Axie something" autoComplete="off" maxLength={200} value={draft} onChange={(e) => setDraft(e.target.value)} />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  );
 }
 
 export function Show() {
@@ -82,15 +154,9 @@ export function Show() {
           <Image src="/cncp-white.png" alt="" width={1000} height={773} sizes="56px" priority />
           <span>Cisco NetConnect PUP - Manila</span>
         </a>
-        <div className="topbar-actions">
-          <button className="motion-toggle" type="button" onClick={toggleMotion}>
-            <span className="when-plain">Play the show</span>
-            <span className="when-live">Stop the motion</span>
-          </button>
-          <a className="nav-join" href="#join">
-            Join
-          </a>
-        </div>
+        <a className="nav-join" href="#join">
+          Join
+        </a>
       </header>
 
       <main>
@@ -119,37 +185,28 @@ export function Show() {
                   </text>
                 </svg>
               ))}
-              <p className="hero-copy">
-                A student community at PUP - Manila for networking, cybersecurity, data analytics and IoT.
-              </p>
-              <svg className="hero-projector" viewBox="0 0 300 360" aria-hidden="true">
-                <circle cx="70" cy="90" r="62" fill="#a9b4ff" />
-                <circle cx="230" cy="90" r="62" fill="#a9b4ff" />
-                <rect x="60" y="76" width="180" height="30" fill="#efe6ff" />
-                <rect x="134" y="104" width="32" height="170" fill="#c084fc" />
-                <path d="M78 360 L134 262 L166 262 L222 360 Z" fill="#7c3aed" />
-              </svg>
-              <svg className="hero-seats" viewBox="0 0 1440 290" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-                <g fill="none" stroke="#12072e" strokeWidth="44" strokeDasharray="46 10">
-                  <path d="M-40 250 Q720 40 1480 250" />
-                  <path d="M-40 330 Q720 130 1480 330" />
-                </g>
-                <path d="M-40 370 Q720 200 1480 370 L1480 400 L-40 400Z" fill="#12072e" />
+              <svg className="hero-rocket" viewBox="0 0 200 360" aria-hidden="true">
+                <path d="M100 8 C142 56 152 150 142 268 L58 268 C48 150 58 56 100 8Z" fill="#7c3aed" />
+                <circle cx="100" cy="118" r="38" fill="#efe6ff" />
+                <path d="M58 200 L14 318 L62 276Z M142 200 L186 318 L138 276Z" fill="#c084fc" />
+                <path d="M72 268 L128 268 L142 330 L58 330Z" fill="#12072e" />
               </svg>
               <div className="hero-action">
-                <p className="hero-cue">
-                  <span className="live-only">
-                    <strong>The lights are about to go down.</strong> Scroll to start the show.
-                  </span>
-                </p>
-                <Ticket href="#join" seat="Row D, seat 55" label="Join" />
+                <div className="hero-lede">
+                  <p className="hero-copy">
+                    A student community at PUP - Manila for enterprise networking, cybersecurity operations and development networking.
+                  </p>
+                  <p className="hero-cue live-only">
+                    <strong>Axie&rsquo;s still on Earth.</strong> Scroll to start the countdown.
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="beat at-top" data-beat="lights">
-              <h2>The lights go down.</h2>
+            <div className="beat world world-left" data-beat="liftoff">
+              <h2>Three. Two. One.</h2>
               <p className="live-only" data-rest>
-                Keep scrolling. The projector does the rest.
+                Keep scrolling and the rocket keeps flying. Stop, and Axie waits for you.
               </p>
             </div>
 
@@ -170,62 +227,51 @@ export function Show() {
 
             {worlds.map((world, i) => (
               <div className={`beat world ${i % 2 ? "world-right" : "world-left"}`} data-beat={world.id} key={world.id}>
+                <small className="kicker" data-rest>
+                  Department {i + 1} of {worlds.length}
+                </small>
                 <h2>{world.name}</h2>
                 <p data-rest>{world.line}</p>
-                <Origin label="Focus area named on the launch page" />
               </div>
             ))}
-            <svg className="pointer" viewBox="0 0 120 48" aria-hidden="true">
-              <path d="M0 24H94M72 6l30 18-30 18" fill="none" stroke="#a9b4ff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
 
-            <div className="beat at-top" data-beat="descent">
-              <h2>Then it came down to earth.</h2>
-              <p data-rest>Online initiatives became on-ground engagements.</p>
-              <Origin />
-            </div>
-
-            <div className="beat at-top" data-beat="launch">
-              <h2>
-                <span className="launch-count">54</span> people. One launch.
-              </h2>
-              <p data-rest>
-                The official hard launch brought students to White Cloak Technologies in Ortigas Center for talks from industry experts, interactive sessions and networking.
-              </p>
-              <Origin />
-            </div>
-
-            <div className="plan" aria-hidden="true">
-              <svg className="plan-art" viewBox="0 0 640 370">
-                {seats.map((seat) => (
-                  <rect
-                    key={seat.key}
-                    className={seat.open ? "plan-open" : "plan-seat"}
-                    x={seat.x - 13}
-                    y={seat.y - 11}
-                    width="26"
-                    height="22"
-                    rx="5"
-                    transform={`rotate(${seat.turn} ${seat.x} ${seat.y})`}
-                  />
-                ))}
-              </svg>
-            </div>
-
-            <div className="beat at-plan" data-beat="houselights">
-              <h2>House lights.</h2>
-              <p data-rest>
-                <span className="plan-count">54</span> seats filled at the launch. It stopped being a projection and became a room.
-              </p>
-              <Origin />
-            </div>
-
-            <div className="beat at-plan" data-beat="seat">
-              <h2>Seat 55 is open.</h2>
-              <p data-rest>It&rsquo;s yours if you want it.</p>
-              <div className="seat-fly">
-                <Ticket href="#join" seat="Row D, seat 55" label="Join" />
+            <div className="beat log" data-beat="log">
+              <h2>The flight log.</h2>
+              <div className="log-window">
+                <ol className="log-track">
+                  {events.map((event) => (
+                    <LogStop event={event} key={event.title} />
+                  ))}
+                </ol>
               </div>
+            </div>
+
+            <div className="beat crew" data-beat="crew">
+              <h2>The people flying it.</h2>
+              <ul className="crew-grid">
+                {crew.map((person, i) => (
+                  <li className={`crew-card ${person.confirmed ? "" : "crew-pending"}`} key={person.role + i}>
+                    <span className="crew-patch" aria-hidden="true">
+                      {person.name === "Name to come" ? "?" : person.name.split(" ").map((word) => word[0]).slice(0, 2).join("")}
+                    </span>
+                    <span>
+                      <strong>{person.name}</strong>
+                      <small>{person.role}</small>
+                      {person.confirmed ? null : <span className="origin unissued">Unissued</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="beat world world-left" data-beat="home">
+              <h2>Back on Earth.</h2>
+              <p data-rest>Axie has been to all three worlds, and has plenty to tell you about them.</p>
+            </div>
+
+            <div className="beat chat-beat" data-beat="chat">
+              <h2>Now say hi.</h2>
+              <AxieChat />
             </div>
           </div>
         </section>
@@ -244,8 +290,8 @@ export function Show() {
             </ol>
           </div>
           <p>
-            <span className="cue-now">A1 House open</span>
-            <span className="cue-next">Next: Lights down</span>
+            <span className="cue-now">A1 On the pad</span>
+            <span className="cue-next">Next: Liftoff</span>
           </p>
         </nav>
 
@@ -264,13 +310,15 @@ export function Show() {
 
         <section id="join">
           <div>
-            <h2>Take the seat.</h2>
-            <p>Networking, cybersecurity, data analytics, IoT. Come for one, stay for the people working on all four.</p>
+            <h2>Join the crew.</h2>
+            <p>Enterprise Networking, Cybersecurity Operations, Development Networking. Come for one, stay for the people working on all three.</p>
             <p className="join-note">
               <span className="origin unissued">Unissued</span> Sign-ups aren&rsquo;t open here yet. Reach the team through the launch page.
             </p>
           </div>
-          <Ticket href={JOIN_URL} seat="Unissued: join link pending" label="Join" />
+          <a className="join-link" href={JOIN_URL}>
+            Join
+          </a>
         </section>
       </main>
 

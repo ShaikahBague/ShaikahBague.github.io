@@ -59,7 +59,12 @@ h2 {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem var(--gutter);
-  background: rgb(18 7 46 / 0.6);
+  transition: background 0.25s;
+}
+
+html:not(.live) .topbar,
+.topbar.solid {
+  background: var(--dome-950);
 }
 
 html:not(.live) .live-only {
@@ -94,53 +99,6 @@ html:not(.live) .live-only {
   background: #fff;
 }
 
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* Only offered to visitors whose device asks for reduced motion */
-.motion-toggle {
-  display: none;
-  min-height: 2.25rem;
-  padding: 0.375rem 0.875rem;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  border: 1px solid var(--lilac);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.motion-toggle:hover {
-  background: var(--lilac);
-  color: var(--dome-900);
-}
-
-.when-live,
-.live .when-plain {
-  display: none;
-}
-
-.live .when-live {
-  display: inline;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .motion-toggle {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) and (max-width: 30rem) {
-  .brand span {
-    display: none;
-  }
-}
-
 /* The plain page: no motion, no WebGL, or no JavaScript */
 #story {
   background-color: var(--dome-700);
@@ -150,7 +108,6 @@ html:not(.live) .live-only {
 canvas,
 .scrim,
 .cover,
-.pointer,
 .signal-pulse,
 .cues {
   display: none;
@@ -197,73 +154,6 @@ a.origin:hover {
   border-style: dashed;
 }
 
-/* Tickets are the one piece of paper in the show */
-.ticket {
-  display: inline-grid;
-  grid-template-columns: 1fr auto;
-  width: min(23rem, 100%);
-  min-height: 7.5rem;
-  color: var(--dome-900);
-  text-decoration: none;
-  text-shadow: none;
-  transform: rotate(-2.5deg);
-  filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.42));
-  transition: transform 0.45s var(--ease-out);
-}
-
-.ticket:hover {
-  transform: rotate(-1deg) translateY(-3px);
-}
-
-.ticket-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.875rem 1.125rem;
-  background: var(--lilac);
-  border-radius: 6px 0 0 6px;
-  mask:
-    radial-gradient(circle 9px at 100% 0, #0000 98%, #000) top / 100% 51% no-repeat,
-    radial-gradient(circle 9px at 100% 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
-}
-
-.ticket-body small {
-  font-family: var(--font-ticket), monospace;
-  font-size: 0.75rem;
-}
-
-.ticket-body strong {
-  font-family: var(--font-display), sans-serif;
-  font-weight: 900;
-  font-stretch: 125%;
-  font-size: 1.5rem;
-  line-height: 1.05;
-  text-transform: uppercase;
-}
-
-.ticket-stub {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 6rem;
-  background: var(--dome-950);
-  color: var(--lilac);
-  font-weight: 600;
-  font-size: 1.375rem;
-  border-left: 2px dashed var(--lilac);
-  border-radius: 0 6px 6px 0;
-  mask:
-    radial-gradient(circle 9px at 0 0, #0000 98%, #000) top / 100% 51% no-repeat,
-    radial-gradient(circle 9px at 0 100%, #0000 98%, #000) bottom / 100% 51% no-repeat;
-  transition: transform 0.45s var(--ease-out);
-  transform-origin: 0 100%;
-}
-
-.ticket:hover .ticket-stub {
-  transform: translateX(5px) rotate(2.5deg);
-}
-
 /* Hero */
 .hero {
   position: relative;
@@ -289,7 +179,7 @@ a.origin:hover {
 }
 
 .arc-wide text {
-  font-size: 122px;
+  font-size: 88px;
 }
 
 .arc-narrow {
@@ -297,49 +187,43 @@ a.origin:hover {
 }
 
 .arc-narrow text {
-  font-size: 33px;
+  font-size: 24px;
 }
 
 .hero .hero-copy {
-  position: absolute;
-  left: 50%;
-  top: calc(3.5rem + min(19vw, 30vh));
-  width: min(40rem, calc(100% - 2 * var(--gutter)));
-  transform: translateX(-50%);
-  text-align: center;
-  text-wrap: balance;
-  font-size: clamp(1.0625rem, 1.7vw, 1.5rem);
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
   line-height: 1.35;
-  margin: 0;
-  max-width: none;
+  text-wrap: balance;
 }
 
-.hero-projector {
+.hero-lede {
+  max-width: 26rem;
+}
+
+/* The copy sits over the ground, whose colours vary, so it brings its own */
+.live .hero-lede {
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  background: rgb(18 7 46 / 0.72);
+}
+
+.hero-rocket {
   position: absolute;
   left: 50%;
-  bottom: 12%;
-  width: min(22rem, 40vh);
+  bottom: 26%;
+  width: min(9rem, 20vh);
   transform: translateX(-50%);
 }
 
-.live .hero-projector,
-.live .hero-seats,
-.live .plan {
+.live .hero-rocket {
   display: none;
-}
-
-.hero-seats {
-  position: absolute;
-  inset: auto 0 0;
-  width: 100%;
-  height: 32%;
 }
 
 .hero-action {
   position: absolute;
   inset: auto var(--gutter) calc(var(--bar-gap) + 1.75rem);
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
   gap: 1.5rem;
 }
@@ -357,34 +241,273 @@ a.origin:hover {
   margin-bottom: 0.375rem;
 }
 
-/* Seat plan */
-.plan-art {
+/* Flight log: a strip of film. Each stop is a print with its contact strip, and its notes beside it */
+.kicker {
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.log-track {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.log-stop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 0.875rem;
+  border-radius: 4px;
+  background: var(--dome-950);
+}
+
+.log-print {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: radial-gradient(circle at 30% 25%, var(--violet-bright), var(--dome-700) 55%, var(--dome-900));
+}
+
+.log-print img,
+.log-thumb img {
+  object-fit: cover;
+}
+
+.log-empty {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.log-empty small {
   display: block;
-  width: min(44rem, 100%);
-  height: auto;
-  margin-inline: auto;
+  margin-bottom: 0.375rem;
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.6875rem;
 }
 
-.plan {
-  padding: 0 var(--gutter);
+.log-develop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--violet), var(--dome-950));
+  opacity: 0;
+  pointer-events: none;
 }
 
-.plan-seat {
-  fill: var(--lilac);
+.log-contact {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
 }
 
-.plan-open {
-  fill: none;
-  stroke: var(--lilac);
-  stroke-width: 2.5;
-  stroke-dasharray: 5 4;
-  animation: seat-open 1.6s ease-in-out infinite alternate;
+.log-thumb {
+  position: relative;
+  width: 3.25rem;
+  height: 2.4375rem;
+  overflow: hidden;
+  border: 2px solid rgb(239 230 255 / 0.35);
+  border-radius: 2px;
+  background: var(--dome-700);
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
 
-@keyframes seat-open {
-  to {
-    opacity: 0.35;
-  }
+.log-thumb:hover,
+.log-thumb[aria-pressed="true"] {
+  border-color: var(--lilac);
+}
+
+.log-notes small {
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.75rem;
+}
+
+.log-notes h3 {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-stretch: 110%;
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.1;
+  margin-top: 0.5rem;
+}
+
+.beat .log-notes p {
+  font-size: 1rem;
+  margin-top: 0.625rem;
+}
+
+.log-went strong {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+/* Axie, after landing */
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  width: min(30rem, 100%);
+  margin-top: 1rem;
+  padding: 0.875rem;
+  border: 1px solid rgb(239 230 255 / 0.5);
+  border-radius: 10px;
+  background: rgb(18 7 46 / 0.86);
+  text-shadow: none;
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.125rem;
+}
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 10.5rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.beat .chat-line {
+  max-width: 85%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.chat-axie {
+  align-self: flex-start;
+  background: var(--dome-700);
+}
+
+.chat-you {
+  align-self: flex-end;
+  background: var(--lilac);
+  color: var(--dome-950);
+}
+
+.chat-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.chat-suggest button {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgb(169 180 255 / 0.7);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chat-suggest button:hover {
+  background: var(--dome-700);
+}
+
+.chat-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgb(239 230 255 / 0.5);
+  border-radius: 6px;
+  background: var(--dome-900);
+}
+
+.chat-form input::placeholder {
+  color: rgb(239 230 255 / 0.7);
+}
+
+.chat-form button {
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 6px;
+  background: var(--lilac);
+  color: var(--dome-950);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Crew manifest */
+.crew-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.crew-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgb(239 230 255 / 0.5);
+  border-radius: 6px;
+  background: rgb(18 7 46 / 0.6);
+  text-shadow: none;
+}
+
+.crew-pending {
+  border-style: dashed;
+}
+
+.crew-patch {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid var(--peri);
+  border-radius: 50%;
+  outline: 1px dashed var(--orchid);
+  outline-offset: 2px;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-size: 0.9375rem;
+}
+
+.crew-card strong,
+.crew-card small {
+  display: block;
+}
+
+.crew-card strong {
+  line-height: 1.2;
+}
+
+.crew-card small {
+  margin-top: 0.125rem;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+.crew-card .origin {
+  margin-top: 0.375rem;
 }
 
 /* Programme sheet */
@@ -444,14 +567,22 @@ a.origin:hover {
   font-size: 0.9375rem;
 }
 
-#join .ticket {
+.join-link {
   justify-self: center;
-  width: min(30rem, 100%);
-  min-height: 10rem;
+  padding: 1rem 3.5rem;
+  border-radius: 6px;
+  background: var(--lilac);
+  color: var(--dome-900);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  text-decoration: none;
+  transition: background 0.2s;
 }
 
-#join .ticket-body strong {
-  font-size: clamp(1.625rem, 2.6vw, 2.25rem);
+.join-link:hover {
+  background: #fff;
 }
 
 .foot {
@@ -476,7 +607,7 @@ a.origin:hover {
 
 .live #story {
   background: none;
-  height: 1100lvh;
+  height: 1375lvh;
 }
 
 .live .stage {
@@ -521,18 +652,12 @@ a.origin:hover {
   pointer-events: none;
 }
 
-.live .beat:not(.hero),
-.live .nav-join,
-.live .pointer {
+.live .beat:not(.hero) {
   opacity: 0;
 }
 
-.live .beat[data-active] a {
+.live .beat[data-active] :is(a, button, input, .chat-log) {
   pointer-events: auto;
-}
-
-.live .nav-join:focus-visible {
-  opacity: 1 !important;
 }
 
 .live .hero {
@@ -564,6 +689,12 @@ a.origin:hover {
   max-width: 62rem;
 }
 
+/* The constellation is the picture here, so the copy stays small and under it */
+.live .at-bottom h2 {
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  font-stretch: 110%;
+}
+
 .live .at-bottom {
   justify-content: flex-end;
 }
@@ -587,12 +718,90 @@ a.origin:hover {
   text-align: right;
 }
 
-.live .pointer {
-  display: block;
+.live .log {
+  padding-inline: 0;
+  padding-bottom: calc(var(--bar-gap) + 4.75rem);
+  justify-content: space-between;
+}
+
+.live .log h2 {
+  padding-inline: var(--gutter);
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+}
+
+/* Wider than the screen because it is tilted, and its corners would otherwise show */
+.live .log-window {
+  width: 110vw;
+  margin-left: -5vw;
+  rotate: -1.4deg;
+  perspective: 1400px;
+}
+
+/* Wide padding either side, so the first and last stops can each rest at the centre of the screen */
+.live .log-track {
+  --stop: min(52rem, 84vw);
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: max-content;
+  margin: 0;
+  padding: 1.75rem calc(55vw - var(--stop) / 2);
+  background: #0a031f;
+  transform-style: preserve-3d;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+}
+
+/* The sprocket holes along both edges of the film */
+.live .log-track::before,
+.live .log-track::after {
+  content: "";
   position: absolute;
-  left: 0;
-  top: 50%;
-  width: clamp(4rem, 7vw, 7rem);
+  inset-inline: 0;
+  height: 0.75rem;
+  background: repeating-linear-gradient(to right, rgb(239 230 255 / 0.8) 0 0.875rem, transparent 0.875rem 2rem);
+}
+
+.live .log-track::before {
+  top: 0.5rem;
+}
+
+.live .log-track::after {
+  bottom: 0.5rem;
+}
+
+.live .log-stop {
+  flex: none;
+  width: var(--stop);
+}
+
+.live .log-print {
+  max-height: 40lvh;
+}
+
+.live .chat-beat {
+  justify-content: center;
+}
+
+.live .chat-beat h2 {
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+}
+
+.live .chat {
+  width: min(30rem, 42vw);
+}
+
+.live .crew {
+  justify-content: center;
+  padding-right: 42vw;
+}
+
+.live .crew h2 {
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+}
+
+.live .crew-card {
+  pointer-events: none;
 }
 
 .live .signal-pulse {
@@ -606,27 +815,6 @@ a.origin:hover {
   border: 2px solid var(--peri);
   border-radius: 50%;
   opacity: 0;
-}
-
-.live .seat-fly {
-  pointer-events: auto;
-  width: min(23rem, 100%);
-  translate: calc(var(--fly-x, 0px) * var(--t, 0)) calc(var(--fly-y, 0px) * var(--t, 0));
-  scale: calc(1 - 0.8 * var(--t, 0));
-}
-
-.live .at-plan {
-  justify-content: center;
-  text-shadow: none;
-}
-
-.seat-fly {
-  margin-top: 1.5rem;
-}
-
-.live .at-plan h2,
-.live .at-plan p {
-  max-width: 38vw;
 }
 
 .live .cues {
@@ -718,10 +906,6 @@ a.origin:hover {
     display: block;
   }
 
-  .hero .hero-copy {
-    top: calc(3.5rem + 46vw);
-  }
-
   .hero-action {
     flex-direction: column;
     align-items: stretch;
@@ -732,8 +916,93 @@ a.origin:hover {
     font-size: 1.125rem;
   }
 
-  .hero-seats {
-    height: 26%;
+  .live .crew {
+    justify-content: flex-start;
+    padding-right: var(--gutter);
+  }
+
+  .live .crew-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .live .crew-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+    padding: 0.5rem;
+  }
+
+  .live .crew-patch {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.75rem;
+  }
+
+  .live .crew-card strong {
+    font-size: 0.875rem;
+  }
+
+  .live .crew-card small {
+    font-size: 0.75rem;
+  }
+
+  .live .log {
+    padding-bottom: calc(var(--bar-gap) + 6.75rem);
+  }
+
+  .log-stop {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .live .log-print {
+    aspect-ratio: 16 / 9;
+    max-height: 24lvh;
+  }
+
+  /* On a phone the strip sits on the print, which leaves the notes the room */
+  .live .log-frame {
+    position: relative;
+  }
+
+  .live .log-contact {
+    position: absolute;
+    left: 0.375rem;
+    bottom: 0.375rem;
+    margin: 0;
+  }
+
+  .live .log-thumb {
+    width: 2.25rem;
+    height: 1.75rem;
+  }
+
+  .beat .log-notes p {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+
+  .log-notes h3 {
+    font-size: 1.125rem;
+    margin-top: 0.25rem;
+  }
+
+  .log-went strong {
+    font-size: 1.5rem;
+  }
+
+  .live .chat-beat {
+    justify-content: flex-end;
+  }
+
+  .live .chat {
+    width: 100%;
+    margin-top: 0.625rem;
+  }
+
+  .chat-log {
+    height: 8.5rem;
   }
 
   .live .beat {
@@ -744,7 +1013,7 @@ a.origin:hover {
     display: block;
     position: absolute;
     inset: 45% 0 0;
-    background: linear-gradient(to top, rgb(18 7 46 / 0.82) 40%, rgb(18 7 46 / 0));
+    background: linear-gradient(to top, rgb(47 18 117 / 0.85) 40%, rgb(47 18 117 / 0));
     opacity: 0;
     pointer-events: none;
   }
@@ -761,9 +1030,7 @@ a.origin:hover {
   }
 
   .live .world h2,
-  .live .world p,
-  .live .at-plan h2,
-  .live .at-plan p {
+  .live .world p {
     max-width: none;
   }
 
@@ -775,22 +1042,6 @@ a.origin:hover {
   .live .at-end {
     align-items: flex-start;
     text-align: left;
-  }
-
-  .live .signal-pulse {
-    left: 40%;
-    top: 26%;
-  }
-
-  .live .at-plan {
-    justify-content: flex-start;
-  }
-
-  .live .seat-fly {
-    position: absolute;
-    margin: 0;
-    inset: auto var(--gutter) calc(var(--bar-gap) + 7rem);
-    width: auto;
   }
 
   .brand span {
@@ -813,13 +1064,7 @@ a.origin:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticket,
-  .ticket-stub,
   .cue-dot::before {
     transition: none;
-  }
-
-  html:not(.live) .plan-open {
-    animation: none;
   }
 }
