@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Lights Down</title>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@150,900&family=Hanken+Grotesk:wght@400;600&family=Martian+Mono:wdth,wght@75,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1440px;height:900px;overflow:hidden;background:#1a0b3d;color:#efe6ff;font-family:'Hanken Grotesk',sans-serif}
+.dome{position:absolute;inset:0;background:radial-gradient(ellipse 120% 105% at 50% 118%,#7c3aed 0%,#5b21d6 26%,#2f1275 52%,#1a0b3d 78%)}
+.stars{position:absolute;inset:0;opacity:.85;background-image:
+radial-gradient(1.5px 1.5px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 24% 9%,#fff,transparent),radial-gradient(2px 2px at 33% 31%,#e9d5ff,transparent),radial-gradient(1px 1px at 41% 14%,#fff,transparent),radial-gradient(1.5px 1.5px at 56% 7%,#fff,transparent),radial-gradient(2px 2px at 67% 26%,#fff,transparent),radial-gradient(1px 1px at 74% 12%,#e9d5ff,transparent),radial-gradient(1.5px 1.5px at 88% 28%,#fff,transparent),radial-gradient(1px 1px at 6% 41%,#fff,transparent),radial-gradient(1px 1px at 94% 44%,#fff,transparent)}
+nav{position:absolute;top:32px;left:48px;right:48px;display:flex;justify-content:space-between;align-items:center;font-size:15px}
+nav ul{display:flex;gap:32px;list-style:none;padding:0}
+.brand{font-weight:600;font-size:15px}
+svg.title{position:absolute;left:0;top:70px;width:1440px;height:430px}
+svg.title text{font-family:'Anybody',sans-serif;font-weight:900;font-stretch:150%;fill:#efe6ff;font-size:118px}
+.sub{position:absolute;left:50%;top:276px;transform:translateX(-50%);width:640px;text-align:center;font-size:24px;line-height:1.35}
+.proj{position:absolute;left:50%;top:372px;transform:translateX(-50%);width:300px;height:360px}
+.beam{position:absolute;left:50%;top:0;width:900px;height:520px;transform:translateX(-50%);background:conic-gradient(from 150deg at 50% 86%,transparent 0 12deg,rgba(192,132,252,.28) 30deg,transparent 60deg);pointer-events:none}
+.seats{position:absolute;left:0;bottom:0;width:1440px;height:290px}
+.ticket{position:absolute;right:72px;bottom:64px;width:360px;height:172px;background:#efe6ff;color:#1a0b3d;border-radius:6px;transform:rotate(-3deg);display:grid;grid-template-columns:1fr 104px;box-shadow:0 18px 50px rgba(10,0,40,.55)}
+.ticket .l{padding:18px 20px;border-right:2px dashed #7c3aed}
+.ticket b{display:block;font-family:'Anybody',sans-serif;font-weight:900;font-stretch:150%;font-size:34px;line-height:1;margin-top:10px}
+.ticket small{font-family:'Martian Mono',monospace;font-size:12px}
+.ticket .r{background:#5b21d6;color:#fff;border-radius:0 6px 6px 0;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:22px}
+.cue{position:absolute;left:48px;bottom:64px;width:320px;font-size:16px;line-height:1.4}
+.cue strong{display:block;font-size:24px;line-height:1.2;margin-bottom:8px}
+</style></head><body>
+<div class="dome"></div><div class="stars"></div><div class="beam"></div>
+<nav><span class="brand">Cisco NetConnect PUP - Manila</span><ul><li>The show</li><li>Focus areas</li><li>The launch</li><li>Join</li></ul></nav>
+<svg class="title" viewBox="0 0 1440 430"><defs><path id="arc" d="M40 330 Q720 -70 1400 330"/></defs><text text-anchor="middle"><textPath href="#arc" startOffset="50%">NETCONNECT</textPath></text></svg>
+<p class="sub">A student community at PUP - Manila for networking, cybersecurity, data analytics and IoT.</p>
+<svg class="proj" viewBox="0 0 300 360" aria-hidden="true">
+<circle cx="70" cy="90" r="62" fill="#a9b4ff"/><circle cx="230" cy="90" r="62" fill="#a9b4ff"/><rect x="60" y="76" width="180" height="30" fill="#efe6ff"/><circle cx="58" cy="70" r="6" fill="#fff"/><circle cx="92" cy="64" r="5" fill="#fff"/><circle cx="218" cy="72" r="6" fill="#fff"/><circle cx="246" cy="104" r="5" fill="#fff"/><rect x="134" y="104" width="32" height="170" fill="#c084fc"/><path d="M78 360 L134 262 L166 262 L222 360 Z" fill="#7c3aed"/>
+</svg>
+<svg class="seats" viewBox="0 0 1440 290" aria-hidden="true"><g fill="none" stroke="#150832" stroke-width="44" stroke-dasharray="46 10"><path d="M-40 270 Q720 60 1480 270"/><path d="M-40 350 Q720 150 1480 350"/></g><path d="M-40 390 Q720 220 1480 390 L1480 400 L-40 400Z" fill="#150832"/></svg>
+<div class="cue"><strong>The lights are about to go down.</strong>Scroll to start the show.</div>
+<a class="ticket"><div class="l"><small>ROW A / SEAT 55</small><b>ADMIT ONE STUDENT</b></div><div class="r">Join</div></a>
+</body></html>
