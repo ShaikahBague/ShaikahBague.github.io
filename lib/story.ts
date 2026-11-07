@@ -38,24 +38,26 @@ const shot = ([along, across, y]: Point, [aimAlong, aimAcross, aimY]: Point) => 
 export const SHOTS = {
   land: {
     hq: shot([25, -7, -0.6], [8, 0.5, 2.8]),
-    walk: shot([20, 5.5, -0.4], [3, 0, -0.2]),
-    board: shot([12.5, 3, 1.4], [0, 0, 2.6]),
+    // All from this side of the door line, because that's the side the bridge can be seen past
+    walk: shot([22, -4.5, -0.4], [3, -0.5, 0.4]),
+    board: shot([12.5, -3, 1.4], [0, 0, 2.6]),
     launch: { cx: 0, cy: -1, cz: 36, lx: 0, ly: 4, lz: 0 },
     liftoff: { cx: 0, cy: 8, cz: 34, lx: 0, ly: 28, lz: -4 },
     door: shot([13, 0, 0.4], [0, 0, 0]),
     doorBack: shot([25, 0, 6.5], [4, 0, -1]),
-    chat: shot([21, -2.2, -0.9], [8, 0.6, 0.4]),
+    // Low and square on to Axie, who stands dead centre above the chat with the rocket and the bridge either side
+    chat: shot([20.7, -6.17, -2.1], [14, 0, -1.98]),
   },
   port: {
-    hq: shot([32, -3.5, -0.2], [6, 2, 0.9]),
-    walk: shot([24, 4.5, -0.2], [3, 0, 0]),
-    board: shot([19, 3, 1.2], [0, 0, 2.4]),
+    // Pulled wide with side, which is what a phone needs to fit the rocket, Axie and the bridge across its narrow view
+    hq: { ...shot([35.2, -11.07, -0.2], [8.4, 2.54, 1.6]), side: 0.5 },
+    walk: shot([29.5, -8.94, -0.2], [3.73, 2.46, 1.2]),
+    board: shot([17, -8.6, 1.2], [0, 0, 2.4]),
     launch: { cx: 0, cy: -1, cz: 48, lx: 0, ly: 6, lz: 0 },
     liftoff: { cx: 0, cy: 8, cz: 46, lx: 0, ly: 30, lz: -4 },
     door: shot([18, 0, 0.4], [0, 0, 0]),
     doorBack: shot([34, 0, 8], [4, 0, -1]),
-    // Aimed low with the view shifted up, so Axie stands above the chat panel that fills the bottom of a phone
-    chat: shot([24, -1, 0.2], [14, -0.4, -2.5]),
+    chat: shot([20.7, -6.17, -2.1], [14, 0, -1.98]),
   },
 };
 
@@ -108,18 +110,39 @@ export const SCREENS_PER_UNIT = 1.3;
 // Where each story beat rests on the scroll timeline; one unit is SCREENS_PER_UNIT screens of scrolling
 export const AT = {
   house: 0,
-  liftoff: 2.85,
-  signal: 3.85,
-  links: 4.75,
-  enterprise: 5.75,
-  cyberops: 6.75,
-  devnet: 7.75,
-  log: 8.85,
-  crew: 12.95,
-  home: 16.9,
-  chat: 19.45,
-  end: 21.55,
+  liftoff: 3.64,
+  signal: 4.64,
+  links: 5.54,
+  enterprise: 6.54,
+  cyberops: 7.54,
+  devnet: 8.54,
+  log: 9.64,
+  crew: 14.74,
+  home: 17.39,
+  chat: 19.74,
+  end: 21.84,
 };
+
+// How long Axie's walk across the plaza takes on the timeline. Few long strides cover the distance quickly, while their legs stay at a walking pace even at CRUISE
+export const WALK_TIME = 1.6;
+export const WALK_CYCLES = 4;
+
+// Axie adrift on a planet at a given moment, with nothing holding them down: a slow wander in place, a lean and a look around. The speeds
+// share no common beat, so the drift never visibly repeats, and all of it stays slow because fast camera-sized motion makes people dizzy
+export const floatAt = (time: number) => ({
+  x: Math.sin(time * 0.13) * 3 + Math.sin(time * 0.31 + 1) * 0.8,
+  y: Math.sin(time * 0.19 + 2) * 1.8 + Math.sin(time * 0.43) * 0.5,
+  roll: Math.sin(time * 0.17) * 0.28,
+  pitch: Math.sin(time * 0.23 + 1) * 0.16,
+  yaw: Math.sin(time * 0.11 + 3) * 0.42,
+});
+
+// The air inside each planet, in the order of the worlds. The first colours are its sky from overhead down to the horizon
+export const ATMOSPHERES = [
+  { top: "#03313a", low: "#57d8bb", ground: ["#10605c", "#39b896"], moon: "#dcfff2", accent: "#8df5d9", moonAt: [0.36, 0.34, -0.87], relief: 30, seed: 3 },
+  { top: "#2c0515", low: "#ee4f66", ground: ["#5e1229", "#b92f48"], moon: "#ffdccb", accent: "#ff9aa2", moonAt: [0.38, 0.28, -0.88], relief: 20, seed: 7 },
+  { top: "#2d1303", low: "#ffae45", ground: ["#7a4210", "#d18a2a"], moon: "#fff1cb", accent: "#ffd08a", moonAt: [0.34, 0.4, -0.85], relief: 34, seed: 11 },
+];
 
 // The page can outrun the capped camera, so it waits at the chat until Axie has got there and had a moment to say hello
 const CHAT_HOLD = 1.5;
@@ -137,26 +160,48 @@ export function followStep(now: number, target: number, dt: number) {
   return now + Math.max(-most, Math.min(most, gap * (1 - Math.exp(-dt * 2.5))));
 }
 
-// The shapes the years' constellations take, newest year first, in percent of the chart. Each runs left to right, so a phone can
-// stack the same stars down the screen in order. More years than shapes start over
-const CHART_SHAPES = [
-  [[5, 70], [22, 20], [40, 72], [58, 22], [76, 70], [92, 28]],
-  [[5, 22], [22, 72], [40, 34], [58, 80], [76, 38], [92, 72]],
-  [[5, 16], [23, 54], [41, 28], [59, 72], [77, 46], [92, 84]],
-];
+// How far a star strays from the middle of its cell. Sideways is kept small, because a label is as wide as a cell allows
+export const STAR_DRIFT = 0.1;
 
-// Where each officer's star goes: evenly spaced along the year's shape, so any number of officers fits
-export function starChart(year: number, count: number) {
-  const shape = CHART_SHAPES[year % CHART_SHAPES.length];
-  const legs = shape.slice(1).map(([x, y], i) => Math.hypot(x - shape[i][0], y - shape[i][1]));
-  const total = legs.reduce((sum, leg) => sum + leg, 0);
-  return Array.from({ length: count }, (_, star) => {
-    let along = count > 1 ? (star / (count - 1)) * total : 0;
-    let leg = 0;
-    while (leg < legs.length - 1 && along > legs[leg]) along -= legs[leg++];
-    const [x, y] = shape[leg].map((value, axis) => value + (shape[leg + 1][axis] - value) * (along / legs[leg]));
-    return [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
+// A year's constellation for any head count, in percent of the chart. Each officer owns a cell of a staggered grid, which keeps labels
+// apart however many there are, and drifts inside it so the grid doesn't read as one. The year seeds the drift, so each year has
+// its own shape and the server and browser draw the same one. Links are the shortest set joining every star, grown outward from
+// the first, so lines never cross. `order` holds each star's place in that growth, for lighting them up in turn
+export function starChart(year: number, count: number, wide: boolean) {
+  const cols = wide ? Math.min(8, Math.max(2, Math.round(Math.sqrt(count * 1.6)))) : count > 16 ? 3 : 2;
+  const rows = Math.ceil(count / cols);
+  let seed = (year * 7919) % 2147483647;
+  const drift = () => (seed = (seed * 16807) % 2147483647) / 2147483647 - 0.5;
+  const tenth = (value: number) => Math.round(value * 10) / 10;
+  const stars = Array.from({ length: count }, (_, i) => {
+    const row = Math.floor(i / cols);
+    const inRow = Math.min(cols, count - row * cols);
+    // Every other row sits half a cell over, and a short last row centres itself
+    const across = (i % cols) + 0.5 + (row % 2) * 0.5 + (cols - inRow) / 2 + drift() * STAR_DRIFT * 2;
+    const down = row + 0.34 + drift() * 0.28;
+    return [tenth((across / (cols + 0.5)) * 100), tenth((down / rows) * 100)];
   });
+
+  const apart = (a: number, b: number) => Math.hypot(((stars[a][0] - stars[b][0]) * (cols + 0.5)) / 100, ((stars[a][1] - stars[b][1]) * rows * 0.8) / 100);
+  const order = stars.map(() => -1);
+  const links: [number, number][] = [];
+  if (count) order[0] = 0;
+  while (links.length < count - 1) {
+    let best: [number, number] = [0, 0];
+    let shortest = Infinity;
+    order.forEach((lit, from) => {
+      if (lit < 0) return;
+      order.forEach((other, to) => {
+        if (other < 0 && apart(from, to) < shortest) {
+          shortest = apart(from, to);
+          best = [from, to];
+        }
+      });
+    });
+    links.push(best);
+    order[best[1]] = links.length;
+  }
+  return { stars, links, order, cols, rows };
 }
 
 export const ROCK_DEPTH = 30;
@@ -205,6 +250,9 @@ export const initialSky = () => ({
   sat: 0,
   links: 0,
   shell: 0,
+  // Which planet the visitor went down to, and how far: 0 in orbit, 0.5 passing through its air, 1 on the ground
+  planet: 0,
+  inside: 0,
 });
 
 export type SkyState = ReturnType<typeof initialSky>;

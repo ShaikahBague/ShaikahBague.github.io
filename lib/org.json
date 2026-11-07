@@ -1,0 +1,549 @@
+{
+  "departments": [
+    {
+      "id": "enterprise",
+      "name": "Enterprise Networking",
+      "line": "Configuring, troubleshooting and managing the networks of the largest companies in the world, across enterprise infrastructure, assurance and security.",
+      "covers": [
+        "Enterprise infrastructure",
+        "Virtualization",
+        "Network assurance",
+        "Network security",
+        "Network automation and AI",
+        "Quality of Service"
+      ],
+      "source": {
+        "name": "CCNP Enterprise",
+        "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/index.html"
+      },
+      "leads": [
+        {
+          "name": "James Magpantay",
+          "role": "Vice Chief Technology Officer - Enterprise Networking"
+        },
+        {
+          "name": "James Patrick Isidro",
+          "role": "Enterprise Networking Lead"
+        },
+        {
+          "name": "Jian Christian Cora",
+          "role": "Enterprise Networking Co-Lead"
+        },
+        {
+          "name": "Charles Terrenal",
+          "role": "Enterprise Networking Co-Lead"
+        },
+        {
+          "name": "Carl Blancaflor",
+          "role": "Enterprise Networking Co-Lead"
+        },
+        {
+          "name": "Karl Romero",
+          "role": "Enterprise Networking Co-Lead"
+        }
+      ]
+    },
+    {
+      "id": "cyberops",
+      "name": "Cybersecurity Operations",
+      "line": "Essential cybersecurity skills, concepts and technologies, including security monitoring, analysis and response.",
+      "covers": [
+        "Security concepts",
+        "Security monitoring",
+        "Host-based analysis",
+        "Network intrusion analysis",
+        "Security policies and procedures"
+      ],
+      "source": {
+        "name": "CCNA Cybersecurity",
+        "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/cyberops/cyberops-associate/index.html"
+      },
+      "leads": [
+        {
+          "name": "Emmanuel Mutas",
+          "role": "Vice Chief Technology Officer - Cybersecurity Operations"
+        },
+        {
+          "name": "Jef Lecias",
+          "role": "Cybersecurity Operations Lead"
+        },
+        {
+          "name": "Jared Tiu",
+          "role": "Cybersecurity Operations Co-Lead"
+        },
+        {
+          "name": "JD Angelo Soon",
+          "role": "Cybersecurity Operations Co-Lead"
+        },
+        {
+          "name": "Marjoy Caranto",
+          "role": "Cybersecurity Operations Co-Lead"
+        }
+      ]
+    },
+    {
+      "id": "devnet",
+      "name": "Development Networking",
+      "line": "Streamlining network, security, collaboration and computing systems through software development and design, APIs and automation.",
+      "covers": [
+        "Software design and development",
+        "Understanding and using APIs",
+        "Application deployment and security",
+        "Scripting and unit testing",
+        "Workflow automation",
+        "Infrastructure as code"
+      ],
+      "source": {
+        "name": "CCNA Automation",
+        "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/automation/ccna-automation/index.html"
+      },
+      "leads": [
+        {
+          "name": "Miel Gagolinan",
+          "role": "Vice Chief Technology Officer - Development Networking"
+        },
+        {
+          "name": "John Justin Lorenzo",
+          "role": "Development Networking Lead"
+        },
+        {
+          "name": "Jasper Mathieu Geli",
+          "role": "Development Networking Co-Lead"
+        },
+        {
+          "name": "Ezekiel Bustamante",
+          "role": "Development Networking Co-Lead"
+        },
+        {
+          "name": "Mikyla Batad",
+          "role": "Development Networking Co-Lead"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "when": "September 28, 2026",
+      "short": "Stellaris Ascensus",
+      "title": "Stellaris Ascensus: General Onboarding 2026",
+      "note": "The org’s members came aboard at White Cloak Technologies. Talks ran from networking as the fundamental “must have” to why throwing money at a problem isn’t engineering, and speakers received certificates of appreciation.",
+      "photos": [
+        { "src": "/events/stellaris-group.webp", "alt": "Everyone together under the White Cloak sign" },
+        { "src": "/events/stellaris-audience.webp", "alt": "A speaker gets the room’s hands up" },
+        { "src": "/events/stellaris-networking.webp", "alt": "A talk on networking, the fundamental “must have”" },
+        { "src": "/events/stellaris-engineering.webp", "alt": "On screen: “Throwing money at a problem isn’t engineering.”" },
+        { "src": "/events/stellaris-certificates.webp", "alt": "Two speakers with their certificates of appreciation" },
+        { "src": "/events/stellaris-room.webp", "alt": "The lounge at White Cloak, with the onboarding title on screen" },
+        { "src": "/events/stellaris-crew.webp", "alt": "Peace signs for the camera" },
+        { "src": "/events/stellaris-title.webp", "alt": "The title slide: Stellar Bound, Stars Syncing" }
+      ],
+      "confirmed": true
+    },
+    {
+      "when": "October 2026",
+      "short": "Packet Capture",
+      "title": "Packet Capture CTF: Beneath the Network",
+      "note": "The org co-organized this capture the flag with CyberPH, where players dig through security challenges for hidden flags. Here is everyone together at kick off, before the hunting began.",
+      "photos": [
+        { "src": "/events/packet-kickoff.webp", "alt": "Everyone together at kick off" }
+      ],
+      "confirmed": true
+    },
+    {
+      "when": "October 2026",
+      "short": "ECEGA",
+      "title": "The Schematic Sandbox: ECEGA 2026",
+      "note": "The general assembly of Electronics Engineering Students, and the org went to meet them. A table with its banner, QR codes and copies of Prosple’s Top 100 Employers for Fresh Graduates introduced the org to the students in the hall.",
+      "photos": [
+        { "src": "/events/ecega-booth.webp", "alt": "The org’s table, with its banner and QR codes" },
+        { "src": "/events/ecega-hall.webp", "alt": "The hall during ECE Got Talent" },
+        { "src": "/events/ecega-prosple.webp", "alt": "Prosple’s Top 100 Employers for Fresh Graduates, held up in the hall" },
+        { "src": "/events/ecega-group.webp", "alt": "A group all making the same hand sign" },
+        { "src": "/events/ecega-table.webp", "alt": "Three members in maroon, lanyards on" },
+        { "src": "/events/ecega-members.webp", "alt": "Four members close up to the camera" },
+        { "src": "/events/ecega-floor.webp", "alt": "Thumbs up from the crowd" }
+      ],
+      "confirmed": true
+    },
+    {
+      "when": "October 2026",
+      "short": "Enterprise Networking",
+      "title": "Enterprise Networking Onboarding 2026",
+      "note": "Enterprise networking cadets met online, 101 on the call, and were introduced to the curriculum. One topic mapped the careers it can lead to, from network support specialist up to network operations manager.",
+      "photos": [
+        { "src": "/events/entnet-careers.webp", "alt": "The Careers in Networking slide, from entry level up to senior" }
+      ],
+      "confirmed": true
+    },
+    {
+      "when": "October 2026",
+      "short": "Development Networking",
+      "title": "Development Networking Onboarding 2026",
+      "note": "Development networking cadets filled a Google Meet, 49 on the call, to be onboarded and introduced to the curriculum. Hearts were floating up the grid by the time this was taken.",
+      "photos": [
+        { "src": "/events/devnet-call.webp", "alt": "The Google Meet grid, with 49 on the call" }
+      ],
+      "confirmed": true
+    }
+  ],
+  "crews": [
+    {
+      "year": 2026,
+      "confirmed": true,
+      "officers": [
+        {
+          "name": "Jhered Miguel Republica",
+          "role": "CEO",
+          "confirmed": true
+        },
+        {
+          "name": "Aleckz Villaruz",
+          "role": "VCMP",
+          "confirmed": true
+        },
+        {
+          "name": "Ayesha Zhyrile Infante",
+          "role": "VCOO",
+          "confirmed": true
+        },
+        {
+          "name": "Bianca Dela Cruz",
+          "role": "COO",
+          "confirmed": true
+        },
+        {
+          "name": "Carl Blancaflor",
+          "role": "ENCL",
+          "confirmed": true
+        },
+        {
+          "name": "Carl Erosa",
+          "role": "Technical Specialist",
+          "confirmed": true
+        },
+        {
+          "name": "Charles Terrenal",
+          "role": "ENCL",
+          "confirmed": true
+        },
+        {
+          "name": "Clarisse Jem Salazar",
+          "role": "Cybersecurity Specialist",
+          "confirmed": true
+        },
+        {
+          "name": "David Gabriel",
+          "role": "VCMO",
+          "confirmed": true
+        },
+        {
+          "name": "Emmanuel Mutas",
+          "role": "VCTO",
+          "confirmed": true
+        },
+        {
+          "name": "Ezekiel Bustamante",
+          "role": "DNCL",
+          "confirmed": true
+        },
+        {
+          "name": "Frinhz Quadrae Orillosa",
+          "role": "General Consultant",
+          "confirmed": true
+        },
+        {
+          "name": "James Clark Lopez",
+          "role": "VCAO",
+          "confirmed": true
+        },
+        {
+          "name": "James Magpantay",
+          "role": "VCTO",
+          "confirmed": true
+        },
+        {
+          "name": "James Patrick Isidro",
+          "role": "ENL",
+          "confirmed": true
+        },
+        {
+          "name": "Jared Tiu",
+          "role": "COCL",
+          "confirmed": true
+        },
+        {
+          "name": "Jasper Mathieu Geli",
+          "role": "DNCL",
+          "confirmed": true
+        },
+        {
+          "name": "Jaydie Domalaon",
+          "role": "VCRO",
+          "confirmed": true
+        },
+        {
+          "name": "Jef Lecias",
+          "role": "COL",
+          "confirmed": true
+        },
+        {
+          "name": "Jian Christian Cora",
+          "role": "ENCL",
+          "confirmed": true
+        },
+        {
+          "name": "John Justin Lorenzo",
+          "role": "DNL",
+          "confirmed": true
+        },
+        {
+          "name": "John Victor Duatin",
+          "role": "VCOO",
+          "confirmed": true
+        },
+        {
+          "name": "Karl Romero",
+          "role": "ENCL",
+          "confirmed": true
+        },
+        {
+          "name": "Kyle Tongson",
+          "role": "CTO",
+          "confirmed": true
+        },
+        {
+          "name": "Maria Kristina Cas",
+          "role": "CAO",
+          "confirmed": true
+        },
+        {
+          "name": "Marjoy Caranto",
+          "role": "COCL",
+          "confirmed": true
+        },
+        {
+          "name": "Mark Kenneth Galario",
+          "role": "VCOO",
+          "confirmed": true
+        },
+        {
+          "name": "Mary Ruth Relator",
+          "role": "CRO",
+          "confirmed": true
+        },
+        {
+          "name": "Miel Gagolinan",
+          "role": "VCTO",
+          "confirmed": true
+        },
+        {
+          "name": "Rhea Mae Narag",
+          "role": "VCRO",
+          "confirmed": true
+        },
+        {
+          "name": "Risha Villones",
+          "role": "CMO",
+          "confirmed": true
+        },
+        {
+          "name": "Sandrine Mabaquiao",
+          "role": "VCCO",
+          "confirmed": true
+        },
+        {
+          "name": "JD Angelo Soon",
+          "role": "COCL",
+          "confirmed": true
+        },
+        {
+          "name": "Stella Marie Segubre",
+          "role": "CCO",
+          "confirmed": true
+        },
+        {
+          "name": "Vincent Salvador",
+          "role": "VCAO",
+          "confirmed": true
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "confirmed": true,
+      "officers": [
+        {
+          "name": "Honeylet Igot",
+          "role": "CEO",
+          "confirmed": true
+        },
+        {
+          "name": "Jhered Miguel Republica",
+          "role": "VCEO",
+          "confirmed": true
+        },
+        {
+          "name": "Cathyren Sacatani",
+          "role": "CTO",
+          "confirmed": true
+        },
+        {
+          "name": "Gladwin Ferdz Del Rosario",
+          "role": "VCTO",
+          "confirmed": true
+        },
+        {
+          "name": "Shunrenn Locaylocay",
+          "role": "VCTO",
+          "confirmed": true
+        },
+        {
+          "name": "Emmanuel Mutas",
+          "role": "Cybersecurity Lead",
+          "confirmed": true
+        },
+        {
+          "name": "Kyle Tongson",
+          "role": "Networking Lead",
+          "confirmed": true
+        },
+        {
+          "name": "Albren Naplaza",
+          "role": "OS and IT Lead",
+          "confirmed": true
+        },
+        {
+          "name": "Kian Florendo",
+          "role": "AI and Data Science Lead",
+          "confirmed": true
+        },
+        {
+          "name": "Jade Lazaro",
+          "role": "CCO",
+          "confirmed": true
+        },
+        {
+          "name": "Ethaniel Sales",
+          "role": "CMO",
+          "confirmed": true
+        },
+        {
+          "name": "Carl Erosa",
+          "role": "CAO",
+          "confirmed": true
+        },
+        {
+          "name": "Ezekiel Bustamante",
+          "role": "VCAO",
+          "confirmed": true
+        },
+        {
+          "name": "Mhyca Monterola",
+          "role": "COO",
+          "confirmed": true
+        },
+        {
+          "name": "Aria Aguirre",
+          "role": "VCOO",
+          "confirmed": true
+        },
+        {
+          "name": "Mary Ruth Relator",
+          "role": "CCRO",
+          "confirmed": true
+        },
+        {
+          "name": "Frinhz Quadrae Orillosa",
+          "role": "SME",
+          "confirmed": true
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "confirmed": true,
+      "officers": [
+        {
+          "name": "Fyvie Ann Arriesgado",
+          "role": "CEO",
+          "confirmed": true
+        },
+        {
+          "name": "Honeylet Igot",
+          "role": "VCEO",
+          "confirmed": true
+        },
+        {
+          "name": "Ma. Ruth Abigail Saporne",
+          "role": "CAO",
+          "confirmed": true
+        },
+        {
+          "name": "Cathyren Sacatani",
+          "role": "CFO",
+          "confirmed": true
+        },
+        {
+          "name": "Joshua Louis Bernales",
+          "role": "VCFO",
+          "confirmed": true
+        },
+        {
+          "name": "William Edward Chua",
+          "role": "CSO",
+          "confirmed": true
+        },
+        {
+          "name": "Edison Chouest Sorio",
+          "role": "CPRO",
+          "confirmed": true
+        },
+        {
+          "name": "Dariel Taberara",
+          "role": "CCRO",
+          "confirmed": true
+        },
+        {
+          "name": "Ericka Mejor",
+          "role": "CCO",
+          "confirmed": true
+        },
+        {
+          "name": "John Dave Medenilla",
+          "role": "VCCO",
+          "confirmed": true
+        },
+        {
+          "name": "Nikki Manginsay",
+          "role": "CMO",
+          "confirmed": true
+        },
+        {
+          "name": "Matthew Cucio",
+          "role": "VCMO",
+          "confirmed": true
+        },
+        {
+          "name": "Ellianna Cecilia Principe",
+          "role": "COO",
+          "confirmed": true
+        },
+        {
+          "name": "Jolly Ann Kate Canoy",
+          "role": "VCOO",
+          "confirmed": true
+        },
+        {
+          "name": "Francis Jason Chuaunsu",
+          "role": "Managerial Consultant",
+          "confirmed": true
+        },
+        {
+          "name": "Nehemiah Andrew Dizon",
+          "role": "Brand Consultant",
+          "confirmed": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import test from "node:test";
 import { axieReply, crews, events, worlds } from "./content.ts";
-import { AT, CAMERA_GAP, CRUISE, FLIGHT, followStep, GROUND_Y, holdsAtChat, LOGO_STROKES, MARK, passBy, ROCK_DEPTH, starChart, STOP, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
+import { AT, ATMOSPHERES, CAMERA_GAP, CRUISE, FLIGHT, floatAt, followStep, GROUND_Y, holdsAtChat, LOGO_STROKES, MARK, passBy, ROCK_DEPTH, STAR_DRIFT, starChart, STOP, WALK_CYCLES, WALK_TIME, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
 
 test("the show never outruns its cruising speed on an ordinary scroll, in either direction", () => {
   const dt = 1 / 60;
@@ -73,17 +74,75 @@ test("the crew starts on the current year and runs back to 2024", () => {
   crews.forEach((crew) => assert.ok(crew.officers.length > 0));
 });
 
-test("every officer gets a star on the chart, in order across it, whatever the head count", () => {
-  crews.forEach((_, year) => {
-    [1, 2, 4, 6, 15].forEach((count) => {
-      const stars = starChart(year, count);
-      assert.equal(stars.length, count);
-      stars.forEach(([x, y], i) => {
-        assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100);
-        if (i) assert.ok(x > stars[i - 1][0], "a phone stacks them in this order");
+test("every officer gets a star on the chart with room for their label, whatever the head count", () => {
+  crews.forEach(({ year }) => {
+    [true, false].forEach((wide) => {
+      [1, 2, 4, 6, 15, 40, 80].forEach((count) => {
+        const { stars, cols, rows } = starChart(year, count, wide);
+        assert.equal(stars.length, count);
+        // A label is at most this wide, centred under its star
+        const label = ((1 - STAR_DRIFT * 2) / (cols + 0.5)) * 100;
+        stars.forEach(([x, y], i) => {
+          assert.ok(x - label / 2 >= -0.2 && x + label / 2 <= 100.2, "the label stays on the chart");
+          assert.ok(y >= 0 && y <= 100);
+          if (i % cols && Math.floor(i / cols) === Math.floor((i - 1) / cols)) assert.ok(x - stars[i - 1][0] >= label - 0.2, "neighbours' labels don't touch");
+        });
+        assert.ok(rows * cols >= count);
       });
     });
   });
+});
+
+test("a constellation is joined up in one piece and lights up outward from its first star", () => {
+  [1, 2, 6, 15, 40].forEach((count) => {
+    const { links, order } = starChart(2026, count, true);
+    assert.equal(links.length, count - 1);
+    assert.deepEqual([...order].sort((a, b) => a - b), Array.from({ length: count }, (_, i) => i));
+    links.forEach(([from, to], i) => assert.ok(order[from] <= i && order[to] === i + 1, "a link grows from a star already lit"));
+  });
+});
+
+test("a year always draws the same constellation, and each year draws its own", () => {
+  assert.deepEqual(starChart(2026, 12, true), starChart(2026, 12, true));
+  assert.notDeepEqual(starChart(2026, 12, true).stars, starChart(2025, 12, true).stars);
+});
+
+test("org.json has what the show needs from every event and officer", () => {
+  events.forEach((event) => assert.ok(event.when && event.short && event.title && event.note));
+  events.forEach((event) => {
+    assert.equal(new Set(event.photos.map((photo) => photo.alt)).size, event.photos.length, "a contact strip tells its photos apart by their captions");
+    event.photos.forEach((photo) => assert.ok(!photo.src || existsSync(`public${photo.src}`), `${photo.src} is in public`));
+  });
+  assert.equal(new Set(crews.map((crew) => crew.year)).size, crews.length, "one entry per year");
+  crews.forEach((crew) => crew.officers.forEach((person) => assert.ok(person.name && person.role)));
+});
+
+test("every planet has its own air and knows what it covers, and everyone named as a lead belongs to a real planet", () => {
+  assert.equal(ATMOSPHERES.length, worlds.length);
+  assert.equal(new Set(ATMOSPHERES.map((air) => air.low)).size, worlds.length);
+  worlds.forEach((world) => {
+    assert.ok(world.line && world.covers.length);
+    assert.match(world.source.url, /^https:\/\/www\.cisco\.com\//, "what a department covers says where it came from");
+  });
+  worlds.forEach((world) => {
+    assert.ok(world.leads.length > 0, "each planet says who leads it");
+    world.leads.forEach((person) => assert.ok(person.name && person.role));
+    assert.equal(new Set(world.leads.map((person) => person.name)).size, world.leads.length, "nobody is listed twice on a planet");
+  });
+});
+
+test("adrift on a planet, Axie wanders slowly and stays where the camera can see them", () => {
+  for (let time = 0; time < 600; time += 0.5) {
+    const now = floatAt(time);
+    const soon = floatAt(time + 0.5);
+    assert.ok(Math.abs(now.x) < 4 && Math.abs(now.y) < 2.5, "stays in frame");
+    assert.ok(Math.abs(now.roll) < 0.3 && Math.abs(now.pitch) < 0.2 && Math.abs(now.yaw) < 0.45, "leans, never tumbles");
+    assert.ok(Math.hypot(soon.x - now.x, soon.y - now.y) / 0.5 < 1.1, "drifts rather than darts");
+  }
+});
+
+test("Axie's legs keep to a walking pace at the show's top cruising speed", () => {
+  assert.ok((WALK_CYCLES / WALK_TIME) * CRUISE <= 1.25, "strides a second");
 });
 
 test("the org has three departments, each with a world and a rocket stop in front of it", () => {

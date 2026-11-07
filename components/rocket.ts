@@ -2,6 +2,7 @@ import {
   AdditiveBlending,
   AnimationMixer,
   type AnimationAction,
+  type AnimationClip,
   BackSide,
   BoxGeometry,
   CanvasTexture,
@@ -35,15 +36,15 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { DOOR_DIR, GROUND_Y, RAMP_FOOT, SILL, walkPath, type SkyState } from "@/lib/story";
+import { DOOR_DIR, GROUND_Y, RAMP_FOOT, SILL, WALK_CYCLES, walkPath, type SkyState } from "@/lib/story";
 
 const SCALE = 0.8;
 const CABIN_FLOOR = 1.72;
 const AXIE_SIZE = 1.85;
 const ON_FOOT = 1.4;
+const STRIDE = 1.45;
 // How far below their own centre Axie's feet are when standing on the ground, in world units
 const FEET = 0.56 * AXIE_SIZE * SCALE * ON_FOOT;
-const WALK_CYCLES = 7;
 // Round the hull from the logo, in the gap between a front fin and the back one, so both leaves have room to slide
 const DOOR_ANGLE = (120 * Math.PI) / 180;
 const DOOR_SPAN = 0.86;
@@ -219,7 +220,7 @@ function buildCraft() {
   return { group, flame, flameMaterial, hull, cabinBack, glass, cabinLight, door, lift, liftBeam, hatch };
 }
 
-export function createRocket(low: boolean) {
+export function createRocket(low: boolean, onAxie: (axie: Group, clip: AnimationClip) => void) {
   const { group, flame, flameMaterial, hull, cabinBack, glass, cabinLight, door, lift, liftBeam, hatch } = buildCraft();
   const hullPaint = hull.material as MeshStandardMaterial;
 
@@ -311,9 +312,26 @@ export function createRocket(low: boolean) {
       const clip = gltf.animations[0];
       clipLength = clip.duration;
       clip.tracks = clip.tracks.filter((track) => !track.name.endsWith(".position"));
+      // Longer strides: the legs swing further either side of where they hang, so each step covers the ground it now has to
+      clip.tracks.filter((track) => /[LR]_(Hip|Knee)\.quaternion$/.test(track.name)).forEach(({ values }) => {
+        const hang = new Quaternion();
+        for (let i = 0; i < values.length; i += 4) hang.set(hang.x + values[i], hang.y + values[i + 1], hang.z + values[i + 2], hang.w + values[i + 3]);
+        hang.normalize();
+        const key = new Quaternion();
+        const swing = new Quaternion();
+        for (let i = 0; i < values.length; i += 4) {
+          key.fromArray(values, i);
+          swing.copy(hang).invert().multiply(key);
+          const half = Math.acos(Math.min(1, Math.abs(swing.w)));
+          const stretch = half > 1e-4 ? Math.sin(half * STRIDE) / Math.sin(half) : 1;
+          swing.set(swing.x * stretch, swing.y * stretch, swing.z * stretch, Math.sign(swing.w || 1) * Math.cos(half * STRIDE)).normalize();
+          key.copy(hang).multiply(swing).toArray(values, i);
+        }
+      });
       mixer = new AnimationMixer(axie);
       walk = mixer.clipAction(clip);
       walk.play();
+      onAxie(axie, clip);
     })
     .catch((error) => console.error(error));
 
@@ -337,6 +355,7 @@ export function createRocket(low: boolean) {
   let roll = 0;
   let yaw = DOOR_WORLD;
   let lastOut = 1;
+  let headingOut = false;
 
   return {
     group,
@@ -386,6 +405,7 @@ export function createRocket(low: boolean) {
         let want = yaw;
         if (out > 0.985) want = Math.atan2(camera.position.x - onFoot.x, camera.position.z - onFoot.z);
         else if (Math.abs(moved) > 1e-5) want = moved > 0 ? DOOR_WORLD : DOOR_WORLD + Math.PI;
+        if (Math.abs(moved) > 1e-5) headingOut = moved > 0;
         yaw += Math.atan2(Math.sin(want - yaw), Math.cos(want - yaw)) * (1 - Math.exp(-dt * 6));
         group.updateMatrixWorld();
         pilot.position.copy(group.worldToLocal(onFoot));
@@ -412,7 +432,8 @@ export function createRocket(low: boolean) {
       forearm.quaternion.copy(forearmPose);
       // On the ground the stride is tied to distance, walked or lifted, so feet don't slide and each journey ends on the clip's standing first frame. In flight, it paces with the rocket
       const grounded = outside || ground > 0.5;
-      if (grounded && walk) walk.time = (((outside ? (1 - out) * WALK_CYCLES : climb * 3) % 1) * clipLength);
+      // Stepping out runs the same count from the other end, or the legs would play backward while Axie walks forward. The lift is a slow shuffle, one stride all the way up
+      if (grounded && walk) walk.time = (((outside ? (headingOut ? out : 1 - out) * WALK_CYCLES : climb) % 1) * clipLength);
       mixer.update(grounded ? 0 : dt * (0.25 + speed * 1.6));
       armPose.copy(armRoot.quaternion);
       forearmPose.copy(forearm.quaternion);

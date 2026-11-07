@@ -46,9 +46,11 @@ import {
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import gsap from "gsap";
-import { EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { ATMOSPHERES, EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
 import { buildCampus } from "./campus";
+import { suitUp } from "./astronaut";
 import { createRocket } from "./rocket";
+import { createSurface } from "./surface";
 
 const NOISE = /* glsl */ `
 float hash(vec3 p){p=fract(p*vec3(.1031,.1030,.0973));p+=dot(p,p.yxz+33.33);return fract((p.x+p.y)*p.z);}
@@ -272,7 +274,7 @@ function buildOrbiters(
 }
 
 // IoT: small things joined to their nearest neighbours, so the swarm reads as a network
-function buildThingNetwork(count: number, radius: number, px: number) {
+function buildThingNetwork(count: number, radius: number, px: number, tint: string) {
   const random = seeded(17);
   const nodes = Array.from({ length: count }, (_, i) =>
     fibonacci(i, count).multiplyScalar(radius * (1.12 + random() * 0.42)),
@@ -290,7 +292,7 @@ function buildThingNetwork(count: number, radius: number, px: number) {
   group.add(
     new LineSegments(
       new BufferGeometry().setAttribute("position", new Float32BufferAttribute(lines, 3)),
-      new LineBasicMaterial({ color: "#a9b4ff", transparent: true, opacity: 0.5, blending: AdditiveBlending, depthWrite: false }),
+      new LineBasicMaterial({ color: tint, transparent: true, opacity: 0.5, blending: AdditiveBlending, depthWrite: false }),
     ),
     new Points(
       new BufferGeometry().setFromPoints(nodes),
@@ -729,19 +731,29 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       gl_FragColor=vec4(c,1.);
     }`, {});
 
+  // Baked once, because noise worked out per pixel across a full-screen sky is more than a mid-range phone should be asked for
+  const clouds = bake(renderer, low ? 1024 : 2048, low ? 512 : 1024, /* glsl */ `
+    varying vec2 vUv;
+    void main(){
+      vec3 d=sphereDir(vUv);
+      float n=fbm(d*vec3(3.2,9.,3.2)+11.);
+      gl_FragColor=vec4(vec3(smoothstep(.5,.72,n)),1.);
+    }`, {});
+
   const skyMaterial = new ShaderMaterial({
     side: BackSide,
     depthWrite: false,
-    uniforms: { uMap: { value: nebula }, uHouse: { value: 1 }, uLight: { value: 1 } },
+    uniforms: { uMap: { value: nebula }, uClouds: { value: clouds }, uHouse: { value: 1 }, uLight: { value: 1 }, uDrift: { value: 0 } },
     vertexShader: "varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
     fragmentShader: /* glsl */ `
-      uniform sampler2D uMap; uniform float uHouse,uLight; varying vec3 vD;
+      uniform sampler2D uMap,uClouds; uniform float uHouse,uLight,uDrift; varying vec3 vD;
       void main(){
         vec3 d=normalize(vD);
         vec2 uv=vec2(atan(d.z,d.x)/6.2831853+.5,asin(d.y)/3.1415927+.5);
         vec3 space=textureLod(uMap,uv,0.).rgb;
         float e=max(d.y,0.);
         vec3 day=mix(vec3(.56,.79,.96),vec3(.06,.29,.66),pow(e,.35));
+        day=mix(day,vec3(.97,.98,1.),textureLod(uClouds,uv+vec2(uDrift,0.),0.).r*smoothstep(.14,.42,e)*.85);
         vec3 c=mix(space,day,uHouse);
         float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
         gl_FragColor=vec4((c+(n-.5)/180.)*uLight,1.);
@@ -758,7 +770,9 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
 
   const curve = new CatmullRomCurve3(FLIGHT.map(([x, y, z]) => new Vector3(x, y, z)), false, "centripetal");
   const lastStop = FLIGHT.length - 1;
-  const rocket = createRocket(low);
+  const surface = createSurface(low, dpr);
+  // The same Axie that flies the rocket, dressed up for going outside
+  const rocket = createRocket(low, (axie, clip) => surface.give(suitUp(axie, clip)));
   scene.add(rocket.group, rocket.yard);
   const trailCount = low ? 50 : 90;
   const trail = buildTrail(trailCount, dpr);
@@ -785,10 +799,11 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const texSize = low ? 768 : 1536;
   const segments = low ? 40 : 64;
   const looks = [
-    { a: "#2c1570", b: "#5a37c8", c: "#a48cf2", scale: 2.2, bands: 34, seed: 2, rim: "#a9b4ff" },
-    { a: "#120829", b: "#32206e", c: "#7c6be0", scale: 3.4, bands: 0, seed: 9, rim: "#7c8bff" },
-    { a: "#1c1f6e", b: "#4650d8", c: "#9aa6ff", scale: 2, bands: 9, seed: 22, rim: "#9fd0ff" },
-  ];
+    { scale: 2.2, bands: 34, seed: 2 },
+    { scale: 3.4, bands: 0, seed: 9 },
+    { scale: 2, bands: 9, seed: 22 },
+    // From orbit each planet wears the colours of the air inside it, so going down feels like arriving somewhere you could already see
+  ].map((look, i) => ({ ...look, a: ATMOSPHERES[i].ground[0], b: ATMOSPHERES[i].ground[1], c: ATMOSPHERES[i].low, rim: ATMOSPHERES[i].accent }));
   const worlds = looks.map((look, i) => {
     const group = new Group();
     group.position.set(...WORLD_POS[i]);
@@ -802,7 +817,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const packets = buildOrbiters(low ? 70 : 130, WORLD_RADIUS * 1.5, WORLD_RADIUS * 1.5, true, "#ffffff", dpr, 3);
   const linkRing = new Mesh(
     new RingGeometry(WORLD_RADIUS * 1.495, WORLD_RADIUS * 1.505, 128).rotateX(Math.PI / 2),
-    new MeshBasicMaterial({ color: "#a9b4ff", transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false, side: DoubleSide }),
+    new MeshBasicMaterial({ color: ATMOSPHERES[0].accent, transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false, side: DoubleSide }),
   );
   const linkPlane = new Group();
   linkPlane.rotation.set(0.42, 0, 0.3);
@@ -810,12 +825,12 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   worlds[0].group.add(linkPlane);
 
   // Cybersecurity Operations: a lattice shell that closes as you arrive
-  const shellMaterial = new LineBasicMaterial({ color: "#a9b4ff", transparent: true, opacity: 0.75, blending: AdditiveBlending, depthWrite: false });
+  const shellMaterial = new LineBasicMaterial({ color: ATMOSPHERES[1].accent, transparent: true, opacity: 0.75, blending: AdditiveBlending, depthWrite: false });
   const shell = new LineSegments(new EdgesGeometry(new IcosahedronGeometry(WORLD_RADIUS * 1.14, 2)), shellMaterial);
   worlds[1].group.add(shell);
 
   // Development Networking: nodes joined by the links code can reach and automate
-  const things = buildThingNetwork(low ? 44 : 70, WORLD_RADIUS, dpr);
+  const things = buildThingNetwork(low ? 44 : 70, WORLD_RADIUS, dpr, ATMOSPHERES[2].accent);
   worlds[2].group.add(things);
 
   const stops = [...canvas.parentElement!.querySelectorAll<HTMLElement>(".log-stop")];
@@ -826,6 +841,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   stops.forEach((stop) => (stop.style.left = stop.style.top = "0"));
   let rockSize = 8;
 
+  const core = new Vector3();
+
   let width = 1;
   let height = 1;
   const resize = () => {
@@ -834,14 +851,13 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     height = parent.clientHeight;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    surface.resize(width, height);
     constellation.group.scale.setScalar(Math.min(1, camera.aspect * 0.87));
     // On a wide screen it sits a little right, clear of the copy in the bottom left
     constellation.group.position.x = camera.aspect >= 1 ? 5 : 0;
-    // A phone's narrow view would crop the sign where it stands on a wide one
-    campus.sign.position.x = camera.aspect >= 1 ? -4 : -18;
     // Each rock is as big as it needs to be for the photo on it to sit inside its outline, whatever the screen
     const pixelsPerUnit = height / (2 * ROCK_DEPTH * Math.tan((s.fov * Math.PI) / 360));
-    rockSize = (stops[0]?.querySelector<HTMLElement>(".log-frame")?.offsetWidth ?? 480) * 0.68 / pixelsPerUnit;
+    rockSize = (stops[0]?.querySelector<HTMLElement>(".log-frame")?.offsetWidth ?? 480) * 0.58 / pixelsPerUnit;
   };
   const observer = new ResizeObserver(resize);
   observer.observe(canvas.parentElement!);
@@ -938,10 +954,18 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       camera.position.lerp(behind, s.chase);
       aim.lerp(ahead.copy(craft).addScaledVector(steady, camera.aspect >= 1 ? 8 : 3), s.chase);
     }
+    // Going down to a planet: the camera turns square on and falls towards it, with its air closing over the screen before it would reach the surface
+    const fall = Math.min(1, s.inside * 2);
+    if (fall > 0) {
+      core.set(...WORLD_POS[s.planet]);
+      surface.prepare(s.planet);
+      camera.position.lerp(core, fall * fall * 0.72);
+      aim.lerp(core, Math.min(1, fall * 1.8));
+    }
     camera.lookAt(aim);
-    const side = s.side * (1 - s.chase);
+    const side = s.side * (1 - s.chase) * (1 - fall);
     // Narrow screens pull back a little so a whole world still fits across the width
-    camera.fov = camera.aspect >= 1 ? s.fov : s.fov + Math.abs(side) * 22;
+    camera.fov = (camera.aspect >= 1 ? s.fov : s.fov + Math.abs(side) * 22) + fall * 16;
     if (camera.aspect >= 1) camera.setViewOffset(width, height, -side * 0.24 * width, 0, width, height);
     else camera.setViewOffset(width, height, 0, Math.abs(side) * 0.17 * height, width, height);
 
@@ -964,6 +988,11 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     // Darkens well ahead of the sky, or the campus shows as a bright slab of horizon colour against the dark above it
     haze.color.set("#8fc9f5").lerp(spaceHaze, 1 - s.house ** 3).multiplyScalar(light);
     campus.setDim(s.dim);
+    // Lost a little before the sky turns, when the fog has already taken everything at this distance
+    campus.setHaze(haze.color, Math.min(1, (1 - s.house) / 0.28));
+    // People, traffic and birds only move while someone can see them
+    if (campus.group.visible && light > 0) campus.animate(time);
+    skyMaterial.uniforms.uDrift.value = (time * 0.0012) % 1;
 
     // Thrust follows the scroll: the flame stretches while the visitor moves and idles when they stop
     speed += (Math.abs(s.fly - lastFly) / Math.max(dt, 0.001) - speed) * 0.18;
@@ -1061,7 +1090,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       });
     }
 
-    renderer.render(scene, camera);
+    if (s.inside >= 0.5) surface.render(renderer, time, s.planet, (s.inside - 0.5) * 2);
+    else renderer.render(scene, camera);
 
     // DOM pieces that belong to 3D objects follow them on screen
     // Written to the small element that uses them: on the stage they would restyle every beat

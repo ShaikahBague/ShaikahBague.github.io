@@ -22,6 +22,12 @@ html {
   background: var(--dome-900);
   color: var(--lilac);
   scrollbar-color: var(--violet-bright) var(--dome-950);
+  /* So the page keeps its width when a planet visit stops it scrolling */
+  scrollbar-gutter: stable;
+}
+
+html.landed {
+  overflow: hidden;
 }
 
 body {
@@ -84,20 +90,6 @@ html:not(.live) .live-only {
   height: auto;
 }
 
-.nav-join {
-  font-weight: 600;
-  background: var(--lilac);
-  color: var(--dome-900);
-  padding: 0.5rem 1.125rem;
-  border-radius: 3px;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.nav-join:hover {
-  background: #fff;
-}
-
 /* The plain page: no motion, no WebGL, or no JavaScript */
 #story {
   background-color: var(--dome-700);
@@ -108,6 +100,7 @@ canvas,
 .scrim,
 .cover,
 .veil,
+.atmos,
 .signal-pulse {
   display: none;
 }
@@ -156,33 +149,6 @@ canvas,
   background: linear-gradient(to top, var(--violet) 0%, var(--dome-700) 45%, var(--dome-900) 90%);
 }
 
-.arc {
-  position: absolute;
-  inset: 3.5rem 0 auto;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.arc text {
-  font-family: var(--font-display), sans-serif;
-  font-weight: 900;
-  font-stretch: 150%;
-  fill: var(--lilac);
-}
-
-.arc-wide text {
-  font-size: 88px;
-}
-
-.arc-narrow {
-  display: none;
-}
-
-.arc-narrow text {
-  font-size: 24px;
-}
-
 .hero .hero-copy {
   margin: 0 0 0.75rem;
   font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
@@ -194,11 +160,69 @@ canvas,
   max-width: 26rem;
 }
 
-/* The copy sits over the ground, whose colours vary, so it brings its own */
+/* A chapter's words stand straight on the scene. Over the bright ground of the first shot, the ground itself is darkened under them, with no edge to it */
 .live .hero-lede {
-  padding: 0.875rem 1rem;
-  border-radius: 8px;
-  background: rgb(18 7 46 / 0.72);
+  max-width: 27rem;
+  text-shadow: 0 1px 14px rgb(18 7 46 / 0.75);
+}
+
+.live .hero-action {
+  isolation: isolate;
+}
+
+.live .hero-action::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: calc(var(--gutter) * -1);
+  bottom: calc((var(--bar-gap) + 1.75rem) * -1);
+  width: min(58rem, 100vw);
+  height: 30rem;
+  background: radial-gradient(ellipse 100% 100% at 0 100%, rgb(18 7 46 / 0.86) 30%, rgb(18 7 46 / 0.5) 58%, rgb(18 7 46 / 0) 100%);
+  pointer-events: none;
+}
+
+.live .chapter {
+  width: min(36rem, 44vw);
+}
+
+.live .chapter h2 {
+  font-size: clamp(2.25rem, 3.9vw, 4rem);
+  font-stretch: 110%;
+  text-shadow: 0 2px 28px rgb(18 7 46 / 0.6);
+}
+
+.live .chapter p {
+  text-shadow: 0 1px 14px rgb(18 7 46 / 0.8);
+  text-wrap: pretty;
+}
+
+.live .world-right .chapter,
+.live .at-end .chapter {
+  text-align: right;
+}
+
+.live .world-right .chapter p,
+.live .at-end .chapter p {
+  margin-left: auto;
+}
+
+/* The way down to a planet, and the one solid thing in the chapter */
+.land {
+  margin-top: 1.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 3px;
+  background: var(--lilac);
+  color: var(--dome-950);
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.land:hover {
+  background: #fff;
 }
 
 .hero-rocket {
@@ -234,13 +258,7 @@ canvas,
   margin-bottom: 0.375rem;
 }
 
-/* Flight log: each stop is a print with its contact strip, and its notes beside it */
-.kicker {
-  font-family: var(--font-ticket), monospace;
-  font-size: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
+/* Flight log: each stop is one print on lilac stock, photo, caption and contact strip together, with its notes beside it */
 .log-track {
   display: grid;
   gap: 1.5rem;
@@ -256,15 +274,24 @@ canvas,
   background: var(--dome-950);
 }
 
+.log-frame {
+  align-self: start;
+  padding: 0.5rem;
+  border-radius: 3px;
+  background: var(--lilac);
+  color: var(--dome-950);
+  text-shadow: none;
+}
+
 .log-print {
   position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   width: 100%;
   overflow: hidden;
-  border-radius: 2px;
-  background: radial-gradient(circle at 30% 25%, var(--violet-bright), var(--dome-700) 55%, var(--dome-900));
+  background: var(--dome-700);
+  color: var(--lilac);
 }
 
 .log-print img,
@@ -273,46 +300,52 @@ canvas,
 }
 
 .log-empty {
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.9375rem;
-  line-height: 1.3;
-  text-wrap: balance;
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.75rem;
 }
 
-.log-empty small {
-  display: block;
-  margin-bottom: 0.375rem;
+.log-caption {
+  margin-top: 0.5rem;
   font-family: var(--font-ticket), monospace;
   font-size: 0.6875rem;
+  line-height: 1.4;
+  text-wrap: pretty;
 }
 
 .log-contact {
   display: flex;
-  gap: 0.375rem;
-  margin-top: 0.5rem;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
 }
 
 .log-thumb {
   position: relative;
-  width: 3.25rem;
-  height: 2.4375rem;
+  flex: 0 1 3.25rem;
+  min-width: 0;
+  aspect-ratio: 5 / 4;
   overflow: hidden;
-  border: 2px solid rgb(239 230 255 / 0.35);
-  border-radius: 2px;
+  border: 2px solid transparent;
   background: var(--dome-700);
+  color: var(--lilac);
   font-family: var(--font-ticket), monospace;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: border-color 0.2s;
+  opacity: 0.55;
+  transition: opacity 0.2s;
 }
 
 .log-thumb:hover,
 .log-thumb[aria-pressed="true"] {
-  border-color: var(--lilac);
+  opacity: 1;
+}
+
+.log-thumb[aria-pressed="true"] {
+  border-color: var(--violet);
 }
 
 .log-notes small {
+  display: block;
+  margin-top: 0.5rem;
   font-family: var(--font-ticket), monospace;
   font-size: 0.75rem;
 }
@@ -323,19 +356,12 @@ canvas,
   font-stretch: 110%;
   font-size: clamp(1.25rem, 2vw, 1.75rem);
   line-height: 1.1;
-  margin-top: 0.5rem;
+  text-wrap: balance;
 }
 
 .beat .log-notes p {
   font-size: 1rem;
   margin-top: 0.625rem;
-}
-
-.log-went strong {
-  font-family: var(--font-display), sans-serif;
-  font-weight: 900;
-  font-size: 2.5rem;
-  line-height: 1;
 }
 
 /* Axie, after landing */
@@ -350,14 +376,6 @@ canvas,
   border-radius: 10px;
   background: rgb(18 7 46 / 0.86);
   text-shadow: none;
-}
-
-.chat-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  font-size: 1.125rem;
 }
 
 .chat-log {
@@ -659,23 +677,6 @@ canvas,
 .live .at-end {
   align-items: flex-end;
   justify-content: flex-end;
-  text-align: right;
-}
-
-.live .at-end h2,
-.live .at-end p {
-  max-width: 44rem;
-}
-
-.live .at-top h2,
-.live .at-bottom h2 {
-  max-width: 62rem;
-}
-
-/* The constellation is the picture here, so the copy stays small and under it */
-.live .at-bottom h2 {
-  font-size: clamp(2rem, 3.4vw, 3.25rem);
-  font-stretch: 110%;
 }
 
 .live .at-bottom {
@@ -686,19 +687,8 @@ canvas,
   justify-content: center;
 }
 
-.live .world h2 {
-  font-size: clamp(2.25rem, 3.9vw, 4rem);
-  font-stretch: 110%;
-}
-
-.live .world h2,
-.live .world p {
-  max-width: 42vw;
-}
-
 .live .world-right {
   align-items: flex-end;
-  text-align: right;
 }
 
 .live .log h2 {
@@ -715,7 +705,8 @@ canvas,
 }
 
 .live .log-stop {
-  --print: min(30rem, 36vw, 62lvh);
+  --print: min(34rem, 38vw, 72lvh);
+  --print-top: calc(var(--print) * -0.3 - 1.75rem);
   position: absolute;
   left: 30%;
   top: 54%;
@@ -734,80 +725,531 @@ canvas,
 .live .log-frame {
   position: absolute;
   left: calc(var(--print) / -2);
-  top: calc(var(--print) * -0.375);
+  top: var(--print-top);
   width: var(--print);
-}
-
-.live .log-print {
-  border: 0.5rem solid var(--lilac);
-  border-radius: 3px;
   box-shadow: 0 1.25rem 3rem rgb(5 0 20 / 0.65);
-  box-sizing: content-box;
-  margin: -0.5rem;
-}
-
-.live .log-contact {
-  position: absolute;
-  left: 0.5rem;
-  bottom: 0.5rem;
-  margin: 0;
-}
-
-.live .log-thumb {
-  box-shadow: 0 2px 8px rgb(5 0 20 / 0.6);
 }
 
 .live .log-notes {
   position: absolute;
   left: calc(var(--print) / 2 + 2.25rem);
-  top: calc(var(--print) * -0.26);
-  width: min(23rem, 27vw);
-  padding: 1rem 1.25rem;
-  border-left: 2px solid var(--peri);
-  background: rgb(18 7 46 / 0.78);
+  top: var(--print-top);
+  /* All the room right of the print, which a rotated phone needs or the notes run down into the rail. The print is centred 30% across */
+  width: min(23rem, calc(70vw - var(--print) / 2 - 2.25rem - var(--gutter)));
+  text-shadow: 0 1px 12px rgb(18 7 46 / 0.85);
 }
 
+/* A rotated phone: a smaller print and heading, so the print clears both the rail below it and the heading above it */
+@media (min-aspect-ratio: 1/1) and (max-height: 480px) {
+  .live .log-stop {
+    --print: min(34rem, 38vw, 60lvh);
+  }
+
+  .live .log h2 {
+    font-size: 1.5rem;
+    translate: 0 -1.75rem;
+  }
+
+  /* Its usual fixed size would cover this whole screen and dim the scene, when it only has to sit behind the words */
+  .live .hero-action::before {
+    width: 72vw;
+    height: 78lvh;
+  }
+}
+
+/* The flight path: every stop in order, the stretch already flown drawn solid. Stops still to be confirmed stay open marks */
+.log-rail ol {
+  display: flex;
+}
+
+.log-rail li {
+  flex: 1 1 0;
+  min-width: 0;
+  border-top: 2px solid rgb(239 230 255 / 0.3);
+}
+
+.log-rail li:has(~ li [aria-current]) {
+  border-top-color: var(--lilac);
+}
+
+.log-rail button {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.625rem 0.75rem 0 0;
+  color: var(--lilac);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  text-align: left;
+  text-shadow: 0 1px 8px rgb(18 7 46 / 0.9);
+  cursor: pointer;
+}
+
+.log-rail button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--lilac);
+  background: var(--lilac);
+  transition: scale 0.2s;
+}
+
+.log-rail .log-pending button::before {
+  background: var(--dome-900);
+}
+
+.log-rail button:hover::before,
+.log-rail button[aria-current]::before {
+  scale: 1.5;
+}
+
+.log-rail button[aria-current] {
+  font-weight: 700;
+}
+
+.live .log-rail {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--bar-gap) + 1.25rem);
+}
+
+/* Axie stands centre stage and talks in subtitles under them, like a film: the ground simply darkens toward the bottom of the screen, with no panel */
 .live .chat-beat {
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4.25rem;
+  isolation: isolate;
+}
+
+.live .chat-beat::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 52% 0 0;
+  background: linear-gradient(to bottom, rgb(18 7 46 / 0), rgb(18 7 46 / 0.72) 34%, rgb(18 7 46 / 0.94));
+  pointer-events: none;
 }
 
 .live .chat-beat h2 {
-  font-size: clamp(2rem, 3.6vw, 3.5rem);
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-stretch: 110%;
+  text-shadow: 0 2px 16px rgb(18 7 46 / 0.65);
 }
 
 .live .chat {
-  width: min(30rem, 42vw);
+  width: min(44rem, 100%);
+  margin-top: 0;
+  padding: 0;
+  gap: 0.625rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
 }
 
-.live .crew {
-  padding-right: 42vw;
+.live .chat-log {
+  height: 8.5rem;
+  align-items: center;
+  gap: 0.375rem;
+  /* The conversation scrolls away upward by melting into the scene */
+  mask-image: linear-gradient(to bottom, transparent, #000 1.75rem);
+  scrollbar-width: none;
+}
+
+.live .chat-log::before {
+  content: "";
+  flex: 1;
+}
+
+.beat .chat-line.chat-axie,
+.beat .chat-line.chat-you {
+  max-width: 40rem;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  text-align: center;
+  text-wrap: pretty;
+  animation: chat-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.beat .chat-line.chat-you {
+  align-self: center;
+  color: var(--peri);
+  font-size: 0.9375rem;
+}
+
+/* Only the line just spoken is at full voice */
+.beat .chat-line.chat-axie {
+  align-self: center;
+  color: rgb(239 230 255 / 0.72);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.beat .chat-line.chat-axie:last-child {
+  color: #fff;
+  font-size: clamp(1.125rem, 1.7vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.32;
+  text-shadow: 0 1px 10px rgb(18 7 46 / 0.7);
+}
+
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+}
+
+.live .chat-form {
+  gap: 0.75rem;
+  border-bottom: 1px solid rgb(239 230 255 / 0.55);
+  transition: border-color 0.2s;
+}
+
+.live .chat-form:focus-within {
+  border-color: #fff;
+}
+
+.live .chat-form input {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  font-size: 1.0625rem;
+  caret-color: var(--peri);
+}
+
+.live .chat-form input:focus-visible {
+  outline: none;
+}
+
+.live .chat-form input::placeholder {
+  color: rgb(239 230 255 / 0.8);
+}
+
+.live .chat-form button {
+  padding: 0 0.25rem;
+  border-radius: 0;
+  background: none;
+  color: var(--lilac);
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.live .chat-form button:hover:not(:disabled) {
+  color: #fff;
+}
+
+.live .chat-form button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.live .chat-suggest {
+  justify-content: center;
+  gap: 0.25rem 1.25rem;
+}
+
+.live .chat-suggest button {
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-decoration-color: rgb(169 180 255 / 0.7);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s, color 0.2s;
+}
+
+.live .chat-suggest button:hover {
+  background: none;
+  color: #fff;
+  text-decoration-color: #fff;
+}
+
+.beat .chat-note {
+  margin: 0;
+  max-width: none;
+  font-size: 0.8125rem;
+  color: rgb(239 230 255 / 0.78);
+  text-align: center;
+}
+
+html:not(.live) .chat-note {
+  text-align: left;
+}
+
+/* Inside a planet: the whole screen is that planet's air, with its sky darkening behind the words instead of a box */
+.planet {
+  max-width: 44rem;
+  margin-top: 2rem;
+  background: none;
+  color: inherit;
+}
+
+html:not(.live) .planet {
+  display: block;
+  position: static;
+}
+
+html:not(.live) .planet-name {
+  display: none;
+}
+
+.planet-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 1.5rem 2.5rem;
+  margin-top: 1.5rem;
+}
+
+.planet h3 {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--accent, var(--peri));
+}
+
+.planet li {
+  padding-block: 0.5rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.2);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+}
+
+.planet li strong,
+.planet li small {
+  display: block;
+}
+
+.planet li strong {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  font-stretch: 110%;
+  font-size: 1.0625rem;
+  line-height: 1.15;
+}
+
+.planet li small {
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+}
+
+/* The chapter you came from stays behind in orbit */
+.live .chapter,
+.topbar {
+  transition: opacity 0.4s;
+}
+
+.landed .chapter,
+.landed .topbar {
+  opacity: 0;
+}
+
+/* Over the timeline's own value for it, which still holds a phone's chapter gradient */
+.live.landed .scrim {
+  opacity: 0 !important;
+}
+
+.live .atmos {
+  z-index: 11;
+  display: block;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.live .planet {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: clamp(4rem, 9vh, 6rem) var(--gutter) 2rem;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(to right, color-mix(in srgb, var(--top) 78%, transparent) 18%, color-mix(in srgb, var(--top) 40%, transparent) 40%, transparent 60%);
+  color: #fff;
+  text-shadow: 0 1px 14px color-mix(in srgb, var(--top) 80%, transparent);
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.live .planet::backdrop {
+  background: none;
+}
+
+.planet-back {
+  position: fixed;
+  z-index: 1;
+  top: 0.75rem;
+  right: var(--gutter);
+}
+
+.planet-back button {
+  min-height: 2.75rem;
+  padding: 0 1.125rem;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--top);
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.planet-back button:hover {
+  background: var(--accent);
+}
+
+.planet-words {
+  width: min(46rem, 100%);
+}
+
+.live .planet[open] .planet-words {
+  animation: planet-in 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+@keyframes planet-in {
+  from {
+    opacity: 0;
+    translate: 0 1.5rem;
+  }
+}
+
+.planet-name {
+  font-size: clamp(2.75rem, 4.6vw, 4.5rem);
+  font-stretch: 110%;
+}
+
+.beat .planet-line {
+  max-width: 44rem;
+  margin-top: 1rem;
+  font-size: clamp(1.125rem, 1.7vw, 1.4375rem);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.beat .planet-source {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.planet-source a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .live .crew h2 {
-  flex: none;
-  font-size: clamp(2rem, 3.6vw, 3.5rem);
+  font-size: clamp(1.75rem, 3vw, 3rem);
 }
 
-/* Years stack on one spot, and each chart holds its officers where their stars fall */
+.live .crew-head {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  width: 100%;
+}
+
+.crew-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid rgb(169 180 255 / 0.28);
+  border-radius: 10px;
+  background: rgb(18 7 46 / 0.7);
+}
+
+.crew-tabs button {
+  min-width: 4.5rem;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border-radius: 7px;
+  font-family: var(--font-ticket), monospace;
+  font-size: 0.875rem;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.crew-tabs button:hover {
+  background: var(--dome-700);
+}
+
+.crew-tabs button[aria-pressed="true"] {
+  background: var(--lilac);
+  color: var(--dome-950);
+  font-weight: 700;
+}
+
+/* Only the chosen year shows, and it takes all the sky there is */
 .live .crew-years {
   position: relative;
   display: block;
   flex: 1;
+  width: 100%;
   min-height: 0;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .live .crew-year {
   position: absolute;
   inset: 0;
-  opacity: 0;
+  display: flex;
+  flex-direction: column;
 }
 
+.live .crew-year:not([data-on]) {
+  display: none;
+}
+
+.live .crew-date {
+  flex: none;
+  font-family: var(--font-ticket), monospace;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  gap: 0.625rem;
+}
+
+.live .crew-date .origin {
+  margin-top: 0;
+}
+
+/* A big roster outgrows the screen rather than shrinking past reading size, and this scrolls it */
 .live .crew-chart {
+  flex: 1;
+  min-height: 0;
+  margin-top: 0.5rem;
+  overflow: hidden auto;
+  container-type: size;
+  scrollbar-width: thin;
+  scrollbar-color: var(--peri) transparent;
+}
+
+.live .beat[data-active] .crew-chart {
+  pointer-events: auto;
+}
+
+.live .crew-sky {
+  --cols: var(--wc);
+  --rows: var(--wr);
   position: relative;
-  width: min(100%, calc((100lvh - 19rem) * 4 / 3));
-  aspect-ratio: 160 / 120;
-  margin-top: 1rem;
+  /* Short of the full height, because the last row's labels hang below their stars */
+  height: max(100% - 1.25rem, calc(var(--rows) * 7rem));
 }
 
 .live .crew-chart svg {
@@ -815,9 +1257,6 @@ canvas,
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
-  fill: none;
-  stroke-linecap: round;
 }
 
 .live .crew-wide {
@@ -830,15 +1269,9 @@ canvas,
 
 .live .crew-line {
   stroke: var(--peri);
-  stroke-width: 0.32;
-  stroke-dasharray: 1 2;
-}
-
-.live .crew-streak {
-  stroke: #fff;
-  stroke-width: 0.6;
-  stroke-dasharray: 0.28 3;
-  stroke-dashoffset: 0.28;
+  stroke-width: 1.25;
+  stroke-opacity: 0.75;
+  stroke-dasharray: 1;
 }
 
 .live .crew-chart ul {
@@ -849,9 +1282,14 @@ canvas,
 }
 
 .live .crew-star {
+  --x: var(--wx);
+  --y: var(--wy);
+  --delay: var(--wd);
+  --from-x: var(--fwx);
+  --from-y: var(--fwy);
   position: absolute;
-  left: var(--wx);
-  top: var(--wy);
+  left: var(--x);
+  top: var(--y);
   width: 0;
   height: 0;
 }
@@ -859,10 +1297,9 @@ canvas,
 .live .crew-star::before {
   content: "";
   position: absolute;
-  left: -0.3125rem;
-  top: -0.3125rem;
-  width: 0.625rem;
-  height: 0.625rem;
+  width: var(--size);
+  height: var(--size);
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 0 0.5rem 0.125rem var(--peri), 0 0 1.25rem 0.25rem rgb(124 58 237 / 0.75);
@@ -870,33 +1307,106 @@ canvas,
 
 .live .crew-label {
   position: absolute;
+  top: 0.75rem;
   left: 0;
   width: max-content;
-  max-width: 11rem;
+  max-width: calc(80cqw / (var(--cols) + 0.5));
+  padding: 0.25rem 0.75rem 0.375rem;
   transform: translateX(-50%);
+  /* The sky darkens softly behind a name, so a link running behind it never cuts through the words */
+  background: radial-gradient(closest-side, rgb(18 7 46 / 0.85) 45%, rgb(18 7 46 / 0));
   text-align: center;
+  text-shadow: 0 0 8px var(--dome-950);
 }
 
-.live .crew-star[data-side="above"] .crew-label {
-  bottom: 0.875rem;
+.live .crew-label strong {
+  font-size: 0.9375rem;
 }
 
-.live .crew-star[data-side="below"] .crew-label {
-  top: 0.875rem;
+.live .crew-label small {
+  font-size: 0.8125rem;
 }
 
-/* The chart's ends keep their labels on the chart */
-.live .crew-star[data-edge="start"] .crew-label {
-  left: -0.3125rem;
-  transform: none;
-  text-align: left;
+/* The figure grows outward from its first star when the chapter opens */
+.live .beat[data-active] .crew-line {
+  animation: crew-draw 0.4s ease-out var(--line) both;
 }
 
-.live .crew-star[data-edge="end"] .crew-label {
-  left: auto;
-  right: -0.3125rem;
-  transform: none;
-  text-align: right;
+.live .beat[data-active] .crew-star {
+  animation: crew-light 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--delay) both;
+}
+
+/* Picking a year rearranges one figure into the next: its links let go and its names fade, while each star travels to its new place, and the new links draw once they have arrived */
+.live .crew-year[data-leaving] {
+  display: flex;
+  pointer-events: none;
+}
+
+.live .crew-year[data-leaving] .crew-date {
+  display: none;
+}
+
+.live .crew-year[data-leaving] .crew-sky {
+  animation: crew-leave 0.4s ease-in both;
+}
+
+.live .beat[data-active] .crew-year[data-leaving] :is(.crew-line, .crew-star) {
+  animation: none;
+}
+
+.live .beat[data-active] .crew-year[data-moved] .crew-star {
+  animation: crew-move 0.85s cubic-bezier(0.65, 0, 0.2, 1) both;
+}
+
+.live .beat[data-active] .crew-year[data-moved] .crew-label {
+  animation: crew-name 0.5s ease-out 0.55s both;
+}
+
+.live .beat[data-active] .crew-year[data-moved] .crew-line {
+  animation: crew-draw 0.35s ease-out calc(0.75s + var(--line) * 0.45) both;
+}
+
+.live .crew-year[data-moved] .crew-date {
+  animation: crew-name 0.5s ease-out 0.2s both;
+}
+
+@keyframes crew-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes crew-move {
+  from {
+    left: var(--from-x);
+    top: var(--from-y);
+  }
+}
+
+@keyframes crew-name {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes crew-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes crew-light {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
 .live .signal-pulse {
@@ -913,14 +1423,6 @@ canvas,
 }
 
 @media (max-aspect-ratio: 1/1) {
-  .arc-wide {
-    display: none;
-  }
-
-  .arc-narrow {
-    display: block;
-  }
-
   .hero-action {
     flex-direction: column;
     align-items: stretch;
@@ -931,14 +1433,39 @@ canvas,
     font-size: 1.125rem;
   }
 
-  .live .crew {
-    padding-right: var(--gutter);
+  .live .chapter {
+    width: 100%;
   }
 
-  .live .crew-chart {
-    container-type: inline-size;
-    width: min(100%, calc((100lvh - 17rem) * 100 / 130));
-    aspect-ratio: 100 / 130;
+  .live .world-right .chapter,
+  .live .at-end .chapter {
+    text-align: left;
+  }
+
+  .live .world-right .chapter p,
+  .live .at-end .chapter p {
+    margin-left: 0;
+  }
+
+  .live .hero-action::before {
+    width: 100vw;
+    height: 26rem;
+    background: linear-gradient(to top, rgb(18 7 46 / 0.9) 45%, rgb(18 7 46 / 0));
+  }
+
+  .planet-name {
+    font-size: clamp(2rem, 9vw, 5.5rem);
+  }
+
+  .live .planet {
+    /* The open sky at the top is Axie's, and the words start below them */
+    padding-top: 40lvh;
+    background: linear-gradient(to bottom, transparent 30%, color-mix(in srgb, var(--top) 78%, transparent) 44%, color-mix(in srgb, var(--top) 78%, transparent));
+  }
+
+  .live .crew-sky {
+    --cols: var(--tc);
+    --rows: var(--tr);
   }
 
   .live .crew-wide {
@@ -949,28 +1476,16 @@ canvas,
     display: block;
   }
 
-  .live .crew-line {
-    stroke-width: 0.45;
-  }
-
   .live .crew-star {
-    left: var(--tx);
-    top: var(--ty);
-  }
-
-  /* Stacked down the screen, the stars keep to a narrow column and the labels line up clear of it, so the line can't cross them */
-  .live .crew-star[data-side] .crew-label {
-    left: calc(31cqw - var(--tx));
-    right: auto;
-    top: -0.75rem;
-    bottom: auto;
-    max-width: 66cqw;
-    transform: none;
-    text-align: left;
+    --x: var(--tx);
+    --y: var(--ty);
+    --delay: var(--td);
+    --from-x: var(--ftx);
+    --from-y: var(--fty);
   }
 
   .live .crew-label strong {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
 
   .live .crew-label small {
@@ -982,23 +1497,44 @@ canvas,
     gap: 0.5rem;
   }
 
-  /* On a phone the rock and its photo take the top of the screen and the notes hang under them */
+  /* On a phone the rock and its print take the top of the screen and the notes hang under them, however tall the print came out */
   .live .log-stop {
-    --print: min(19rem, 74vw, 34lvh);
+    --print: min(21rem, 84vw);
+    /* The rock rests a third of the way down, and this hangs the print from just under the heading whatever the screen's height */
+    --print-top: calc(7.75rem - 33lvh);
     left: 50%;
     top: 32%;
   }
 
-  .live .log-notes {
-    left: calc(var(--print) / -2);
-    top: calc(var(--print) * 0.375 + 1.25rem);
-    width: var(--print);
-    padding: 0.625rem 0.875rem;
+  .live .log-frame {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: var(--print-top) 0 0 calc(var(--print) / -2);
   }
 
-  .live .log-thumb {
-    width: 2.25rem;
-    height: 1.75rem;
+  .live .log-notes {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0.5rem 0 0 calc(var(--print) / -2);
+    width: var(--print);
+    padding: 0.25rem;
+  }
+
+  /* Narrow enough for captions to wrap, so the notes below don't jump when another photo is picked */
+  .log-caption {
+    min-height: 2lh;
+  }
+
+  /* No room for names across a phone. The notes above already name the stop that's lit */
+  .log-rail span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .beat .log-notes p {
@@ -1011,27 +1547,8 @@ canvas,
     margin-top: 0.25rem;
   }
 
-  .log-went strong {
-    font-size: 1.5rem;
-  }
-
-  .live .chat-beat {
-    justify-content: flex-end;
-  }
-
-  /* On a phone this sits on the sunlit ground rather than the sky */
-  .live .chat-beat h2 {
-    color: var(--dome-950);
-    text-shadow: none;
-  }
-
-  .live .chat {
-    width: 100%;
-    margin-top: 0.625rem;
-  }
-
-  .chat-log {
-    height: 8.5rem;
+  .live .chat-log {
+    height: 7rem;
   }
 
   .live .scrim {
@@ -1047,19 +1564,9 @@ canvas,
     justify-content: flex-end;
   }
 
-  .live .world h2,
-  .live .world p {
-    max-width: none;
-  }
-
-  .live .world-right {
-    align-items: flex-start;
-    text-align: left;
-  }
-
+  .live .world-right,
   .live .at-end {
     align-items: flex-start;
-    text-align: left;
   }
 
   .brand span {

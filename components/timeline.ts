@@ -1,14 +1,12 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { crews, events } from "@/lib/content";
-import { AT, CAMERA_GAP, followStep, holdsAtChat, initialSky, SHOTS, STOP, WORLD_POS, type SkyState } from "@/lib/story";
+import { events } from "@/lib/content";
+import { AT, ATMOSPHERES, CAMERA_GAP, followStep, holdsAtChat, initialSky, SHOTS, STOP, WALK_TIME, WORLD_POS, type SkyState } from "@/lib/story";
 
 // Each asteroid rests here, evenly spaced from the chapter's start to before the crew's flight leaves, so added events still fit
 const STEP = (AT.crew - 1.1 - AT.log) / Math.max(1, events.length - 1);
 const stepAt = (i: number) => AT.log + i * STEP;
-// Each year's constellation rests here, evenly spaced up to the fade to black, so added years still fit
-const YEAR_STEP = (AT.home - 1.55 - AT.crew) / Math.max(1, crews.length - 1);
 const BEATS = Object.entries(AT);
 
 export function buildShow(root: HTMLElement, s: SkyState) {
@@ -52,12 +50,14 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       const land = Boolean(ctx.conditions?.land);
       const shots = land ? SHOTS.land : SHOTS.port;
       // Undoing the last layout's timeline can't unpick tweens that overlap on one value, which left the cover stuck black on a phone rotation, so each layout starts clean
-      Object.assign(s, initialSky(), shots.hq);
+      // A rotation mid-visit leaves the visitor on the planet
+      Object.assign(s, initialSky(), shots.hq, { planet: s.planet, inside: s.inside });
       gsap.set(".cover", { clearProps: "opacity,backgroundColor" });
       const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
       const st = ScrollTrigger.create({ trigger: "#story", start: "top top", end: "bottom bottom" });
       trigger = st;
       const stops = q(".log-stop") as HTMLElement[];
+      const marks = q("[data-stop]") as HTMLElement[];
       let front = -1;
       // The timeline is walked from here rather than scrubbed, so a hard scroll can't drive it faster than the camera should go
       let rested = st.progress * AT.end >= AT.chat ? Infinity : 0;
@@ -78,6 +78,7 @@ export function buildShow(root: HTMLElement, s: SkyState) {
           front = shown;
           // Stops sit on top of each other, so only the one on screen takes clicks
           stops.forEach((stop, i) => stop.toggleAttribute("data-on", i === shown));
+          marks.forEach((mark, i) => (i === shown ? mark.setAttribute("aria-current", "step") : mark.removeAttribute("aria-current")));
         }
       };
       gsap.ticker.add(follow);
@@ -125,28 +126,28 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       };
 
       // Axie crosses the plaza and walks up the ramp into the rocket, and the door shuts behind them
-      tl.to(".arc-letter", { fillOpacity: 0, stagger: { each: 0.018, from: "edges" }, duration: 0.14 }, 0.08)
-        .to(".hero-action", { opacity: 0, y: 40, duration: 0.24, ease: "power2.in" }, 0.05)
+      tl.to(".hero-action", { opacity: 0, y: 40, duration: 0.24, ease: "power2.in" }, 0.05)
         .set('[data-beat="house"]', { pointerEvents: "none" }, 0.2)
-        .to(".scrim", { opacity: 1, duration: 0.3 }, 2.45);
+        .to(".scrim", { opacity: 1, duration: 0.3 }, 3.24);
       fly({ wave: 0 }, 0.02, 0.1);
-      fly({ out: 0 }, 0.06, 0.96);
-      fly(shots.walk, 0.02, 0.98);
-      fly({ door: 0 }, 1.04, 0.2, "power1.inOut");
+      // An even pace, because the strides are tied to this: any ease would have Axie sprinting through the middle of it
+      fly({ out: 0 }, 0.06, WALK_TIME, "none");
+      fly(shots.walk, 0.02, WALK_TIME + 0.02);
+      fly({ door: 0 }, 1.7, 0.2, "power1.inOut");
 
       // The camera tips up to the glass as a lift carries Axie up inside the hull and through the cabin floor. They wave from their seat, then ignition
-      fly(shots.board, 1, 0.45);
-      fly({ climb: 1 }, 1.12, 0.48);
-      fly({ wave: 1 }, 1.58, 0.1, "power2.out");
-      fly({ wave: 0 }, 1.84, 0.1, "power2.in");
-      fly(shots.launch, 1.85, 0.4);
-      fly({ burn: 1 }, 2.07, 0.14, "power2.out");
-      fly({ smoke: 1 }, 2.07, 0.95, "power1.out");
-      fly({ ground: 0 }, 2.25, 0.5);
+      fly(shots.board, 1.66, 0.5);
+      fly({ climb: 1 }, 1.8, 0.6);
+      fly({ wave: 1 }, 2.4, 0.1, "power2.out");
+      fly({ wave: 0 }, 2.62, 0.1, "power2.in");
+      fly(shots.launch, 2.63, 0.4);
+      fly({ burn: 1 }, 2.85, 0.14, "power2.out");
+      fly({ smoke: 1 }, 2.85, 0.95, "power1.out");
+      fly({ ground: 0 }, 3.03, 0.5);
       // The blue lasts well into the climb and only deepens to space on the way up
-      fly({ house: 0 }, 2.25, 0.85);
-      fly({ fly: STOP.liftoff, side: land ? 1 : 0.8 }, 2.15, AT.liftoff - 2.15);
-      fly(shots.liftoff, 2.21, AT.liftoff - 2.21);
+      fly({ house: 0 }, 3.03, 0.85);
+      fly({ fly: STOP.liftoff, side: land ? 1 : 0.8 }, 2.93, AT.liftoff - 2.93);
+      fly(shots.liftoff, 2.99, AT.liftoff - 2.99);
       beat("liftoff", "rise");
       wave(AT.liftoff);
 
@@ -189,30 +190,16 @@ export function buildShow(root: HTMLElement, s: SkyState) {
         tl.to(stop, { opacity: 0, duration: leg * 0.3, ease: "power1.inOut" }, at + STEP - leg + leg * 0.2);
       });
       fly({ log: events.length }, lastStep + STEP - leg, leg);
-      // Counters must finish before their chapter, because snapping rests the page exactly there
-      const launchStep = events.findIndex((event) => event.went);
-      wave(stepAt(launchStep));
-      tl.fromTo(".launch-count", { textContent: 0 }, { textContent: 54, snap: { textContent: 1 }, duration: 0.22, ease: "power1.out" }, stepAt(launchStep) - 0.24);
 
-      // The crew, with the phone scrim out of the rocket's way. Each year a shooting star falls to the first officer's star, and the
-      // line runs on from it lighting the rest. Newest year first, then the year clears for the one before it
+      // The crew, with the phone scrim out of the rocket's way. The rocket hangs small in the gap beside the heading, because the constellation needs the sky.
+      // It lights itself up with a CSS animation when the chapter opens or a year is picked, since the year is the visitor's choice and not the scroll's
       tl.to(".scrim", { opacity: 0, duration: 0.2 }, AT.crew - 0.5);
-      // A phone stacks the chart on top, so the rocket flies in the clear space under it
       flight(land
-        ? { fly: STOP.crew, cx: 70, cy: 2, cz: -470, lx: 70, ly: 2, lz: -540, side: 1.1 }
-        : { fly: STOP.crew, cx: 68, cy: 15, cz: -450, lx: 68, ly: 15, lz: -540, side: 0 }, AT.crew);
-      const crewEnd = AT.crew + (crews.length - 1) * YEAR_STEP;
+        ? { fly: STOP.crew, cx: 99, cy: -27, cz: -380, lx: 99, ly: -27, lz: -540, side: 1.1 }
+        : { fly: STOP.crew, cx: 65, cy: -20, cz: -385, lx: 65, ly: -20, lz: -540, side: 0 }, AT.crew);
+      const crewEnd = AT.crew + 1.1;
       beat("crew", "rise", true, crewEnd + 0.55);
-      (q(".crew-year") as HTMLElement[]).forEach((year, i) => {
-        const at = AT.crew + i * YEAR_STEP;
-        const stars = year.querySelectorAll(".crew-star");
-        tl.set(year, { opacity: 1 }, at - 0.42);
-        tl.from(year.querySelector(".crew-date"), { opacity: 0, y: 14, duration: 0.12, ease: "power2.out" }, at - 0.36);
-        tl.fromTo(year.querySelectorAll(".crew-streak"), { strokeDashoffset: 0.28 }, { strokeDashoffset: -1.02, duration: 0.16, ease: "power1.in" }, at - 0.42);
-        tl.fromTo(year.querySelectorAll(".crew-line"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3 }, at - 0.26);
-        tl.from(stars, { opacity: 0, scale: 0, stagger: 0.26 / stars.length, duration: 0.08, ease: "back.out(3)" }, at - 0.26);
-        if (i < crews.length - 1) tl.to(year, { opacity: 0, y: -18, duration: 0.12, ease: "power1.in" }, at + YEAR_STEP - 0.5);
-      });
+      tl.from(".crew-tabs", { opacity: 0, y: 14, duration: 0.12, ease: "power2.out" }, AT.crew - 0.2);
       wave(AT.crew);
 
       // Everything fades to black, and the rocket comes down unseen. Then a door opens in the dark, with nothing to see but its yellow
@@ -224,10 +211,9 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       beat("home", "rise", true, AT.home + 0.9);
       fly({ door: 1 }, AT.home, 0.7, "power1.inOut");
       fly(shots.doorBack, AT.home + 0.1, 1.1);
-      fly({ out: 0.42 }, AT.home + 0.55, 0.75);
       fly({ dim: 0 }, AT.home + 1.25, 1.1);
-      fly({ out: 1 }, AT.home + 1.3, AT.chat - 0.1 - AT.home - 1.3);
-      fly({ ...shots.chat, side: land ? 0.55 : 1 }, AT.home + 1.35, AT.chat - AT.home - 1.35);
+      fly({ out: 1 }, AT.home + 0.55, WALK_TIME + 0.05, "none");
+      fly({ ...shots.chat, side: 0 }, AT.home + 1.35, AT.chat - AT.home - 1.35);
 
       // Axie stops in front of the camera, says hello, and this is where they stay to talk. Nothing moves until the visitor scrolls on
       fly({ wave: 1 }, AT.chat - 0.1, 0.1);
@@ -257,11 +243,41 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   };
   root.addEventListener("focusin", onFocus);
 
+  // Down to a planet and back. Real time rather than the scroll's, because this is a place the visitor chose to go. The page stays exactly
+  // where it was underneath, and the planet's air covers the moment one scene swaps for the other
+  const atmos = q(".atmos")[0];
+  const html = document.documentElement;
+  let visit: gsap.core.Timeline | undefined;
   const onClick = (e: MouseEvent) => {
-    const link = (e.target as HTMLElement).closest('a[href^="#"]');
-    if (link && link.getAttribute("href") !== "#story") released = true;
+    const mark = (e.target as HTMLElement).closest<HTMLElement>("[data-stop]");
+    if (mark) return goTo(stepAt(Number(mark.dataset.stop)));
+    const button = (e.target as HTMLElement).closest<HTMLElement>("[data-land]");
+    if (!button || s.inside > 0) return;
+    const planet = Number(button.dataset.land);
+    const { low, top } = ATMOSPHERES[planet];
+    s.planet = planet;
+    atmos.style.background = `radial-gradient(circle, ${low}, ${top})`;
+    html.classList.add("landed");
+    visit = gsap
+      .timeline()
+      .to(s, { inside: 0.5, duration: 1.3, ease: "power2.in" })
+      .to(atmos, { opacity: 1, duration: 0.5, ease: "power1.in" }, 0.8)
+      .call(() => (q(`[data-planet="${planet}"]`)[0] as HTMLDialogElement).showModal())
+      .to(s, { inside: 1, duration: 1.5, ease: "power2.out" })
+      .to(atmos, { opacity: 0, duration: 0.9, ease: "power1.out" }, "<0.1");
   };
   root.addEventListener("click", onClick);
+  const leave = () => {
+    visit?.kill();
+    visit = gsap
+      .timeline({ onComplete: () => html.classList.remove("landed") })
+      .to(atmos, { opacity: 1, duration: 0.4, ease: "power1.in" })
+      .to(s, { inside: 0.5, duration: 0.4, ease: "power1.in" }, 0)
+      .to(s, { inside: 0, duration: 1.3, ease: "power2.out" })
+      .to(atmos, { opacity: 0, duration: 0.8, ease: "power1.out" }, "<0.1");
+  };
+  const planets = q(".planet") as HTMLDialogElement[];
+  planets.forEach((planet) => planet.addEventListener("close", leave));
 
   // Over the show the bar stays out of the picture; over reading sections it needs its own ground
   const solidBar = ScrollTrigger.create({
@@ -274,6 +290,9 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   return () => {
     root.removeEventListener("focusin", onFocus);
     root.removeEventListener("click", onClick);
+    planets.forEach((planet) => planet.removeEventListener("close", leave));
+    visit?.kill();
+    html.classList.remove("landed");
     solidBar.kill();
     mm.revert();
   };

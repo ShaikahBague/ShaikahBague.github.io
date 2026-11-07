@@ -3,27 +3,21 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crews, events, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
-import { AT, initialSky, SCREENS_PER_UNIT, starChart } from "@/lib/story";
+import { AT, ATMOSPHERES, initialSky, SCREENS_PER_UNIT, starChart } from "@/lib/story";
 
-// A no-break space, because SVG text collapses a normal one that sits alone in its own tspan
-const TITLE = "CISCO\u00A0NETCONNECT".split("");
-
-// What an asteroid carries: the print being shown, a contact strip to pick another, and the notes beside it
+// What an asteroid carries: one lilac print with its caption and a contact strip to pick another, and the notes beside it
 function LogStop({ event }: { event: (typeof events)[number] }) {
   const [shown, setShown] = useState(0);
   const photo = event.photos[shown];
   return (
     <li className={`log-stop ${event.confirmed ? "" : "log-pending"}`}>
       <div className="log-frame">
-        <figure className="log-print">
-          {photo.src ? (
-            <Image src={photo.src} alt={photo.alt} fill sizes="(max-aspect-ratio: 1/1) 74vw, 32rem" />
-          ) : (
-            <figcaption className="log-empty">
-              <small>Photo to come</small>
-              {photo.alt}
-            </figcaption>
-          )}
+        <figure>
+          <div className="log-print">
+            {photo.src ? <Image src={photo.src} alt={photo.alt} fill sizes="(max-aspect-ratio: 1/1) 84vw, 34rem" /> : <small className="log-empty">Photo to come</small>}
+          </div>
+          {/* A real photo's alt already says this to a screen reader */}
+          <figcaption className="log-caption" aria-hidden={Boolean(photo.src)}>{photo.alt}</figcaption>
         </figure>
         {event.photos.length > 1 ? (
           <div className="log-contact" role="group" aria-label={`Photos of ${event.title}`}>
@@ -36,64 +30,158 @@ function LogStop({ event }: { event: (typeof events)[number] }) {
         ) : null}
       </div>
       <div className="log-notes">
-        <small>{event.when}</small>
         <h3>{event.title}</h3>
+        <small>{event.when}</small>
         <p>{event.note}</p>
-        {event.went ? (
-          <p className="log-went">
-            <strong className="launch-count">{event.went}</strong> people went
-          </p>
-        ) : null}
         {event.confirmed ? null : <span className="origin unissued">Unissued</span>}
       </div>
     </li>
   );
 }
 
-// A year's officers as a constellation: a star each, joined up in a shape of that year's own. It is drawn twice because a phone
-// stacks the same stars down the screen, and each drawing keeps its own proportions so the line stays even
-function CrewYear({ crew, index }: { crew: (typeof crews)[number]; index: number }) {
-  const wide = starChart(index, crew.officers.length);
-  const tall = wide.map(([x, y]) => [y * 0.25, x]);
-  // A label sits on the outside of its star's bend, which is the side the line never crosses
-  const above = (i: number) => wide[i][1] <= ((wide[i - 1] ?? wide[i + 1] ?? wide[i])[1] + (wide[i + 1] ?? wide[i - 1] ?? wide[i])[1]) / 2;
+// A year's officers as a constellation. It is laid out twice because a phone needs fewer stars across, and the CSS picks one
+function CrewYear({ crew, on, leaving, from }: { crew: (typeof crews)[number]; on: boolean; leaving: boolean; from?: (typeof crews)[number] }) {
+  const count = crew.officers.length;
+  const wide = starChart(crew.year, count, true);
+  const tall = starChart(crew.year, count, false);
+  // Picked from another year, each star sets off from where that year's star stood, so one figure rearranges into the next. Extra stars split off from the ones already there
+  const fromWide = from && starChart(from.year, from.officers.length, true).stars;
+  const fromTall = from && starChart(from.year, from.officers.length, false).stars;
+  const start = (stars: number[][] | undefined, i: number, axis: number, own: number) => `${stars?.length ? stars[i % stars.length][axis] : own}%`;
+  // However many stars there are, the whole figure takes the same time to light up
+  const step = 1.4 / Math.max(1, count);
   return (
-    <li className="crew-year">
+    <li className="crew-year" data-on={on ? "" : undefined} data-leaving={leaving ? "" : undefined} data-moved={on && from ? "" : undefined}>
       <h3 className="crew-date">
         {crew.year}
         {crew.confirmed ? null : <span className="origin unissued">Roster to confirm</span>}
       </h3>
       <div className="crew-chart">
-        {[
-          { name: "crew-wide", w: 160, h: 120, stars: wide },
-          { name: "crew-tall", w: 100, h: 130, stars: tall },
-        ].map(({ name, w, h, stars }) => {
-          const at = stars.map(([x, y]) => `${(x * w) / 100} ${(y * h) / 100}`);
-          return (
-            <svg className={name} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" key={name}>
-              <path className="crew-line" d={`M${at.join("L")}`} pathLength={1} />
-              <path className="crew-streak" d={`M${w * 1.15} ${-h * 0.35}L${at[0]}`} pathLength={1} />
+        <div className="crew-sky" style={{ "--wc": wide.cols, "--wr": wide.rows, "--tc": tall.cols, "--tr": tall.rows } as React.CSSProperties}>
+          {[
+            { name: "crew-wide", chart: wide },
+            { name: "crew-tall", chart: tall },
+          ].map(({ name, chart }) => (
+            <svg className={name} aria-hidden="true" key={name}>
+              {chart.links.map(([from, to], i) => (
+                <line
+                  className="crew-line"
+                  x1={`${chart.stars[from][0]}%`}
+                  y1={`${chart.stars[from][1]}%`}
+                  x2={`${chart.stars[to][0]}%`}
+                  y2={`${chart.stars[to][1]}%`}
+                  pathLength={1}
+                  style={{ "--line": `${i * step}s` } as React.CSSProperties}
+                  key={to}
+                />
+              ))}
             </svg>
-          );
-        })}
-        <ul>
-          {crew.officers.map((person, i) => (
-            <li
-              className={`crew-star ${person.confirmed ? "" : "crew-pending"}`}
-              data-side={above(i) ? "above" : "below"}
-              data-edge={wide[i][0] < 14 ? "start" : wide[i][0] > 86 ? "end" : undefined}
-              style={{ "--wx": `${wide[i][0]}%`, "--wy": `${wide[i][1]}%`, "--tx": `${tall[i][0]}cqw`, "--ty": `${tall[i][1]}%` } as React.CSSProperties}
-              key={person.role + i}
-            >
-              <span className="crew-label">
-                <strong>{person.name}</strong>
-                <small>{person.role}</small>
-              </span>
-            </li>
           ))}
-        </ul>
+          <ul>
+            {crew.officers.map((person, i) => (
+              <li
+                className={`crew-star ${person.confirmed ? "" : "crew-pending"}`}
+                style={
+                  {
+                    "--wx": `${wide.stars[i][0]}%`,
+                    "--wy": `${wide.stars[i][1]}%`,
+                    "--wd": `${wide.order[i] * step}s`,
+                    "--tx": `${tall.stars[i][0]}%`,
+                    "--ty": `${tall.stars[i][1]}%`,
+                    "--td": `${tall.order[i] * step}s`,
+                    "--fwx": start(fromWide, i, 0, wide.stars[i][0]),
+                    "--fwy": start(fromWide, i, 1, wide.stars[i][1]),
+                    "--ftx": start(fromTall, i, 0, tall.stars[i][0]),
+                    "--fty": start(fromTall, i, 1, tall.stars[i][1]),
+                    // The first listed is the figure's brightest, and the rest vary so it reads as a sky rather than a diagram
+                    "--size": `${i ? 0.5 + ((i * 7) % 3) * 0.11 : 0.95}rem`,
+                  } as React.CSSProperties
+                }
+                key={person.role + i}
+              >
+                <span className="crew-label">
+                  <strong>{person.name}</strong>
+                  <small>{person.role}</small>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </li>
+  );
+}
+
+// Opens on the newest year, and the visitor picks any other. Every year stays in the page, so the plain layout still lists them all
+function Crew() {
+  const [view, setView] = useState({ shown: 0, from: -1, turn: 0 });
+  const pick = (i: number) => setView((now) => (i === now.shown ? now : { shown: i, from: now.shown, turn: now.turn + 1 }));
+  return (
+    <div className="beat crew" data-beat="crew">
+      <div className="crew-head">
+        <h2>The people flying it.</h2>
+        <div className="crew-tabs live-only" role="group" aria-label="Choose a year">
+          {crews.map((crew, i) => (
+            <button type="button" aria-pressed={i === view.shown} onClick={() => pick(i)} key={crew.year}>
+              {crew.year}
+            </button>
+          ))}
+        </div>
+      </div>
+      <ol className="crew-years">
+        {crews.map((crew, i) => {
+          const on = i === view.shown;
+          // A fresh element for the year coming in, so its animation runs from the start even if it was only just leaving
+          return <CrewYear crew={crew} on={on} leaving={i === view.from} from={on ? crews[view.from] : undefined} key={`${crew.year}:${on ? view.turn : 0}`} />;
+        })}
+      </ol>
+    </div>
+  );
+}
+
+// Inside a planet: what the department is about and who leads it, standing in that planet's own air. Without the show it's plain text in the chapter
+function Planet({ world, index }: { world: (typeof worlds)[number]; index: number }) {
+  const { top, low, accent } = ATMOSPHERES[index];
+  return (
+    <dialog className="planet" data-planet={index} aria-labelledby={`${world.id}-name`} style={{ "--top": top, "--low": low, "--accent": accent } as React.CSSProperties}>
+      <form method="dialog" className="planet-back live-only">
+        <button>Back to orbit</button>
+      </form>
+      <div className="planet-words">
+        <h2 className="planet-name" id={`${world.id}-name`}>
+          {world.name}
+        </h2>
+        <p className="planet-line">{world.line}</p>
+        <div className="planet-facts">
+          <section>
+            <h3>What it covers</h3>
+            <ul>
+              {world.covers.map((topic) => (
+                <li key={topic}>{topic}</li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <h3>Who leads here</h3>
+            <ul>
+              {world.leads.map((person) => (
+                <li key={person.name}>
+                  <strong>{person.name}</strong>
+                  <small>{person.role}</small>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+        <p className="planet-source">
+          Based on how Cisco describes{" "}
+          <a href={world.source.url} target="_blank" rel="noreferrer">
+            {world.source.name}
+          </a>
+          .
+        </p>
+      </div>
+    </dialog>
   );
 }
 
@@ -116,22 +204,11 @@ function AxieChat() {
 
   return (
     <div className="chat">
-      <div className="chat-head">
-        <strong>Axie</strong>
-        <span className="origin unissued">Placeholder</span>
-      </div>
       <div className="chat-log" ref={log} role="log" aria-label="Conversation with Axie">
         {messages.map((message, i) => (
           <p className={`chat-line chat-${message.from}`} key={i}>
             {message.text}
           </p>
-        ))}
-      </div>
-      <div className="chat-suggest">
-        {AXIE_SUGGESTIONS.map((suggestion) => (
-          <button type="button" key={suggestion} onClick={() => ask(suggestion)}>
-            {suggestion}
-          </button>
         ))}
       </div>
       <form
@@ -141,9 +218,19 @@ function AxieChat() {
           ask(draft);
         }}
       >
-        <input aria-label="Message Axie" placeholder="Ask Axie something" autoComplete="off" maxLength={200} value={draft} onChange={(e) => setDraft(e.target.value)} />
-        <button type="submit">Send</button>
+        <input aria-label="Message Axie" placeholder="Say something to Axie" autoComplete="off" maxLength={200} value={draft} onChange={(e) => setDraft(e.target.value)} />
+        <button type="submit" disabled={!draft.trim()}>
+          Send
+        </button>
       </form>
+      <div className="chat-suggest">
+        {AXIE_SUGGESTIONS.map((suggestion) => (
+          <button type="button" key={suggestion} onClick={() => ask(suggestion)}>
+            {suggestion}
+          </button>
+        ))}
+      </div>
+      <p className="chat-note">Axie is a placeholder for now, so the answers are short.</p>
     </div>
   );
 }
@@ -192,9 +279,6 @@ export function Show() {
           <Image src="/cncp-white.png" alt="" width={1000} height={773} sizes="56px" priority />
           <span>Cisco NetConnect PUP - Manila</span>
         </a>
-        <a className="nav-join" href="#join">
-          Join
-        </a>
       </header>
 
       <main>
@@ -204,26 +288,10 @@ export function Show() {
             <div className="scrim" />
             <div className="cover" />
             <div className="veil" />
+            <div className="atmos" />
 
             <div className="beat hero" data-beat="house" data-active>
               <h1 className="sr-only">Cisco NetConnect PUP - Manila</h1>
-              {[
-                { id: "arc-wide", box: "0 0 1440 470", path: "M50 420 Q720 -90 1390 420" },
-                { id: "arc-narrow", box: "0 0 400 230", path: "M6 190 Q200 -20 394 190" },
-              ].map((arc) => (
-                <svg key={arc.id} className={`arc ${arc.id}`} viewBox={arc.box} aria-hidden="true">
-                  <path id={arc.id + "-path"} d={arc.path} fill="none" />
-                  <text textAnchor="middle">
-                    <textPath href={`#${arc.id}-path`} startOffset="50%">
-                      {TITLE.map((letter, i) => (
-                        <tspan className="arc-letter" key={i}>
-                          {letter}
-                        </tspan>
-                      ))}
-                    </textPath>
-                  </text>
-                </svg>
-              ))}
               <svg className="hero-rocket" viewBox="0 0 200 360" aria-hidden="true">
                 <path d="M100 8 C142 56 152 150 142 268 L58 268 C48 150 58 56 100 8Z" fill="#7c3aed" />
                 <circle cx="100" cy="118" r="38" fill="#efe6ff" />
@@ -243,32 +311,41 @@ export function Show() {
             </div>
 
             <div className="beat world world-left" data-beat="liftoff">
-              <h2>Three. Two. One.</h2>
-              <p className="live-only" data-rest>
-                Keep scrolling and the rocket keeps flying. Stop, and Axie waits for you.
-              </p>
+              <div className="chapter">
+                <h2>Three. Two. One.</h2>
+                <p className="live-only" data-rest>
+                  Keep scrolling and the rocket keeps flying. Stop, and Axie waits for you.
+                </p>
+              </div>
             </div>
 
             <div className="beat at-end" data-beat="signal">
               <span className="signal-pulse" />
               <span className="signal-pulse" />
               <span className="signal-pulse" />
-              <h2>It started as a signal.</h2>
-              <p data-rest>Cisco NetConnect PUP - Manila began with online initiatives: points of light, a long way apart.</p>
+              <div className="chapter">
+                <h2>It started as a signal.</h2>
+                <p data-rest>Cisco NetConnect PUP - Manila began with online initiatives: points of light, a long way apart.</p>
+              </div>
             </div>
 
             <div className="beat at-bottom" data-beat="links">
-              <h2>Then the points found each other.</h2>
-              <p data-rest>&ldquo;Building Bridges, Powering Connections&rdquo; is what the launch was called.</p>
+              <div className="chapter">
+                <h2>Then the points found each other.</h2>
+                <p data-rest>&ldquo;Building Bridges, Powering Connections&rdquo; is what the launch was called.</p>
+              </div>
             </div>
 
             {worlds.map((world, i) => (
               <div className={`beat world ${i % 2 ? "world-right" : "world-left"}`} data-beat={world.id} key={world.id}>
-                <small className="kicker" data-rest>
-                  Department {i + 1} of {worlds.length}
-                </small>
-                <h2>{world.name}</h2>
-                <p data-rest>{world.line}</p>
+                <div className="chapter">
+                  <h2>{world.name}</h2>
+                  <p data-rest>{world.line}</p>
+                  <button type="button" className="land live-only" data-land={i} data-rest>
+                    Land on this planet
+                  </button>
+                </div>
+                <Planet world={world} index={i} />
               </div>
             ))}
 
@@ -279,20 +356,26 @@ export function Show() {
                   <LogStop event={event} key={event.title} />
                 ))}
               </ol>
+              <nav className="log-rail live-only" aria-label="Stops in the flight log">
+                <ol>
+                  {events.map((event, i) => (
+                    <li className={event.confirmed ? "" : "log-pending"} key={event.title}>
+                      <button type="button" data-stop={i}>
+                        <span>{event.short}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
             </div>
 
-            <div className="beat crew" data-beat="crew">
-              <h2>The people flying it.</h2>
-              <ol className="crew-years">
-                {crews.map((crew, i) => (
-                  <CrewYear crew={crew} index={i} key={crew.year} />
-                ))}
-              </ol>
-            </div>
+            <Crew />
 
             <div className="beat world world-left" data-beat="home">
-              <h2>Back on Earth.</h2>
-              <p data-rest>Axie has been to all three worlds, and has plenty to tell you about them.</p>
+              <div className="chapter">
+                <h2>Back on Earth.</h2>
+                <p data-rest>Axie has been to all three worlds, and has plenty to tell you about them.</p>
+              </div>
             </div>
 
             <div className="beat chat-beat" data-beat="chat">
