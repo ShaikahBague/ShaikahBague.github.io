@@ -1,34 +1,43 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { axieReply, cues, events, worlds } from "./content.ts";
-import { AT, CAMERA_GAP, FLIGHT, LOGO_STROKES, snapTarget, STOP, WORLD_POS, WORLD_RADIUS } from "./story.ts";
+import { axieReply, crews, events, worlds } from "./content.ts";
+import { AT, CAMERA_GAP, CRUISE, FLIGHT, followStep, GROUND_Y, holdsAtChat, LOGO_STROKES, MARK, passBy, ROCK_DEPTH, starChart, STOP, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
 
-const RESTS = [0, 0.9, 1.9, 2.8, 3.8];
-
-test("a page at rest stays on its chapter through a small nudge in either direction", () => {
-  assert.equal(snapTarget(RESTS, 1.9, 1.9), 1.9);
-  assert.equal(snapTarget(RESTS, 1.9, 1.94), 1.9);
-  assert.equal(snapTarget(RESTS, 1.9, 1.86), 1.9);
+test("the show never outruns its cruising speed on an ordinary scroll, in either direction", () => {
+  const dt = 1 / 60;
+  assert.ok(followStep(0, 3, dt) / dt <= CRUISE + 1e-9);
+  assert.ok(followStep(5, 2, dt) >= 5 - (CRUISE + 1e-9) * dt);
 });
 
-test("one wheel notch moves exactly one chapter, forwards and back", () => {
-  assert.equal(snapTarget(RESTS, 1.9, 2.02), 2.8);
-  assert.equal(snapTarget(RESTS, 1.9, 1.78), 0.9);
+test("the show settles exactly on the scroll position", () => {
+  let now = 0;
+  for (let i = 0; i < 1000; i++) now = followStep(now, 0.4, 1 / 60);
+  assert.equal(now, 0.4);
 });
 
-test("a long scroll settles on the chapter ahead, not back where it started", () => {
-  assert.equal(snapTarget(RESTS, 0, 2.3), 2.8);
-  assert.equal(snapTarget(RESTS, 3.8, 1.4), 0.9);
+test("a long backlog clears faster than cruising speed, so a scroll bar drag doesn't play the whole flight", () => {
+  const dt = 1 / 60;
+  assert.ok(followStep(0, 15, dt) / dt > 1.5);
 });
 
-test("a scroll that stops about on a chapter stays there rather than skipping it", () => {
-  assert.equal(snapTarget(RESTS, 0, 2.84), 2.8);
-  assert.equal(snapTarget(RESTS, 3.8, 1.86), 1.9);
+test("an asteroid rests where it was told, comes from far off and leaves past the camera", () => {
+  assert.deepEqual(passBy(0, -0.4, 0.1), [-0.4, 0.1, ROCK_DEPTH]);
+  assert.ok(passBy(-1, -0.4, 0.1)[2] > ROCK_DEPTH * 4);
+  assert.ok(passBy(1, -0.4, 0.1)[2] < ROCK_DEPTH);
+  assert.ok(Math.abs(passBy(1, -0.4, 0.1)[0]) > 1, "off screen by the time it is gone");
 });
 
-test("snapping never leaves the ends of the story", () => {
-  assert.equal(snapTarget(RESTS, 3.8, 3.95), 3.8);
-  assert.equal(snapTarget(RESTS, 0, 0), 0);
+test("Axie's walk runs from inside the hull, up the ramp, to their mark on the ground", () => {
+  assert.ok(walkPath(0).along < 1 && walkPath(0).y > GROUND_Y);
+  assert.deepEqual(walkPath(1), { along: MARK, y: GROUND_Y });
+  for (let out = 0.05; out <= 1; out += 0.05) assert.ok(walkPath(out).y <= walkPath(out - 0.05).y);
+});
+
+test("the page waits at the chat until Axie has arrived and rested there", () => {
+  assert.ok(holdsAtChat(AT.home, 99), "Axie is still walking");
+  assert.ok(holdsAtChat(AT.chat, 0.2), "Axie has only just stopped");
+  assert.ok(!holdsAtChat(AT.chat, 99));
+  assert.ok(AT.end - AT.chat >= 1.5, "there is room to chat before the show ends");
 });
 
 test("the constellation stays inside the logo image and has stars on every stroke", () => {
@@ -54,10 +63,27 @@ test("Axie answers what it knows and admits being a placeholder otherwise", () =
   assert.match(axieReply("what's the weather like"), /placeholder/);
 });
 
-test("every programme cue has a place on the timeline, in order", () => {
-  const times = cues.map((cue) => AT[cue.id as keyof typeof AT]);
-  assert.ok(times.every((time) => typeof time === "number"));
+test("the story's beats run in order", () => {
+  const times = Object.values(AT);
   assert.deepEqual(times, [...times].sort((a, b) => a - b));
+});
+
+test("the crew starts on the current year and runs back to 2024", () => {
+  assert.deepEqual(crews.map((crew) => crew.year), [2026, 2025, 2024]);
+  crews.forEach((crew) => assert.ok(crew.officers.length > 0));
+});
+
+test("every officer gets a star on the chart, in order across it, whatever the head count", () => {
+  crews.forEach((_, year) => {
+    [1, 2, 4, 6, 15].forEach((count) => {
+      const stars = starChart(year, count);
+      assert.equal(stars.length, count);
+      stars.forEach(([x, y], i) => {
+        assert.ok(x >= 0 && x <= 100 && y >= 0 && y <= 100);
+        if (i) assert.ok(x > stars[i - 1][0], "a phone stacks them in this order");
+      });
+    });
+  });
 });
 
 test("the org has three departments, each with a world and a rocket stop in front of it", () => {

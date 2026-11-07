@@ -7,17 +7,21 @@ import {
   BufferGeometry,
   CanvasTexture,
   CatmullRomCurve3,
+  Color,
   CylinderGeometry,
   DirectionalLight,
   DoubleSide,
   EdgesGeometry,
   Float32BufferAttribute,
+  Fog,
   Group,
   IcosahedronGeometry,
+  InstancedMesh,
   LatheGeometry,
   LinearMipmapLinearFilter,
   LineBasicMaterial,
   LineSegments,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -26,6 +30,7 @@ import {
   PlaneGeometry,
   PMREMGenerator,
   Points,
+  Quaternion,
   RepeatWrapping,
   RingGeometry,
   Scene,
@@ -41,7 +46,8 @@ import {
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import gsap from "gsap";
-import { EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, STOP, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { buildCampus } from "./campus";
 import { createRocket } from "./rocket";
 
 const NOISE = /* glsl */ `
@@ -204,7 +210,7 @@ function buildStars(count: number, px: number) {
         vec4 mv=modelViewMatrix*vec4(position,1.);
         float tw=.72+.28*sin(uTime*(.8+aSeed*1.6)+aSeed*40.);
         gl_PointSize=clamp(aSize*uPx*(150./-mv.z),1.,5.*uPx);
-        vA=tw*(1.-uHouse*.8);
+        vA=tw*(1.-uHouse);
         vC=aColor;
         gl_Position=projectionMatrix*mv;
       }`,
@@ -557,6 +563,74 @@ function buildConstellation(px: number) {
   return { group, uniforms };
 }
 
+// The flight log's asteroids, one per event, each with a comet's tail streaming back the way it came. Shooting stars
+// cross behind them, and a belt of loose rock gives the moving camera something to pass
+function buildAsteroids(count: number) {
+  const rockShape = new IcosahedronGeometry(1, 3);
+  const position = rockShape.attributes.position;
+  for (let i = 0; i < position.count; i++) {
+    const [x, y, z] = [position.getX(i), position.getY(i), position.getZ(i)];
+    const lump = 1 + Math.sin(x * 3.1 + 1) * Math.sin(y * 2.7 + 2) * Math.sin(z * 3.3) * 0.2 + Math.sin(x * 9) * Math.sin(y * 8) * Math.sin(z * 10) * 0.05;
+    position.setXYZ(i, x * lump, y * lump, z * lump);
+  }
+  rockShape.computeVertexNormals();
+  const rockSkin = new MeshStandardMaterial({ color: "#6a5a9c", roughness: 0.92, metalness: 0.08, flatShading: true });
+
+  const tailShape = new PlaneGeometry(1, 1).translate(0.5, 0, 0);
+  const tailSkin = () =>
+    new ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      uniforms: { uFade: { value: 1 } },
+      vertexShader: "varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+      fragmentShader: /* glsl */ `
+        uniform float uFade; varying vec2 vU;
+        void main(){
+          float along=vU.x, across=(vU.y-.5)*2., reach=pow(1.-along,1.1)+.02;
+          float a=exp(-across*across/(reach*reach)*5.)*pow(1.-along,2.2);
+          vec3 c=mix(vec3(1.,.97,1.),vec3(.45,.3,1.),smoothstep(0.,.4,along));
+          gl_FragColor=vec4(c*a*uFade*.8,1.);
+        }`,
+    });
+
+  const group = new Group();
+  // Tails stream up and to the right, back towards where the rocks come from
+  const tailAngle = Math.atan2(0.72, 1);
+  const rocks = Array.from({ length: count }, () => {
+    const holder = new Group();
+    const rock = new Mesh(rockShape, rockSkin);
+    const tailMaterial = tailSkin();
+    const tail = new Mesh(tailShape, tailMaterial);
+    tail.rotation.z = tailAngle;
+    tail.position.z = -2;
+    holder.add(tail, rock);
+    group.add(holder);
+    return { holder, rock, tail, tailMaterial };
+  });
+
+  const streaks = [0, 1, 2, 3].map(() => {
+    const material = tailSkin();
+    const streak = new Mesh(tailShape, material);
+    streak.rotation.z = tailAngle;
+    group.add(streak);
+    return { streak, material };
+  });
+
+  let seed = 31;
+  const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const belt = new InstancedMesh(rockShape, rockSkin, 26);
+  const matrix = new Matrix4();
+  const turn = new Quaternion();
+  for (let i = 0; i < 26; i++) {
+    const place = new Vector3((random() - 0.5) * 300, (random() - 0.5) * 120, -540 - random() * 170);
+    const size = 1 + random() * 5;
+    turn.setFromAxisAngle(new Vector3(random(), random(), random()).normalize(), random() * 6);
+    belt.setMatrixAt(i, matrix.compose(place, turn, new Vector3(size, size * (0.7 + random() * 0.5), size)));
+  }
+  return { group, rocks, streaks, belt };
+}
+
 // Exhaust: dust left along the path already flown, so it holds still when the rocket does
 function buildTrail(count: number, px: number) {
   const positions = new Float32Array(count * 3);
@@ -623,18 +697,25 @@ function buildSmoke(count: number, px: number) {
 export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const low = matchMedia("(max-width: 768px)").matches || navigator.hardwareConcurrency <= 4;
   const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance", alpha: false });
-  let dpr = Math.min(devicePixelRatio, low ? 1.25 : 1.5);
+  let dpr = Math.min(devicePixelRatio, low ? 1.75 : 2);
   renderer.setPixelRatio(dpr);
+  renderer.shadowMap.enabled = true;
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(s.fov, 1, 0.1, 2600);
   scene.environment = buildEnvironment(renderer);
-  scene.add(new AmbientLight("#8a7cff", 0.5));
+  const ambient = new AmbientLight("#8a7cff", 0.5);
   const sun = new DirectionalLight("#ffffff", 1.6);
   sun.position.set(-6, 8, 8);
-  scene.add(sun);
+  scene.add(ambient, sun);
+  // Melts the far ground and buildings into the daytime sky, whose horizon is this colour. Far past anything else that takes fog
+  const haze = new Fog("#8fc9f5", 50, 300);
+  const spaceHaze = new Color("#170a38");
+  const spaceAmbient = new Color("#8a7cff");
+  const dayAmbient = new Color("#dcebff");
+  scene.fog = haze;
 
-  const nebula = bake(renderer, low ? 768 : 1280, low ? 384 : 640, /* glsl */ `
+  const nebula = bake(renderer, low ? 1024 : 2048, low ? 512 : 1024, /* glsl */ `
     varying vec2 vUv;
     void main(){
       vec3 d=sphereDir(vUv);
@@ -651,19 +732,19 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const skyMaterial = new ShaderMaterial({
     side: BackSide,
     depthWrite: false,
-    uniforms: { uMap: { value: nebula }, uHouse: { value: 1 } },
+    uniforms: { uMap: { value: nebula }, uHouse: { value: 1 }, uLight: { value: 1 } },
     vertexShader: "varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
     fragmentShader: /* glsl */ `
-      uniform sampler2D uMap; uniform float uHouse; varying vec3 vD;
+      uniform sampler2D uMap; uniform float uHouse,uLight; varying vec3 vD;
       void main(){
         vec3 d=normalize(vD);
         vec2 uv=vec2(atan(d.z,d.x)/6.2831853+.5,asin(d.y)/3.1415927+.5);
         vec3 space=textureLod(uMap,uv,0.).rgb;
         float e=max(d.y,0.);
-        vec3 dusk=mix(vec3(.42,.17,.86),vec3(.14,.055,.36),pow(e,.62));
-        vec3 c=mix(space,dusk,uHouse);
+        vec3 day=mix(vec3(.56,.79,.96),vec3(.06,.29,.66),pow(e,.35));
+        vec3 c=mix(space,day,uHouse);
         float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
-        gl_FragColor=vec4(c+(n-.5)/180.,1.);
+        gl_FragColor=vec4((c+(n-.5)/180.)*uLight,1.);
       }`,
   });
   const sky = new Mesh(new SphereGeometry(1200, 40, 24), skyMaterial);
@@ -677,8 +758,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
 
   const curve = new CatmullRomCurve3(FLIGHT.map(([x, y, z]) => new Vector3(x, y, z)), false, "centripetal");
   const lastStop = FLIGHT.length - 1;
-  const rocket = createRocket();
-  scene.add(rocket.group);
+  const rocket = createRocket(low);
+  scene.add(rocket.group, rocket.yard);
   const trailCount = low ? 50 : 90;
   const trail = buildTrail(trailCount, dpr);
   scene.add(trail.points);
@@ -692,13 +773,16 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
 
   const earth = buildEarth(renderer, low ? 1024 : 2048, low ? 64 : 112);
   const pad = new Mesh(new CylinderGeometry(3.5, 4, 0.5, 48).translate(0, GROUND_Y + 0.05, 0), new MeshStandardMaterial({ color: "#4a3aa8", metalness: 0.5, roughness: 0.55 }));
-  scene.add(earth, pad);
+  pad.receiveShadow = true;
+  const campus = buildCampus(low);
+  campus.group.add(pad);
+  scene.add(earth, campus.group);
 
   const constellation = buildConstellation(dpr);
   constellation.group.position.set(0, 6.6, -110);
   scene.add(constellation.group);
 
-  const texSize = low ? 384 : 768;
+  const texSize = low ? 768 : 1536;
   const segments = low ? 40 : 64;
   const looks = [
     { a: "#2c1570", b: "#5a37c8", c: "#a48cf2", scale: 2.2, bands: 34, seed: 2, rim: "#a9b4ff" },
@@ -734,6 +818,14 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const things = buildThingNetwork(low ? 44 : 70, WORLD_RADIUS, dpr);
   worlds[2].group.add(things);
 
+  const stops = [...canvas.parentElement!.querySelectorAll<HTMLElement>(".log-stop")];
+  const asteroids = buildAsteroids(stops.length);
+  // Hung off the camera, so they keep their place on screen while it tracks along with the rocket
+  camera.add(asteroids.group);
+  scene.add(camera, asteroids.belt);
+  stops.forEach((stop) => (stop.style.left = stop.style.top = "0"));
+  let rockSize = 8;
+
   let width = 1;
   let height = 1;
   const resize = () => {
@@ -745,6 +837,11 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     constellation.group.scale.setScalar(Math.min(1, camera.aspect * 0.87));
     // On a wide screen it sits a little right, clear of the copy in the bottom left
     constellation.group.position.x = camera.aspect >= 1 ? 5 : 0;
+    // A phone's narrow view would crop the sign where it stands on a wide one
+    campus.sign.position.x = camera.aspect >= 1 ? -4 : -18;
+    // Each rock is as big as it needs to be for the photo on it to sit inside its outline, whatever the screen
+    const pixelsPerUnit = height / (2 * ROCK_DEPTH * Math.tan((s.fov * Math.PI) / 360));
+    rockSize = (stops[0]?.querySelector<HTMLElement>(".log-frame")?.offsetWidth ?? 480) * 0.68 / pixelsPerUnit;
   };
   const observer = new ResizeObserver(resize);
   observer.observe(canvas.parentElement!);
@@ -781,6 +878,9 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   const behind = new Vector3();
   const beside = new Vector3();
   const worldUp = new Vector3(0, 1, 0);
+  const steady = new Vector3(0, 1, 0);
+  const steadySide = new Vector3(1, 0, 0);
+  const sideways = new Vector3();
 
   const tick = (time: number) => {
     if (!inView || document.hidden) return;
@@ -798,9 +898,10 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     if (moving && wasMoving) slow += (gap - slow) * 0.04;
     wasMoving = moving;
     if (frame > 120 && slow > 30 && level < 2) {
-      // Trade sharpness and star count for frame rate on hardware that is struggling
+      // Trade star count and some sharpness for frame rate on hardware that is struggling. Never below one pixel for each pixel on
+      // screen, where the whole show goes visibly soft, and a passing stall on the visitor's machine would make that permanent
       level++;
-      dpr *= 0.75;
+      dpr = Math.max(Math.min(devicePixelRatio, 1), dpr * 0.85);
       renderer.setPixelRatio(dpr);
       resize();
       stars.points.geometry.setDrawRange(0, Math.floor(starCount * (level === 1 ? 0.7 : 0.45)));
@@ -808,11 +909,16 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       frame = 0;
     }
 
+    const dt = Math.min(gap / 1000, 0.1);
     const u = s.fly / lastStop;
     curve.getPoint(u, craft);
     curve.getTangent(u, heading);
-    // Coming home the rocket backs down on its flame, so its nose points back along the path
-    if (s.retro > 0.5) heading.negate();
+    // The path's corners would swing a camera hung off them, so the rocket and its chase camera both turn through them gently
+    const settle = 1 - Math.exp(-dt * 2.6);
+    steady.lerp(heading, settle).normalize();
+    // Straight up there is no sideways to follow from, so that keeps the last one rather than spinning round the rocket
+    sideways.crossVectors(heading, worldUp);
+    if (sideways.lengthSq() > 0.04) steadySide.lerp(sideways.normalize(), settle).normalize();
     if (s.house < 0.5) {
       // Hanging in space it drifts a little, which sitting on the pad it would not
       const drift = 1 - s.house * 2;
@@ -824,13 +930,13 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     aim.set(s.lx, s.ly, s.lz);
     // Between chapters the camera follows off the rocket's shoulder, close enough to the side that the cabin still shows
     if (s.chase > 0) {
-      beside.crossVectors(heading, worldUp).normalize();
+      beside.copy(steadySide);
       // A narrow screen has less width to fit the rocket in, so it follows from further out
       const reach = camera.aspect >= 1 ? 1 : 1.9;
-      behind.copy(craft).addScaledVector(heading, -8 * reach).addScaledVector(beside, 20 * reach);
+      behind.copy(craft).addScaledVector(steady, -8 * reach).addScaledVector(beside, 20 * reach);
       behind.y += 5;
       camera.position.lerp(behind, s.chase);
-      aim.lerp(ahead.copy(craft).addScaledVector(heading, camera.aspect >= 1 ? 8 : 3), s.chase);
+      aim.lerp(ahead.copy(craft).addScaledVector(steady, camera.aspect >= 1 ? 8 : 3), s.chase);
     }
     camera.lookAt(aim);
     const side = s.side * (1 - s.chase);
@@ -840,25 +946,36 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     else camera.setViewOffset(width, height, 0, Math.abs(side) * 0.17 * height, width, height);
 
     sky.position.copy(camera.position);
+    const light = 1 - s.dim;
     skyMaterial.uniforms.uHouse.value = s.house;
+    skyMaterial.uniforms.uLight.value = light;
+    stars.points.visible = s.dim < 0.5;
     stars.material.uniforms.uTime.value = time;
     stars.material.uniforms.uHouse.value = s.house;
-    scene.environmentIntensity = 0.75 + s.house * 0.45;
+    // The surroundings the metal reflects are the purple of space, so on the ground daylight takes over from them
+    scene.environmentIntensity = (0.75 - s.house * 0.4) * light;
+    ambient.color.copy(spaceAmbient).lerp(dayAmbient, s.house);
+    ambient.intensity = (0.5 + s.house * 0.9) * light;
+    sun.intensity = (1.6 + s.house * 0.8) * light;
+    // As the sky turns to space the haze closes in until the campus has melted into it and can go without a pop. In space, where far rocks would turn flat with it, there is none
+    const hazy = s.house > 0.01;
+    haze.near = hazy ? 60 - s.house * 10 : 1e4;
+    haze.far = hazy ? 72 + s.house * 228 : 2e4;
+    // Darkens well ahead of the sky, or the campus shows as a bright slab of horizon colour against the dark above it
+    haze.color.set("#8fc9f5").lerp(spaceHaze, 1 - s.house ** 3).multiplyScalar(light);
+    campus.setDim(s.dim);
 
-    const dt = Math.min(gap / 1000, 0.1);
     // Thrust follows the scroll: the flame stretches while the visitor moves and idles when they stop
     speed += (Math.abs(s.fly - lastFly) / Math.max(dt, 0.001) - speed) * 0.18;
     lastFly = s.fly;
-    rocket.place(craft, heading, camera);
-    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), Math.min(speed, 2), s.wave, s.out);
+    rocket.place(craft, steady, camera, s.ground);
+    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), Math.min(speed, 2), s, camera);
 
-    // The jump home is not a stretch of path, so no dust is drawn across it
-    const trailStart = s.retro > 0.5 ? STOP.descent : 0;
     trail.points.visible = s.house < 0.95 && s.burn > 0;
     if (trail.points.visible) {
       trail.material.uniforms.uAlpha.value = s.burn;
       for (let i = 0; i < trailCount; i++) {
-        const back = Math.max(trailStart, s.fly - 0.05 - i * 0.022) / lastStop;
+        const back = Math.max(0, s.fly - 0.05 - i * 0.022) / lastStop;
         curve.getPoint(back, dust);
         const spread = 0.15 + (i / trailCount) * 1.5;
         trail.positions[i * 3] = dust.x + trail.jitter[i * 3] * spread;
@@ -870,7 +987,11 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     smoke.points.visible = s.smoke > 0 && s.smoke < 1;
     smoke.material.uniforms.uSmoke.value = s.smoke;
 
-    earth.visible = pad.visible = s.cz > -200;
+    // Campus and planet never share a frame: by the time the sky has turned to space the camera has tipped up off the ground
+    campus.group.visible = s.house > 0.01;
+    // The ground falls away as the rocket climbs, so nothing is left in frame to vanish when the sky reaches space
+    campus.group.position.y = -(Math.max(0, 1 - s.house / 0.5) ** 2) * 60;
+    earth.visible = !campus.group.visible && s.cz > -200;
 
     satellite.visible = s.sat > 0 && s.sat < 1;
     if (satellite.visible) {
@@ -904,6 +1025,41 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       shell.rotation.y = time * 0.05;
     }
     if (worlds[2].group.visible) things.rotation.y = time * 0.06;
+
+    const passing = s.log > -1 && s.log < stops.length;
+    asteroids.group.visible = passing;
+    asteroids.belt.visible = s.cz < -400 && s.cz > -600;
+    // The rocket climbs out of the belt as the last event goes, so loose rock doesn't sit behind the crew's constellations
+    asteroids.belt.position.y = -(Math.max(0, s.log - (stops.length - 1)) ** 2) * 180;
+    if (passing) {
+      const halfUp = Math.tan((camera.fov * Math.PI) / 360);
+      const wide = camera.aspect >= 1;
+      const [restX, restY] = wide ? [-0.4, -0.08] : [0, 0.34];
+      asteroids.rocks.forEach(({ holder, rock, tail, tailMaterial }, i) => {
+        const p = s.log - i;
+        holder.visible = Math.abs(p) < 1;
+        if (!holder.visible) return;
+        const [fx, fy, depth] = passBy(p, restX, restY);
+        const up = depth * halfUp;
+        holder.position.set(fx * up * camera.aspect, fy * up, -depth);
+        rock.scale.setScalar(rockSize);
+        rock.rotation.set(time * 0.05 + i, time * 0.08 + i * 2, 0);
+        tail.scale.set(rockSize * (4.6 + Math.sin(time * 0.9 + i) * 0.4), rockSize * 1.3, 1);
+        tailMaterial.uniforms.uFade.value = Math.min(1, (1 - Math.abs(p)) * 4);
+        // The photo rides on the rock, so it grows and moves exactly as the rock does. Whole pixels, because text and photos on a fractional one go soft
+        stops[i].style.transform = `translate(${Math.round((fx * 0.5 + 0.5) * width)}px,${Math.round((0.5 - fy * 0.5) * height)}px) scale(${ROCK_DEPTH / depth})`;
+      });
+      asteroids.streaks.forEach(({ streak, material }, i) => {
+        const cycle = (time * 0.13 + i * 0.27) % 1;
+        streak.visible = cycle < 0.22;
+        if (!streak.visible) return;
+        const run = cycle / 0.22;
+        const up = 170 * halfUp;
+        streak.position.set((0.95 - i * 0.36 - run * 0.7) * up * camera.aspect, (0.95 - (i % 2) * 0.3 - run * 0.8) * up, -170);
+        streak.scale.set(50 * Math.sin(run * Math.PI), 1.6, 1);
+        material.uniforms.uFade.value = Math.sin(run * Math.PI);
+      });
+    }
 
     renderer.render(scene, camera);
 

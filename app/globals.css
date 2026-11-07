@@ -11,7 +11,6 @@
   --lilac: #efe6ff;
   --gutter: clamp(1rem, 4vw, 3rem);
   --bar-gap: 0px;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
@@ -108,8 +107,8 @@ html:not(.live) .live-only {
 canvas,
 .scrim,
 .cover,
-.signal-pulse,
-.cues {
+.veil,
+.signal-pulse {
   display: none;
 }
 
@@ -137,16 +136,10 @@ canvas,
   font-size: 0.6875rem;
   border: 1px solid currentColor;
   border-radius: 2px;
-  transform: rotate(-1.5deg);
   background: rgb(18 7 46 / 0.6);
   color: var(--lilac);
   text-shadow: none;
   text-underline-offset: 2px;
-}
-
-a.origin:hover {
-  background: var(--lilac);
-  color: var(--dome-950);
 }
 
 .origin.unissued {
@@ -241,7 +234,7 @@ a.origin:hover {
   margin-bottom: 0.375rem;
 }
 
-/* Flight log: a strip of film. Each stop is a print with its contact strip, and its notes beside it */
+/* Flight log: each stop is a print with its contact strip, and its notes beside it */
 .kicker {
   font-family: var(--font-ticket), monospace;
   font-size: 0.75rem;
@@ -292,14 +285,6 @@ a.origin:hover {
   margin-bottom: 0.375rem;
   font-family: var(--font-ticket), monospace;
   font-size: 0.6875rem;
-}
-
-.log-develop {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--violet), var(--dome-950));
-  opacity: 0;
-  pointer-events: none;
 }
 
 .log-contact {
@@ -452,62 +437,53 @@ a.origin:hover {
   cursor: pointer;
 }
 
-/* Crew manifest */
-.crew-grid {
+/* The crew, year by year */
+.crew-years {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 2.5rem;
   width: 100%;
+  margin-top: 1.5rem;
 }
 
-.crew-card {
+.crew-date {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid rgb(239 230 255 / 0.5);
-  border-radius: 6px;
-  background: rgb(18 7 46 / 0.6);
-  text-shadow: none;
-}
-
-.crew-pending {
-  border-style: dashed;
-}
-
-.crew-patch {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border: 2px solid var(--peri);
-  border-radius: 50%;
-  outline: 1px dashed var(--orchid);
-  outline-offset: 2px;
+  gap: 0.875rem;
   font-family: var(--font-display), sans-serif;
   font-weight: 900;
-  font-size: 0.9375rem;
+  font-size: clamp(2.25rem, 4.2vw, 4rem);
+  line-height: 1;
 }
 
-.crew-card strong,
-.crew-card small {
+.crew-chart svg {
+  display: none;
+}
+
+.crew-chart ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.crew-label strong,
+.crew-label small {
   display: block;
 }
 
-.crew-card strong {
+.crew-label strong {
   line-height: 1.2;
 }
 
-.crew-card small {
+.crew-label small {
   margin-top: 0.125rem;
   font-size: 0.875rem;
   line-height: 1.25;
 }
 
-.crew-card .origin {
-  margin-top: 0.375rem;
+.crew-pending .crew-label strong {
+  font-weight: 400;
+  font-style: italic;
 }
 
 /* Programme sheet */
@@ -607,7 +583,7 @@ a.origin:hover {
 
 .live #story {
   background: none;
-  height: 1375lvh;
+  height: var(--story-height);
 }
 
 .live .stage {
@@ -615,7 +591,8 @@ a.origin:hover {
   top: 0;
   height: 100lvh;
   overflow: hidden;
-  background: var(--dome-900);
+  /* The 3D sky's own colours, so the show opens on blue before the canvas has loaded */
+  background: linear-gradient(to top, #8fc9f5, #3f7bc6 28%, #0f4aa8);
 }
 
 .live canvas {
@@ -632,13 +609,19 @@ a.origin:hover {
   opacity: 1;
 }
 
-.live .cover {
+.live .cover,
+.live .veil {
   display: block;
   position: absolute;
   inset: 0;
-  background: var(--violet);
+  background: #000;
   opacity: 0;
   pointer-events: none;
+}
+
+/* Over the copy too: a jump between chapters hides all of it */
+.live .veil {
+  z-index: 10;
 }
 
 .live .beat {
@@ -647,8 +630,8 @@ a.origin:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 5.5rem var(--gutter) calc(var(--bar-gap) + 6rem);
-  text-shadow: 0 1px 4px rgb(18 7 46 / 0.5);
+  padding: 5.5rem var(--gutter) calc(var(--bar-gap) + 2.5rem);
+  text-shadow: 0 1px 2px rgb(18 7 46 / 0.6);
   pointer-events: none;
 }
 
@@ -718,65 +701,70 @@ a.origin:hover {
   text-align: right;
 }
 
-.live .log {
-  padding-inline: 0;
-  padding-bottom: calc(var(--bar-gap) + 4.75rem);
-  justify-content: space-between;
-}
-
 .live .log h2 {
-  padding-inline: var(--gutter);
   font-size: clamp(2rem, 3.6vw, 3.5rem);
 }
 
-/* Wider than the screen because it is tilted, and its corners would otherwise show */
-.live .log-window {
-  width: 110vw;
-  margin-left: -5vw;
-  rotate: -1.4deg;
-  perspective: 1400px;
-}
-
-/* Wide padding either side, so the first and last stops can each rest at the centre of the screen */
+/* Each stop is a point the sky moves to where its asteroid is, with the print centred on it and the notes alongside. Without
+   the sky, as when WebGL drops out mid-page, they still fade in and out in this one place */
 .live .log-track {
-  --stop: min(52rem, 84vw);
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  gap: 0.5rem;
-  width: max-content;
-  margin: 0;
-  padding: 1.75rem calc(55vw - var(--stop) / 2);
-  background: #0a031f;
-  transform-style: preserve-3d;
-  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
-}
-
-/* The sprocket holes along both edges of the film */
-.live .log-track::before,
-.live .log-track::after {
-  content: "";
   position: absolute;
-  inset-inline: 0;
-  height: 0.75rem;
-  background: repeating-linear-gradient(to right, rgb(239 230 255 / 0.8) 0 0.875rem, transparent 0.875rem 2rem);
-}
-
-.live .log-track::before {
-  top: 0.5rem;
-}
-
-.live .log-track::after {
-  bottom: 0.5rem;
+  inset: 0;
+  display: block;
+  margin: 0;
 }
 
 .live .log-stop {
-  flex: none;
-  width: var(--stop);
+  --print: min(30rem, 36vw, 62lvh);
+  position: absolute;
+  left: 30%;
+  top: 54%;
+  display: block;
+  width: 0;
+  height: 0;
+  padding: 0;
+  background: none;
+  transform-origin: 0 0;
+}
+
+.live .beat[data-active] .log-stop:not([data-on]) :is(a, button) {
+  pointer-events: none;
+}
+
+.live .log-frame {
+  position: absolute;
+  left: calc(var(--print) / -2);
+  top: calc(var(--print) * -0.375);
+  width: var(--print);
 }
 
 .live .log-print {
-  max-height: 40lvh;
+  border: 0.5rem solid var(--lilac);
+  border-radius: 3px;
+  box-shadow: 0 1.25rem 3rem rgb(5 0 20 / 0.65);
+  box-sizing: content-box;
+  margin: -0.5rem;
+}
+
+.live .log-contact {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  margin: 0;
+}
+
+.live .log-thumb {
+  box-shadow: 0 2px 8px rgb(5 0 20 / 0.6);
+}
+
+.live .log-notes {
+  position: absolute;
+  left: calc(var(--print) / 2 + 2.25rem);
+  top: calc(var(--print) * -0.26);
+  width: min(23rem, 27vw);
+  padding: 1rem 1.25rem;
+  border-left: 2px solid var(--peri);
+  background: rgb(18 7 46 / 0.78);
 }
 
 .live .chat-beat {
@@ -792,16 +780,123 @@ a.origin:hover {
 }
 
 .live .crew {
-  justify-content: center;
   padding-right: 42vw;
 }
 
 .live .crew h2 {
+  flex: none;
   font-size: clamp(2rem, 3.6vw, 3.5rem);
 }
 
-.live .crew-card {
-  pointer-events: none;
+/* Years stack on one spot, and each chart holds its officers where their stars fall */
+.live .crew-years {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-height: 0;
+  margin-top: 1rem;
+}
+
+.live .crew-year {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.live .crew-chart {
+  position: relative;
+  width: min(100%, calc((100lvh - 19rem) * 4 / 3));
+  aspect-ratio: 160 / 120;
+  margin-top: 1rem;
+}
+
+.live .crew-chart svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.live .crew-wide {
+  display: block;
+}
+
+.live .crew-tall {
+  display: none;
+}
+
+.live .crew-line {
+  stroke: var(--peri);
+  stroke-width: 0.32;
+  stroke-dasharray: 1 2;
+}
+
+.live .crew-streak {
+  stroke: #fff;
+  stroke-width: 0.6;
+  stroke-dasharray: 0.28 3;
+  stroke-dashoffset: 0.28;
+}
+
+.live .crew-chart ul {
+  position: absolute;
+  inset: 0;
+  display: block;
+  margin: 0;
+}
+
+.live .crew-star {
+  position: absolute;
+  left: var(--wx);
+  top: var(--wy);
+  width: 0;
+  height: 0;
+}
+
+.live .crew-star::before {
+  content: "";
+  position: absolute;
+  left: -0.3125rem;
+  top: -0.3125rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0.5rem 0.125rem var(--peri), 0 0 1.25rem 0.25rem rgb(124 58 237 / 0.75);
+}
+
+.live .crew-label {
+  position: absolute;
+  left: 0;
+  width: max-content;
+  max-width: 11rem;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.live .crew-star[data-side="above"] .crew-label {
+  bottom: 0.875rem;
+}
+
+.live .crew-star[data-side="below"] .crew-label {
+  top: 0.875rem;
+}
+
+/* The chart's ends keep their labels on the chart */
+.live .crew-star[data-edge="start"] .crew-label {
+  left: -0.3125rem;
+  transform: none;
+  text-align: left;
+}
+
+.live .crew-star[data-edge="end"] .crew-label {
+  left: auto;
+  right: -0.3125rem;
+  transform: none;
+  text-align: right;
 }
 
 .live .signal-pulse {
@@ -815,86 +910,6 @@ a.origin:hover {
   border: 2px solid var(--peri);
   border-radius: 50%;
   opacity: 0;
-}
-
-.live .cues {
-  display: flex;
-  position: fixed;
-  z-index: 15;
-  left: var(--gutter);
-  bottom: calc(var(--bar-gap) + 1.25rem);
-  align-items: flex-end;
-  gap: 1rem;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
-}
-
-.live .cues.on {
-  opacity: 1;
-  visibility: visible;
-}
-
-.cue-plan {
-  position: relative;
-}
-
-.cues ol {
-  position: relative;
-  display: flex;
-}
-
-.cue-dome {
-  position: absolute;
-  inset: -1.25rem 0 0;
-  width: 100%;
-  height: calc(100% + 1.25rem);
-  fill: rgb(18 7 46 / 0.45);
-  stroke: rgb(169 180 255 / 0.6);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-  pointer-events: none;
-}
-
-.cues li {
-  transform: translateY(calc(var(--lift) * -1));
-}
-
-.cue-dot {
-  display: grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.cue-dot::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 1.5px;
-  background: rgb(239 230 255 / 0.4);
-  transition: background 0.2s, transform 0.3s var(--ease-out);
-}
-
-.cue-dot:hover::before {
-  background: var(--lilac);
-}
-
-.cue-dot[aria-current]::before {
-  background: var(--lilac);
-  transform: scale(1.5);
-}
-
-.cues p {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.875rem;
-  line-height: 1.3;
-  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
-}
-
-.cue-now {
-  font-weight: 600;
 }
 
 @media (max-aspect-ratio: 1/1) {
@@ -917,38 +932,49 @@ a.origin:hover {
   }
 
   .live .crew {
-    justify-content: flex-start;
     padding-right: var(--gutter);
   }
 
-  .live .crew-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
+  .live .crew-chart {
+    container-type: inline-size;
+    width: min(100%, calc((100lvh - 17rem) * 100 / 130));
+    aspect-ratio: 100 / 130;
   }
 
-  .live .crew-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.375rem;
-    padding: 0.5rem;
+  .live .crew-wide {
+    display: none;
   }
 
-  .live .crew-patch {
-    width: 2.25rem;
-    height: 2.25rem;
+  .live .crew-tall {
+    display: block;
+  }
+
+  .live .crew-line {
+    stroke-width: 0.45;
+  }
+
+  .live .crew-star {
+    left: var(--tx);
+    top: var(--ty);
+  }
+
+  /* Stacked down the screen, the stars keep to a narrow column and the labels line up clear of it, so the line can't cross them */
+  .live .crew-star[data-side] .crew-label {
+    left: calc(31cqw - var(--tx));
+    right: auto;
+    top: -0.75rem;
+    bottom: auto;
+    max-width: 66cqw;
+    transform: none;
+    text-align: left;
+  }
+
+  .live .crew-label strong {
+    font-size: 0.9375rem;
+  }
+
+  .live .crew-label small {
     font-size: 0.75rem;
-  }
-
-  .live .crew-card strong {
-    font-size: 0.875rem;
-  }
-
-  .live .crew-card small {
-    font-size: 0.75rem;
-  }
-
-  .live .log {
-    padding-bottom: calc(var(--bar-gap) + 6.75rem);
   }
 
   .log-stop {
@@ -956,21 +982,18 @@ a.origin:hover {
     gap: 0.5rem;
   }
 
-  .live .log-print {
-    aspect-ratio: 16 / 9;
-    max-height: 24lvh;
+  /* On a phone the rock and its photo take the top of the screen and the notes hang under them */
+  .live .log-stop {
+    --print: min(19rem, 74vw, 34lvh);
+    left: 50%;
+    top: 32%;
   }
 
-  /* On a phone the strip sits on the print, which leaves the notes the room */
-  .live .log-frame {
-    position: relative;
-  }
-
-  .live .log-contact {
-    position: absolute;
-    left: 0.375rem;
-    bottom: 0.375rem;
-    margin: 0;
+  .live .log-notes {
+    left: calc(var(--print) / -2);
+    top: calc(var(--print) * 0.375 + 1.25rem);
+    width: var(--print);
+    padding: 0.625rem 0.875rem;
   }
 
   .live .log-thumb {
@@ -996,6 +1019,12 @@ a.origin:hover {
     justify-content: flex-end;
   }
 
+  /* On a phone this sits on the sunlit ground rather than the sky */
+  .live .chat-beat h2 {
+    color: var(--dome-950);
+    text-shadow: none;
+  }
+
   .live .chat {
     width: 100%;
     margin-top: 0.625rem;
@@ -1005,10 +1034,6 @@ a.origin:hover {
     height: 8.5rem;
   }
 
-  .live .beat {
-    padding-bottom: calc(var(--bar-gap) + 7.5rem);
-  }
-
   .live .scrim {
     display: block;
     position: absolute;
@@ -1016,13 +1041,6 @@ a.origin:hover {
     background: linear-gradient(to top, rgb(47 18 117 / 0.85) 40%, rgb(47 18 117 / 0));
     opacity: 0;
     pointer-events: none;
-  }
-
-  .live .cues {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.375rem;
-    right: var(--gutter);
   }
 
   .live .world {
@@ -1060,11 +1078,5 @@ a.origin:hover {
 
   #join {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cue-dot::before {
-    transition: none;
   }
 }

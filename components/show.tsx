@@ -2,21 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crew, cues, events, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
-import { initialSky } from "@/lib/story";
+import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crews, events, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
+import { AT, initialSky, SCREENS_PER_UNIT, starChart } from "@/lib/story";
 
 // A no-break space, because SVG text collapses a normal one that sits alone in its own tspan
 const TITLE = "CISCO\u00A0NETCONNECT".split("");
 
-function Origin({ label = "Source: launch page" }: { label?: string }) {
-  return (
-    <a className="origin" href={LAUNCH_URL} target="_blank" rel="noreferrer" data-rest>
-      {label}
-    </a>
-  );
-}
-
-// A frame on the film: the print being shown, a contact strip to pick another, and the notes beside it
+// What an asteroid carries: the print being shown, a contact strip to pick another, and the notes beside it
 function LogStop({ event }: { event: (typeof events)[number] }) {
   const [shown, setShown] = useState(0);
   const photo = event.photos[shown];
@@ -25,14 +17,13 @@ function LogStop({ event }: { event: (typeof events)[number] }) {
       <div className="log-frame">
         <figure className="log-print">
           {photo.src ? (
-            <Image src={photo.src} alt={photo.alt} fill sizes="(max-aspect-ratio: 1/1) 84vw, 26rem" />
+            <Image src={photo.src} alt={photo.alt} fill sizes="(max-aspect-ratio: 1/1) 74vw, 32rem" />
           ) : (
             <figcaption className="log-empty">
               <small>Photo to come</small>
               {photo.alt}
             </figcaption>
           )}
-          <span className="log-develop" aria-hidden="true" />
         </figure>
         {event.photos.length > 1 ? (
           <div className="log-contact" role="group" aria-label={`Photos of ${event.title}`}>
@@ -53,7 +44,54 @@ function LogStop({ event }: { event: (typeof events)[number] }) {
             <strong className="launch-count">{event.went}</strong> people went
           </p>
         ) : null}
-        {event.confirmed ? event.went ? <Origin /> : null : <span className="origin unissued">Unissued</span>}
+        {event.confirmed ? null : <span className="origin unissued">Unissued</span>}
+      </div>
+    </li>
+  );
+}
+
+// A year's officers as a constellation: a star each, joined up in a shape of that year's own. It is drawn twice because a phone
+// stacks the same stars down the screen, and each drawing keeps its own proportions so the line stays even
+function CrewYear({ crew, index }: { crew: (typeof crews)[number]; index: number }) {
+  const wide = starChart(index, crew.officers.length);
+  const tall = wide.map(([x, y]) => [y * 0.25, x]);
+  // A label sits on the outside of its star's bend, which is the side the line never crosses
+  const above = (i: number) => wide[i][1] <= ((wide[i - 1] ?? wide[i + 1] ?? wide[i])[1] + (wide[i + 1] ?? wide[i - 1] ?? wide[i])[1]) / 2;
+  return (
+    <li className="crew-year">
+      <h3 className="crew-date">
+        {crew.year}
+        {crew.confirmed ? null : <span className="origin unissued">Roster to confirm</span>}
+      </h3>
+      <div className="crew-chart">
+        {[
+          { name: "crew-wide", w: 160, h: 120, stars: wide },
+          { name: "crew-tall", w: 100, h: 130, stars: tall },
+        ].map(({ name, w, h, stars }) => {
+          const at = stars.map(([x, y]) => `${(x * w) / 100} ${(y * h) / 100}`);
+          return (
+            <svg className={name} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" key={name}>
+              <path className="crew-line" d={`M${at.join("L")}`} pathLength={1} />
+              <path className="crew-streak" d={`M${w * 1.15} ${-h * 0.35}L${at[0]}`} pathLength={1} />
+            </svg>
+          );
+        })}
+        <ul>
+          {crew.officers.map((person, i) => (
+            <li
+              className={`crew-star ${person.confirmed ? "" : "crew-pending"}`}
+              data-side={above(i) ? "above" : "below"}
+              data-edge={wide[i][0] < 14 ? "start" : wide[i][0] > 86 ? "end" : undefined}
+              style={{ "--wx": `${wide[i][0]}%`, "--wy": `${wide[i][1]}%`, "--tx": `${tall[i][0]}cqw`, "--ty": `${tall[i][1]}%` } as React.CSSProperties}
+              key={person.role + i}
+            >
+              <span className="crew-label">
+                <strong>{person.name}</strong>
+                <small>{person.role}</small>
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </li>
   );
@@ -160,11 +198,12 @@ export function Show() {
       </header>
 
       <main>
-        <section id="story">
+        <section id="story" style={{ "--story-height": `${(AT.end * SCREENS_PER_UNIT + 1) * 100}lvh` } as React.CSSProperties}>
           <div className="stage">
             <canvas ref={canvas} aria-hidden="true" />
             <div className="scrim" />
             <div className="cover" />
+            <div className="veil" />
 
             <div className="beat hero" data-beat="house" data-active>
               <h1 className="sr-only">Cisco NetConnect PUP - Manila</h1>
@@ -197,7 +236,7 @@ export function Show() {
                     A student community at PUP - Manila for enterprise networking, cybersecurity operations and development networking.
                   </p>
                   <p className="hero-cue live-only">
-                    <strong>Axie&rsquo;s still on Earth.</strong> Scroll to start the countdown.
+                    <strong>Axie&rsquo;s at headquarters.</strong> Scroll to walk them to the rocket.
                   </p>
                 </div>
               </div>
@@ -216,13 +255,11 @@ export function Show() {
               <span className="signal-pulse" />
               <h2>It started as a signal.</h2>
               <p data-rest>Cisco NetConnect PUP - Manila began with online initiatives: points of light, a long way apart.</p>
-              <Origin />
             </div>
 
             <div className="beat at-bottom" data-beat="links">
               <h2>Then the points found each other.</h2>
               <p data-rest>&ldquo;Building Bridges, Powering Connections&rdquo; is what the launch was called.</p>
-              <Origin />
             </div>
 
             {worlds.map((world, i) => (
@@ -237,31 +274,20 @@ export function Show() {
 
             <div className="beat log" data-beat="log">
               <h2>The flight log.</h2>
-              <div className="log-window">
-                <ol className="log-track">
-                  {events.map((event) => (
-                    <LogStop event={event} key={event.title} />
-                  ))}
-                </ol>
-              </div>
+              <ol className="log-track">
+                {events.map((event) => (
+                  <LogStop event={event} key={event.title} />
+                ))}
+              </ol>
             </div>
 
             <div className="beat crew" data-beat="crew">
               <h2>The people flying it.</h2>
-              <ul className="crew-grid">
-                {crew.map((person, i) => (
-                  <li className={`crew-card ${person.confirmed ? "" : "crew-pending"}`} key={person.role + i}>
-                    <span className="crew-patch" aria-hidden="true">
-                      {person.name === "Name to come" ? "?" : person.name.split(" ").map((word) => word[0]).slice(0, 2).join("")}
-                    </span>
-                    <span>
-                      <strong>{person.name}</strong>
-                      <small>{person.role}</small>
-                      {person.confirmed ? null : <span className="origin unissued">Unissued</span>}
-                    </span>
-                  </li>
+              <ol className="crew-years">
+                {crews.map((crew, i) => (
+                  <CrewYear crew={crew} index={i} key={crew.year} />
                 ))}
-              </ul>
+              </ol>
             </div>
 
             <div className="beat world world-left" data-beat="home">
@@ -275,25 +301,6 @@ export function Show() {
             </div>
           </div>
         </section>
-
-        <nav className="cues" aria-label="Show programme">
-          <div className="cue-plan">
-            <svg className="cue-dome" viewBox="0 0 288 40" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M2 38 Q144 -20 286 38 Z" />
-            </svg>
-            <ol>
-              {cues.map((cue, i) => (
-                <li key={cue.id} style={{ "--lift": `${Math.round(Math.sin((i / (cues.length - 1)) * Math.PI) * 18)}px` } as React.CSSProperties}>
-                  <a className="cue-dot" href="#story" data-cue={cue.id} aria-label={cue.label} />
-                </li>
-              ))}
-            </ol>
-          </div>
-          <p>
-            <span className="cue-now">A1 On the pad</span>
-            <span className="cue-next">Next: Liftoff</span>
-          </p>
-        </nav>
 
         <section id="programme">
           <h2>Still on the programme</h2>

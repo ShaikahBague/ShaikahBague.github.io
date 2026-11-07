@@ -3,22 +3,6 @@ export const LAUNCH_URL = "https://luma.com/2ntq5ce1";
 // placeholder: the org has no sign-up form yet, swap this for the real join link
 export const JOIN_URL = LAUNCH_URL;
 
-export type Cue = { id: string; label: string; seat: string };
-
-export const cues: Cue[] = [
-  { id: "house", label: "On the pad", seat: "A1" },
-  { id: "liftoff", label: "Liftoff", seat: "A2" },
-  { id: "signal", label: "A signal", seat: "A3" },
-  { id: "links", label: "The bridge", seat: "B1" },
-  { id: "enterprise", label: "Enterprise Networking", seat: "B2" },
-  { id: "cyberops", label: "Cybersecurity Operations", seat: "B3" },
-  { id: "devnet", label: "Development Networking", seat: "C1" },
-  { id: "log", label: "Flight log", seat: "C2" },
-  { id: "crew", label: "The crew", seat: "C3" },
-  { id: "home", label: "Back on Earth", seat: "D1" },
-  { id: "chat", label: "Talk to Axie", seat: "D2" },
-];
-
 export const worlds = [
   {
     id: "enterprise",
@@ -37,9 +21,9 @@ export const worlds = [
   },
 ];
 
-// Add new stops here. `confirmed: false` prints the Unissued stamp, so nothing unverified reads as fact.
-// Photos go in public/events/ (landscape 4:3 fits the print, keep each under about 300 KB), then set
-// src to its path, like "/events/launch-group.jpg". An empty src shows a labelled slot. One photo or many.
+// Each event flies past on its own asteroid. Add new ones here. `confirmed: false` prints the Unissued stamp, so nothing
+// unverified reads as fact. Photos go in public/events/ (landscape 4:3 fits the print, keep each under about 300 KB), then
+// set src to its path, like "/events/launch-group.jpg". An empty src shows a labelled slot. One photo or many.
 export const events = [
   {
     when: "Before the launch",
@@ -79,14 +63,42 @@ export const events = [
   },
 ];
 
-// Launch hosts are named on the launch page. Everyone else here waits on the org's roster.
-export const crew = [
-  { name: "David Gabriel", role: "Launch host", confirmed: true },
-  { name: "Jhered Miguel C. Republica", role: "Launch host", confirmed: true },
-  { name: "Mhyca Monterola", role: "Launch host", confirmed: true },
-  { name: "Clarisse Jem Salazar", role: "Cybersecurity subject matter expert", confirmed: false },
-  { name: "Name to come", role: "Enterprise Networking", confirmed: false },
-  { name: "Name to come", role: "Development Networking", confirmed: false },
+// Each year's officers form that year's constellation in the crew chapter, newest year first. Add or swap people here and the
+// stars lay themselves out. A new year goes at the top and fits itself into the chapter.
+// placeholder: the launch page names the hosts but not which year anyone served, so the 2026 list is the old roster until the org
+// supplies the real ones. `confirmed: false` on a year prints the "Roster to confirm" stamp; set it true once a list is right
+export const crews = [
+  {
+    year: 2026,
+    confirmed: false,
+    officers: [
+      { name: "David Gabriel", role: "Launch host", confirmed: true },
+      { name: "Jhered Miguel C. Republica", role: "Launch host", confirmed: true },
+      { name: "Mhyca Monterola", role: "Launch host", confirmed: true },
+      { name: "Clarisse Jem Salazar", role: "Cybersecurity subject matter expert", confirmed: false },
+      { name: "Name to come", role: "Enterprise Networking", confirmed: false },
+      { name: "Name to come", role: "Development Networking", confirmed: false },
+    ],
+  },
+  {
+    year: 2025,
+    confirmed: false,
+    officers: [
+      { name: "Name to come", role: "Officer", confirmed: false },
+      { name: "Name to come", role: "Officer", confirmed: false },
+      { name: "Name to come", role: "Officer", confirmed: false },
+      { name: "Name to come", role: "Officer", confirmed: false },
+    ],
+  },
+  {
+    year: 2024,
+    confirmed: false,
+    officers: [
+      { name: "Name to come", role: "Officer", confirmed: false },
+      { name: "Name to come", role: "Officer", confirmed: false },
+      { name: "Name to come", role: "Officer", confirmed: false },
+    ],
+  },
 ];
 
 // placeholder: waits on the org, not a confirmed fact

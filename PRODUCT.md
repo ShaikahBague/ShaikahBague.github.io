@@ -28,14 +28,14 @@ Student org with a semester rhythm of events and talks. Visitors are often on mi
 
 - Stack in place: Next.js 16.4 App Router, React 19, Tailwind 4, TypeScript. `cacheComponents` is enabled.
 - Requested by the user: GSAP-heavy scroll storytelling, and 3D assets that do not cause lag.
-- 3D: the user wants the rocket generated with ForgeGUI, but its 3D generation is locked on the current plan (`paid_generation_required`), so the rocket is hand-built in Three.js until that changes. Axie is the org's rigged mascot: `public/axie-new.glb` is the source, `public/axie-flight.glb` is the copy the site loads.
-- Story: Axie starts on Earth, boards, visits the three department worlds, lands back on Earth and becomes a chatbot. The chatbot is a placeholder: `axieReply` in `lib/content.ts` is a keyword lookup until the real one exists, and the panel says so.
-- Undecided: mission wording, full officer roster, event dates, descriptions and photos, upcoming events, join link, social links, domain. Events, photos and people live in `lib/content.ts`; `confirmed: false` prints the Unissued stamp, and an empty photo `src` shows a labelled slot.
+- 3D: the user wants the rocket generated with ForgeGUI, but its 3D generation is locked on the current plan (`paid_generation_required`), so the rocket is hand-built in Three.js until that changes. Axie is the org's rigged mascot: `public/axie-new.glb` is the source and what bigger screens load, because the lighter `public/axie-flight.glb` copy that smaller screens get goes soft up close.
+- Story: Axie starts at headquarters, walks into the rocket, visits the three department worlds and the flight log's asteroids, lands back at headquarters in the dark, walks out of the door's light to the camera and becomes a chatbot. The chatbot is a placeholder: `axieReply` in `lib/content.ts` is a keyword lookup until the real one exists, and the panel says so.
+- Undecided: mission wording, full officer roster, event dates, descriptions and photos, upcoming events, join link, social links, domain. Who held which office in which year is unknown: the crew chapter shows one constellation per year from 2026 back to 2024, each stamped "Roster to confirm", and the 2026 list is the old roster until the org supplies real ones. Events, photos and people live in `lib/content.ts`; `confirmed: false` prints the Unissued stamp, and an empty photo `src` shows a labelled slot.
 
 ## Brand Commitments
 
 - Name: "Cisco NetConnect PUP - Manila". The abbreviation CNCP is the user's own.
-- Theme set by the user: galaxy/space, mostly purple, told as a story.
+- Theme set by the user: galaxy/space, mostly purple, told as a story. The scenes on Earth are the exception: the user wants a blue daytime sky there, turning purple only on the climb to space.
 - Logo: `public/cncp-white.png`, a chrome-periwinkle neon mark with a cyan glow.
 - Do not imply an official Cisco partnership or endorsement beyond the org's own name. No confirmation of one exists yet.
 
@@ -62,4 +62,4 @@ Absent, must not be fabricated: member counts, founding date, event dates, partn
 
 ## Accessibility & Inclusion
 
-WCAG AA contrast and keyboard reachable actions. The user chose to run the show for every visitor by default, including those whose device asks for reduced motion; chapter snapping applies to them too, as it does to every wheel or trackpad; touch never snaps. No required standard beyond that was established.
+WCAG AA contrast and keyboard reachable actions. The user chose to run the show for every visitor by default, including those whose device asks for reduced motion. The scroll never snaps, and the camera has a capped speed, because fast moves made the user dizzy; jumps between chapters dip through black rather than flying there. No required standard beyond that was established.
