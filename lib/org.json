@@ -121,6 +121,507 @@
       ]
     }
   ],
+  "offices": [
+    {
+      "id": "operations",
+      "name": "Operations Department",
+      "line": "Plans and runs every event, from the programme and the logistics to hosting, registration, the tech and documenting it all.",
+      "covers": [
+        "Program management",
+        "Logistics and resources",
+        "Technical coordination",
+        "Hosting",
+        "Registration and access",
+        "Media documentation"
+      ],
+      "leads": [
+        {
+          "name": "Bianca Dela Cruz",
+          "role": "Chief Operations Officer"
+        },
+        {
+          "name": "Ayesha Zhyrile Infante",
+          "role": "Vice Chief Operations Officer - Programs and Event Development"
+        },
+        {
+          "name": "Mark Kenneth Galario",
+          "role": "Vice Chief Operations Officer - Event Operations and Logistics"
+        },
+        {
+          "name": "John Victor Duatin",
+          "role": "Vice Chief Operations Officer - Participant Experience & Event Support"
+        },
+        {
+          "name": "Maedhen Maquidato",
+          "role": "Program Manager, Logistics and Resource Coordinator"
+        },
+        {
+          "name": "Justin Angelo Cruz",
+          "role": "Program Manager"
+        },
+        {
+          "name": "Ching Mae Abenoja",
+          "role": "Program Manager"
+        },
+        {
+          "name": "Almira Ciane Honrado",
+          "role": "Program Manager"
+        },
+        {
+          "name": "Danly Nicole Reyes",
+          "role": "Program Manager"
+        },
+        {
+          "name": "VJ Evangelista",
+          "role": "Program Manager"
+        },
+        {
+          "name": "Zey Pagulayan",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Sharmel Lomigo",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Justin A Jose",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Ira Marie Mariano",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Andrea Faye Moscoso",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Hanzel Guevarra",
+          "role": "Technical Coordinator"
+        },
+        {
+          "name": "Aljon Elis",
+          "role": "Host"
+        },
+        {
+          "name": "Marianne Salvador",
+          "role": "Host"
+        },
+        {
+          "name": "Chrystal Geen Tuibeo",
+          "role": "Host"
+        },
+        {
+          "name": "John Marlone Ginhawa",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Marizza Apis",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Anna Lea Parreno",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Chelsea Capa",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Christian Joseph Delos Santos",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Ayah Angel Amarille",
+          "role": "Registration and Access Coordinator"
+        },
+        {
+          "name": "Zaldy Marcus Bulan",
+          "role": "Media Documentation Officer"
+        },
+        {
+          "name": "Cyril Walter Custodio",
+          "role": "Media Documentation Officer"
+        },
+        {
+          "name": "Harvey Noma",
+          "role": "Media Documentation Officer"
+        }
+      ]
+    },
+    {
+      "id": "creatives",
+      "name": "Creatives Department",
+      "line": "Gives the org its look and its voice on screen, through brand identity, graphics, illustration, photography and video.",
+      "covers": [
+        "Brand identity",
+        "Multimedia production",
+        "Graphic design",
+        "Illustration",
+        "Photography and videography",
+        "Video editing"
+      ],
+      "leads": [
+        {
+          "name": "Stella Marie Segubre",
+          "role": "Chief Creatives Officer"
+        },
+        {
+          "name": "Sandrine Mabaquiao",
+          "role": "Vice Chief Creatives Officer - Brand Identity"
+        },
+        {
+          "name": "Aleckz Villaruz",
+          "role": "Vice Chief Creatives Officer - Multimedia Production"
+        },
+        {
+          "name": "Jan Randolph Emmanuel Santos",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Jaybee Alcantara",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Mary Lhean Gonzales",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Eryza Mae Imatong",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Christian Ignacio",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Beatrice Carag",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Crystalin Joy Resusta",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Jenric Castañeto",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Rhizelle Eunice Dela Cruz",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Ashley Valerey Asuncion",
+          "role": "Graphic Designer"
+        },
+        {
+          "name": "Princess Jane Villaverde",
+          "role": "Illustrator"
+        },
+        {
+          "name": "Johnelle Mae De Jesus",
+          "role": "Video Editor"
+        },
+        {
+          "name": "Kahlen Dominique Parayno",
+          "role": "Video Editor"
+        },
+        {
+          "name": "Lawrence Belocura",
+          "role": "Video Editor"
+        },
+        {
+          "name": "Hezekiah Christal Dionisio",
+          "role": "Photographer/Videographer"
+        },
+        {
+          "name": "Jea Chelsy Estipona",
+          "role": "Photographer/Videographer"
+        },
+        {
+          "name": "Angelo Ferrer",
+          "role": "Photographer/Videographer"
+        },
+        {
+          "name": "Rojan Aizel Reyes",
+          "role": "Photographer/Videographer"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing Department",
+      "line": "Gets the word out: planning the content, directing the videos, writing the captions and reading how people respond.",
+      "covers": [
+        "Content strategy",
+        "Video direction",
+        "Caption writing",
+        "Engagement analysis"
+      ],
+      "leads": [
+        {
+          "name": "Risha Villones",
+          "role": "Chief Marketing Officer"
+        },
+        {
+          "name": "David Gabriel",
+          "role": "Vice Chief Marketing Officer"
+        },
+        {
+          "name": "Harvy Zeta",
+          "role": "Content Strategist and Video Director"
+        },
+        {
+          "name": "Jadelyn Nepomuceno",
+          "role": "Content Strategist and Video Director"
+        },
+        {
+          "name": "Angel Faye Zerna",
+          "role": "Content Strategist and Video Director"
+        },
+        {
+          "name": "Virgilio Retulin",
+          "role": "Caption Writer and Engagement Analyst"
+        }
+      ]
+    },
+    {
+      "id": "relations",
+      "name": "Relations Department",
+      "line": "Looks after the people around the org: members and the community on the inside, partners and sponsors on the outside.",
+      "covers": [
+        "Community",
+        "Membership",
+        "Community partnerships",
+        "Sponsors"
+      ],
+      "leads": [
+        {
+          "name": "Mary Ruth Relator",
+          "role": "Chief Relations Officer"
+        },
+        {
+          "name": "John Deniel Domalaon",
+          "role": "Vice Chief Relations Officer"
+        },
+        {
+          "name": "Rhea Mae Narag",
+          "role": "Vice Chief Relations Officer"
+        },
+        {
+          "name": "Evelyn Soliven",
+          "role": "Membership Lead"
+        },
+        {
+          "name": "Gabriel Martin Manalo",
+          "role": "Membership Lead"
+        },
+        {
+          "name": "Princess Mae Ubaldo",
+          "role": "Membership Co-Lead"
+        },
+        {
+          "name": "Natalie Regodos",
+          "role": "Membership Co-Lead"
+        },
+        {
+          "name": "Shanaia Maresh Peraz",
+          "role": "Membership Co-Lead"
+        },
+        {
+          "name": "Alexander Dan Cuison",
+          "role": "Community Partnership Co-Lead"
+        },
+        {
+          "name": "Jonnaline Alfon",
+          "role": "Community Partnership Co-Lead"
+        },
+        {
+          "name": "Christine Nicole Dolina",
+          "role": "Sponsors Co-Lead"
+        },
+        {
+          "name": "Pranz Gabrielle Capucion",
+          "role": "Sponsors Co-Lead"
+        },
+        {
+          "name": "Kacey Michaela Solis",
+          "role": "Sponsors Co-Lead"
+        },
+        {
+          "name": "Tracy Ann Dela Cruz",
+          "role": "Community Member"
+        },
+        {
+          "name": "Rainier Chico",
+          "role": "Community Member"
+        },
+        {
+          "name": "Jason Russel Pascua",
+          "role": "Community Member"
+        },
+        {
+          "name": "Vanessa Preclaro",
+          "role": "Community Member"
+        },
+        {
+          "name": "Raven Joyce Rayo",
+          "role": "Community Member"
+        },
+        {
+          "name": "Ashley Kaye Mercado",
+          "role": "Community Member"
+        },
+        {
+          "name": "Johnelle Mae De Jesus",
+          "role": "Community Member"
+        },
+        {
+          "name": "Queenie Raymundo",
+          "role": "Community Member"
+        },
+        {
+          "name": "Kyle Zedrick Sagum",
+          "role": "Community Member"
+        },
+        {
+          "name": "Maria Samantha Lorin Elpa",
+          "role": "Community Member"
+        },
+        {
+          "name": "Angelika Francheska Catigan",
+          "role": "Community Member"
+        },
+        {
+          "name": "Bienvenido John Sochayseng",
+          "role": "Community Member"
+        },
+        {
+          "name": "Mark Christian Alejos",
+          "role": "Community Member"
+        },
+        {
+          "name": "Justin Lei Dulla",
+          "role": "Community Member"
+        },
+        {
+          "name": "Jan Rich Corpuz",
+          "role": "Community Member"
+        },
+        {
+          "name": "Rexchelle Imperial",
+          "role": "Community Member"
+        },
+        {
+          "name": "Nicole Keith Lacsamana",
+          "role": "Community Member"
+        },
+        {
+          "name": "Hesed Suñga",
+          "role": "Community Member"
+        }
+      ]
+    },
+    {
+      "id": "administrative",
+      "name": "Administrative Department",
+      "line": "Keeps the org in working order behind the scenes, through its systems, records, secretariat work, internal operations and membership.",
+      "covers": [
+        "Administrative systems",
+        "Secretariat",
+        "Institutional affairs",
+        "Events and records",
+        "Internal operations",
+        "Membership"
+      ],
+      "leads": [
+        {
+          "name": "Maria Kristina Cas",
+          "role": "Chief Administrative Officer"
+        },
+        {
+          "name": "James Clark Lopez",
+          "role": "Vice Chief Administrative Officer"
+        },
+        {
+          "name": "Vincent Salvador",
+          "role": "Vice Chief Administrative Officer"
+        },
+        {
+          "name": "Jhexie Lou Sablas",
+          "role": "Administrative Systems Officer"
+        },
+        {
+          "name": "Lorraine Jen Palinlin",
+          "role": "Administrative Systems Officer"
+        },
+        {
+          "name": "Charles Mhel Montaniel",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Jhanna Lou Lapido",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Antonette Reyes",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Carmela Daza",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Isabella Nicole Manaog",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Migel Tan",
+          "role": "Secretariat Officer"
+        },
+        {
+          "name": "Dan Janfort Bundang",
+          "role": "Institutional Affairs Officer"
+        },
+        {
+          "name": "Fernando Luis Fernando",
+          "role": "Events & Records Officer"
+        },
+        {
+          "name": "Adrielle Gliane",
+          "role": "Events & Records Officer"
+        },
+        {
+          "name": "Kristine Eunice Celoza",
+          "role": "Internal Operations Officer"
+        },
+        {
+          "name": "Genezle Mariella Ambos",
+          "role": "Internal Operations Officer"
+        },
+        {
+          "name": "Loreign Seth Tribaco",
+          "role": "Internal Operations Officer"
+        },
+        {
+          "name": "Rehana Francine Sangil",
+          "role": "Internal Operations Officer"
+        },
+        {
+          "name": "Princes Julia Familara",
+          "role": "Internal Operations Officer"
+        },
+        {
+          "name": "Sarah Grace Gruy",
+          "role": "Membership Officer"
+        },
+        {
+          "name": "Althea Marie Gabrielle Mandi",
+          "role": "Membership Officer"
+        }
+      ]
+    }
+  ],
   "events": [
     {
       "when": "September 28, 2026",
@@ -128,14 +629,38 @@
       "title": "Stellaris Ascensus: General Onboarding 2026",
       "note": "The org’s members came aboard at White Cloak Technologies. Talks ran from networking as the fundamental “must have” to why throwing money at a problem isn’t engineering, and speakers received certificates of appreciation.",
       "photos": [
-        { "src": "/events/stellaris-group.webp", "alt": "Everyone together under the White Cloak sign" },
-        { "src": "/events/stellaris-audience.webp", "alt": "A speaker gets the room’s hands up" },
-        { "src": "/events/stellaris-networking.webp", "alt": "A talk on networking, the fundamental “must have”" },
-        { "src": "/events/stellaris-engineering.webp", "alt": "On screen: “Throwing money at a problem isn’t engineering.”" },
-        { "src": "/events/stellaris-certificates.webp", "alt": "Two speakers with their certificates of appreciation" },
-        { "src": "/events/stellaris-room.webp", "alt": "The lounge at White Cloak, with the onboarding title on screen" },
-        { "src": "/events/stellaris-crew.webp", "alt": "Peace signs for the camera" },
-        { "src": "/events/stellaris-title.webp", "alt": "The title slide: Stellar Bound, Stars Syncing" }
+        {
+          "src": "/events/stellaris-group.webp",
+          "alt": "Everyone together under the White Cloak sign"
+        },
+        {
+          "src": "/events/stellaris-audience.webp",
+          "alt": "A speaker gets the room’s hands up"
+        },
+        {
+          "src": "/events/stellaris-networking.webp",
+          "alt": "A talk on networking, the fundamental “must have”"
+        },
+        {
+          "src": "/events/stellaris-engineering.webp",
+          "alt": "On screen: “Throwing money at a problem isn’t engineering.”"
+        },
+        {
+          "src": "/events/stellaris-certificates.webp",
+          "alt": "Two speakers with their certificates of appreciation"
+        },
+        {
+          "src": "/events/stellaris-room.webp",
+          "alt": "The lounge at White Cloak, with the onboarding title on screen"
+        },
+        {
+          "src": "/events/stellaris-crew.webp",
+          "alt": "Peace signs for the camera"
+        },
+        {
+          "src": "/events/stellaris-title.webp",
+          "alt": "The title slide: Stellar Bound, Stars Syncing"
+        }
       ],
       "confirmed": true
     },
@@ -145,7 +670,10 @@
       "title": "Packet Capture CTF: Beneath the Network",
       "note": "The org co-organized this capture the flag with CyberPH, where players dig through security challenges for hidden flags. Here is everyone together at kick off, before the hunting began.",
       "photos": [
-        { "src": "/events/packet-kickoff.webp", "alt": "Everyone together at kick off" }
+        {
+          "src": "/events/packet-kickoff.webp",
+          "alt": "Everyone together at kick off"
+        }
       ],
       "confirmed": true
     },
@@ -155,13 +683,34 @@
       "title": "The Schematic Sandbox: ECEGA 2026",
       "note": "The general assembly of Electronics Engineering Students, and the org went to meet them. A table with its banner, QR codes and copies of Prosple’s Top 100 Employers for Fresh Graduates introduced the org to the students in the hall.",
       "photos": [
-        { "src": "/events/ecega-booth.webp", "alt": "The org’s table, with its banner and QR codes" },
-        { "src": "/events/ecega-hall.webp", "alt": "The hall during ECE Got Talent" },
-        { "src": "/events/ecega-prosple.webp", "alt": "Prosple’s Top 100 Employers for Fresh Graduates, held up in the hall" },
-        { "src": "/events/ecega-group.webp", "alt": "A group all making the same hand sign" },
-        { "src": "/events/ecega-table.webp", "alt": "Three members in maroon, lanyards on" },
-        { "src": "/events/ecega-members.webp", "alt": "Four members close up to the camera" },
-        { "src": "/events/ecega-floor.webp", "alt": "Thumbs up from the crowd" }
+        {
+          "src": "/events/ecega-booth.webp",
+          "alt": "The org’s table, with its banner and QR codes"
+        },
+        {
+          "src": "/events/ecega-hall.webp",
+          "alt": "The hall during ECE Got Talent"
+        },
+        {
+          "src": "/events/ecega-prosple.webp",
+          "alt": "Prosple’s Top 100 Employers for Fresh Graduates, held up in the hall"
+        },
+        {
+          "src": "/events/ecega-group.webp",
+          "alt": "A group all making the same hand sign"
+        },
+        {
+          "src": "/events/ecega-table.webp",
+          "alt": "Three members in maroon, lanyards on"
+        },
+        {
+          "src": "/events/ecega-members.webp",
+          "alt": "Four members close up to the camera"
+        },
+        {
+          "src": "/events/ecega-floor.webp",
+          "alt": "Thumbs up from the crowd"
+        }
       ],
       "confirmed": true
     },
@@ -171,7 +720,10 @@
       "title": "Enterprise Networking Onboarding 2026",
       "note": "Enterprise networking cadets met online, 101 on the call, and were introduced to the curriculum. One topic mapped the careers it can lead to, from network support specialist up to network operations manager.",
       "photos": [
-        { "src": "/events/entnet-careers.webp", "alt": "The Careers in Networking slide, from entry level up to senior" }
+        {
+          "src": "/events/entnet-careers.webp",
+          "alt": "The Careers in Networking slide, from entry level up to senior"
+        }
       ],
       "confirmed": true
     },
@@ -181,7 +733,10 @@
       "title": "Development Networking Onboarding 2026",
       "note": "Development networking cadets filled a Google Meet, 49 on the call, to be onboarded and introduced to the curriculum. Hearts were floating up the grid by the time this was taken.",
       "photos": [
-        { "src": "/events/devnet-call.webp", "alt": "The Google Meet grid, with 49 on the call" }
+        {
+          "src": "/events/devnet-call.webp",
+          "alt": "The Google Meet grid, with 49 on the call"
+        }
       ],
       "confirmed": true
     }

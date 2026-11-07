@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test lib/story.test.ts"
+    "test": "node --experimental-strip-types --test lib/story.test.ts lib/axie.test.ts"
   },
   "dependencies": {
     "gsap": "^3.15.1",

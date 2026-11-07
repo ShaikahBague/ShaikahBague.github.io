@@ -9,6 +9,9 @@ export const JOIN_URL = LAUNCH_URL;
 // description of the matching certification, named and linked as its source on the planet
 export const worlds = org.departments;
 
+// The departments that run the org itself, each a little planet of its own. They land the same way, and their `leads` are everyone in the department
+export const offices = org.offices;
+
 // Events and people live in org.json. Each event flies past on its own asteroid, in the file's order. `confirmed: false` prints
 // the Unissued stamp, so nothing unverified reads as fact. Photos go in public/events/ (landscape 16:9 fits the print, keep each
 // under about 300 KB), then set src to its path, like "/events/launch-group.jpg". An empty src shows a labelled slot. One photo or many.
@@ -27,14 +30,15 @@ export const AXIE_GREETING = "Hi, I'm Axie, and I just got back! Ask me about th
 
 export const AXIE_SUGGESTIONS = ["What are the departments?", "What events have you done?", "How do I join?"];
 
-const NO_ANSWER = "I'm a placeholder for now, so I only know the basics. Try asking about the departments, the events or how to join.";
+const NO_ANSWER = "My link to mission control dropped, so I only know the basics right now. Try asking about the departments, the events or how to join.";
 
-// placeholder: a keyword lookup until the real chatbot exists, swap this for the call to it
+// What Axie falls back on when the Gemini route in app/api/axie can't be reached: a keyword lookup, so the chat still works offline
 const AXIE_ANSWERS: [RegExp, string][] = [
   [/enterprise|routing|switching/, worlds[0].line],
   [/cyber|security/, worlds[1].line],
   [/develop|devnet|code|automation|api/, worlds[2].line],
-  [/department|focus|what do you do/, `There are three: ${worlds.map((world) => world.name).join(", ")}. Ask me about any of them.`],
+  ...offices.map((office): [RegExp, string] => [new RegExp(office.id.slice(0, 6)), office.line]),
+  [/department|focus|what do you do/, `There are eight: ${[...worlds, ...offices].map((world) => world.name).join(", ")}. Ask me about any of them.`],
   [/event|launch|timeline/, "The hard launch was \"Building Bridges, Powering Connections\" at White Cloak Technologies in Ortigas Center, and 54 people went. The flight log above has what came after: Stellaris Ascensus, our 2026 general onboarding, the Packet Capture CTF with CyberPH, The Schematic Sandbox at ECEGA 2026 and the Enterprise and Development Networking onboardings."],
   [/join|member|sign/, "Sign-ups aren't open here yet. You can reach the team through the launch page, linked in the Join section below."],
   [/crew|officer|people|who/, "The launch hosts were David Gabriel, Jhered Miguel C. Republica and Mhyca Monterola. Every year's officers are in the constellations above, and each planet lists who leads it."],

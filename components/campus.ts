@@ -26,7 +26,7 @@ import {
   Vector3,
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { DOOR_DIR, GROUND_Y } from "@/lib/story";
+import { BRIDGE, DOOR_DIR, GROUND_Y, offBridge } from "@/lib/story";
 
 // One stretch of facade texture: this many windows across and floors up, some with their lights on
 const WINDOWS = 8;
@@ -471,7 +471,9 @@ export function buildCampus(low: boolean) {
   const [headX, headZ, headWide, headTall, headDeep] = [130, -125, 50, 40, 40];
   for (let i = 0; i < (low ? 14 : 30); i++) {
     const [a, r] = [random() * Math.PI * 2, Math.sqrt(random()) * 0.84];
-    spots.push([headX + Math.cos(a) * r * headWide, headZ + Math.sin(a) * r * headDeep, 8 + random() * 5, headTall * Math.sqrt(1 - r * r)]);
+    const [x, z] = [headX + Math.cos(a) * r * headWide, headZ + Math.sin(a) * r * headDeep];
+    // The bridge lands on this hill, and its deck and cables run through this wood otherwise
+    if (offBridge(x, z)) spots.push([x, z, 8 + random() * 5, headTall * Math.sqrt(1 - r * r)]);
   }
   const palmSpots = [[-74, -28], [-62, -8], [84, -24], [72, 4], [108, -44], [-112, -38], [94, -74], [34, -78], [-34, -77], [118, -6]].slice(0, low ? 6 : 10);
 
@@ -636,8 +638,8 @@ export function buildCampus(low: boolean) {
   const water = new Mesh(new PlaneGeometry(2400, 1400).rotateX(-Math.PI / 2).translate(0, GROUND_Y + 0.04, FRONT - 30 - 700), bay.skin);
   const span = new Mesh(buildBridge(), steel.skin);
   // Runs from a near tower off to the right, over the bay to a far one behind the offices
-  span.position.set(67.8, 0, -315.5);
-  span.rotation.y = -1.383;
+  span.position.set(BRIDGE.x, 0, BRIDGE.z);
+  span.rotation.y = BRIDGE.turn;
 
   // Traffic over the bridge. Moved a little each frame, but there are so few that it barely counts
   const carCount = low ? 6 : 12;

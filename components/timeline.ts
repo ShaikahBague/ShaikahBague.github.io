@@ -2,12 +2,16 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { events } from "@/lib/content";
-import { AT, ATMOSPHERES, CAMERA_GAP, followStep, holdsAtChat, initialSky, SHOTS, STOP, WALK_TIME, WORLD_POS, type SkyState } from "@/lib/story";
+import { ARRIVED, AT, ATMOSPHERES, CAMERA_GAP, FLEET, followStep, holdsAtChat, initialSky, LET_GO_MS, nextGoal, REST_MS, SHOTS, STOP, WALK_TIME, WORLD_POS, type SkyState } from "@/lib/story";
 
 // Each asteroid rests here, evenly spaced from the chapter's start to before the crew's flight leaves, so added events still fit
 const STEP = (AT.crew - 1.1 - AT.log) / Math.max(1, events.length - 1);
 const stepAt = (i: number) => AT.log + i * STEP;
 const BEATS = Object.entries(AT);
+// Everywhere a scroll comes to rest: every chapter, and each event in the flight log
+const CHAPTERS = [...new Set([...Object.values(AT), ...events.map((_, i) => stepAt(i))])].sort((a, b) => a - b);
+// How long after the last wheel, key or finger the page is still treated as being scrolled by them. A scroll bar drag after that moves freely
+const INPUT_WINDOW_MS = 1500;
 
 export function buildShow(root: HTMLElement, s: SkyState) {
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -21,6 +25,40 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   let current = "";
   // Set when the visitor asks for something past the show, which the wait at the chat must never get in the way of
   let released = false;
+  // Only the wheel, keys and fingers snap to chapters. Dragging the scroll bar means they know where they're going
+  let lastInput = -Infinity;
+  let touching = false;
+  let lastStrength = 0;
+  // The chapter the page is flying to, the one it last came to rest on and until when, and whether a new gesture may start the next flight
+  let goal: number | null = null;
+  let restingAt: number | null = null;
+  let restUntil = 0;
+  let ready = true;
+  const startGesture = () => {
+    if (performance.now() >= restUntil) ready = true;
+  };
+  // A pause starts a new gesture, and so does a wheel suddenly pushing harder. A wheel easing off is a trackpad's momentum, still from the last one
+  const onWheel = ({ deltaY }: WheelEvent) => {
+    const strength = Math.abs(deltaY);
+    if (performance.now() - lastInput >= LET_GO_MS || strength > lastStrength * 1.3) startGesture();
+    lastStrength = strength;
+    lastInput = performance.now();
+  };
+  const onKey = ({ repeat }: KeyboardEvent) => {
+    if (!repeat) startGesture();
+    lastInput = performance.now();
+  };
+  const onTouchStart = () => (touching = true);
+  const onTouchEnd = () => {
+    touching = false;
+    startGesture();
+    lastInput = performance.now();
+  };
+  window.addEventListener("wheel", onWheel, { passive: true });
+  window.addEventListener("keydown", onKey);
+  window.addEventListener("touchstart", onTouchStart, { passive: true });
+  window.addEventListener("touchend", onTouchEnd, { passive: true });
+  window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
   // Stacked beats sit on top of each other, so only the visible one takes clicks
   const setBeat = (id: string) => {
@@ -36,6 +74,9 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       .timeline()
       .to(veil, { opacity: 1, duration: 0.35, ease: "power1.in" })
       .call(() => {
+        goal = restingAt = null;
+        restUntil = 0;
+        ready = true;
         window.scrollTo(0, trigger.start + (time / AT.end) * (trigger.end - trigger.start));
         ScrollTrigger.update();
         live.time(time);
@@ -68,7 +109,34 @@ export function buildShow(root: HTMLElement, s: SkyState) {
         rested = tl.time() >= AT.chat - 0.01 ? rested + dt : 0;
         const held = !released && holdsAtChat(tl.time(), rested);
         if (held && window.scrollY > gate) window.scrollTo(0, gate);
-        const wanted = st.progress * AT.end;
+        let wanted = st.progress * AT.end;
+        const idle = performance.now() - lastInput;
+        // The page keeps its place at the goal for as long as they keep scrolling, so nothing they do can take it past that chapter. A finger still down is left
+        // alone, since moving the page under it would fight it, and past the end of the show the page scrolls like any other
+        const now = tl.time();
+        const clock = performance.now();
+        if (goal !== null && Math.abs(now - goal) < ARRIVED) {
+          restingAt = goal;
+          goal = null;
+          ready = false;
+          restUntil = clock + REST_MS;
+        }
+        // No wheel for a while and the page has moved off the goal: that's the scroll bar, so let it go wherever it's dragged
+        if (released || st.progress >= 1 || (idle >= INPUT_WINDOW_MS && goal !== null && Math.abs(wanted - goal) > 0.001)) goal = restingAt = null;
+        else if (idle < INPUT_WINDOW_MS && !touching) {
+          if (!ready && idle >= LET_GO_MS && clock >= restUntil) ready = true;
+          goal = nextGoal(CHAPTERS, now, wanted, goal, ready);
+          if (goal !== null) {
+            ready = false;
+            restingAt = null;
+          }
+          if (held && goal !== null) goal = Math.min(goal, AT.chat);
+          const place = goal ?? (ready ? wanted : (restingAt ?? now));
+          if (Math.abs(place - wanted) > 0.001) {
+            window.scrollTo(0, st.start + (place / AT.end) * (st.end - st.start));
+            wanted = place;
+          }
+        }
         const time = followStep(tl.time(), held ? Math.min(wanted, AT.chat) : wanted, dt);
         if (time !== tl.time()) tl.time(time);
         // A beat counts as current from the moment it starts to enter
@@ -173,6 +241,11 @@ export function buildShow(root: HTMLElement, s: SkyState) {
         wave(at);
       });
       fly({ shell: 1 }, AT.cyberops - 0.4, 0.5, "power2.out");
+
+      // Up to the five little planets, which the visitor picks from. They stay put while the rocket hangs off to one side
+      flight({ fly: STOP.fleet, cx: FLEET.x, cy: FLEET.y, cz: FLEET.z + CAMERA_GAP, lx: FLEET.x, ly: FLEET.y, lz: FLEET.z, side: 0, fov: 42 }, AT.fleet);
+      beat("fleet", "rise");
+      wave(AT.fleet);
 
       // The flight log: the rocket crosses an asteroid belt and each event comes past on a rock of its own, far off and top right
       // at first, rests with its photo up while the visitor reads, then goes by the camera as the next one comes in
@@ -288,6 +361,11 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   });
 
   return () => {
+    window.removeEventListener("wheel", onWheel);
+    window.removeEventListener("keydown", onKey);
+    window.removeEventListener("touchstart", onTouchStart);
+    window.removeEventListener("touchend", onTouchEnd);
+    window.removeEventListener("touchcancel", onTouchEnd);
     root.removeEventListener("focusin", onFocus);
     root.removeEventListener("click", onClick);
     planets.forEach((planet) => planet.removeEventListener("close", leave));

@@ -8,15 +8,43 @@ export const WORLD_POS: Point[] = [
 export const WORLD_RADIUS = 14;
 export const CAMERA_GAP = 60;
 
+// The five departments that run the org: little planets hung together high above the flight path, out of sight of the worlds below.
+// Spread across the view on a wide screen, and zigzagging down it on a phone. Offsets from the middle of the group
+export const FLEET = { x: 0, y: 140, z: -420 };
+export const OFFICE_RADIUS = { wide: 5, tall: 2.9 };
+const OFFICE_OFFSETS = {
+  wide: [[-27.5, -2], [-13.75, -10], [0, -2.5], [13.75, -10], [27.5, -2]],
+  tall: [[-4.6, 4.8], [4.6, -0.8], [-4.6, -6.4], [4.6, -12], [-4.6, -17.4]],
+};
+export const officeSpots = (wide: boolean): Point[] => OFFICE_OFFSETS[wide ? "wide" : "tall"].map(([x, y]) => [FLEET.x + x, FLEET.y + y, FLEET.z]);
+
 export const EARTH_RADIUS = 45;
 export const GROUND_Y = -2.6;
 
-// Parked, the rocket's door faces this way, and Axie's walk runs along it from inside the hull to their mark
+// The bridge's place behind headquarters. Trees have to stay clear of the deck and its cables, wherever they're scattered
+export const BRIDGE = { x: 67.8, z: -315.5, turn: -1.383, reach: 200, width: 16 };
+const BRIDGE_CLEARANCE = 15;
+export function offBridge(x: number, z: number) {
+  const [dx, dz] = [x - BRIDGE.x, z - BRIDGE.z];
+  const [cos, sin] = [Math.cos(BRIDGE.turn), Math.sin(BRIDGE.turn)];
+  const along = dx * cos - dz * sin;
+  const across = dx * sin + dz * cos;
+  return Math.abs(along) > BRIDGE.reach + BRIDGE_CLEARANCE || Math.abs(across) > BRIDGE.width / 2 + BRIDGE_CLEARANCE;
+}
+
+// Parked, the rocket's door faces this way, and Axie's walk runs along it from the lift in the middle of the hull to their mark
 export const DOOR_DIR = { x: Math.sin(Math.PI / 6), z: Math.cos(Math.PI / 6) };
-const INSIDE = 0.4;
+const INSIDE = 0;
 export const SILL = { along: 1.35, y: -1.32 };
 export const RAMP_FOOT = 6;
 export const MARK = 14;
+
+// How big Axie stands: full size on open ground, and cabin size by the time they reach the door, which they only just fit through at that size
+export const FULL_STATURE = 1.4;
+export function statureAt(along: number) {
+  const t = Math.min(1, Math.max(0, (along - SILL.along) / (RAMP_FOOT - SILL.along)));
+  return 1 + (FULL_STATURE - 1) * t * t * (3 - 2 * t);
+}
 
 // Where Axie's feet are for a walk from 0 (inside the hull) to 1 (on their mark): along the door line and how high
 export function walkPath(out: number) {
@@ -84,6 +112,9 @@ export const FLIGHT: Point[] = [
   [-16, 4, -46], [-9, 7, -50], [-1, 10, -54],
   [4, -8, -66], [12, -5, -68], [22, -1, -72],
   ...WORLD_POS.flatMap(worldLeg),
+  // Up to the little planets, then flying across the view below them with its side to the camera so Axie shows, and back down into the belt
+  [-14, 84, -398], [-4, 116, -394], [8, 127, -394], [18, 129, -394], [30, 131, -396],
+  [14, 96, -432],
   [-60, 6, -478], [-40, 6, -478], [60, 6, -478],
   [66, -3, -495], [72, 2, -498], [78, 8, -500],
   // Home: the jump here happens while the screen is black, so this stretch is never flown on screen
@@ -99,10 +130,11 @@ export const STOP = {
   enterprise: 10,
   cyberops: 14,
   devnet: 18,
-  logStart: 22,
-  logEnd: 23,
-  crew: 25,
-  home: 27,
+  fleet: 24,
+  logStart: 28,
+  logEnd: 29,
+  crew: 31,
+  home: 33,
 };
 
 export const SCREENS_PER_UNIT = 1.3;
@@ -116,11 +148,12 @@ export const AT = {
   enterprise: 6.54,
   cyberops: 7.54,
   devnet: 8.54,
-  log: 9.64,
-  crew: 14.74,
-  home: 17.39,
-  chat: 19.74,
-  end: 21.84,
+  fleet: 9.64,
+  log: 10.84,
+  crew: 15.94,
+  home: 18.59,
+  chat: 20.94,
+  end: 23.04,
 };
 
 // How long Axie's walk across the plaza takes on the timeline. Few long strides cover the distance quickly, while their legs stay at a walking pace even at CRUISE
@@ -142,7 +175,15 @@ export const ATMOSPHERES = [
   { top: "#03313a", low: "#57d8bb", ground: ["#10605c", "#39b896"], moon: "#dcfff2", accent: "#8df5d9", moonAt: [0.36, 0.34, -0.87], relief: 30, seed: 3 },
   { top: "#2c0515", low: "#ee4f66", ground: ["#5e1229", "#b92f48"], moon: "#ffdccb", accent: "#ff9aa2", moonAt: [0.38, 0.28, -0.88], relief: 20, seed: 7 },
   { top: "#2d1303", low: "#ffae45", ground: ["#7a4210", "#d18a2a"], moon: "#fff1cb", accent: "#ffd08a", moonAt: [0.34, 0.4, -0.85], relief: 34, seed: 11 },
+  // The five little planets: an electric blue, a magenta, an acid green, a soft violet and a pale ice
+  { top: "#04143a", low: "#4f8dff", ground: ["#132a6b", "#3b67c9"], moon: "#dfe9ff", accent: "#9cc0ff", moonAt: [0.3, 0.36, -0.88], relief: 24, seed: 13 },
+  { top: "#2e0533", low: "#f25fc4", ground: ["#5b1460", "#c23fa2"], moon: "#ffe1f6", accent: "#ff9be4", moonAt: [0.4, 0.3, -0.86], relief: 38, seed: 17 },
+  { top: "#1a2b02", low: "#c4e34b", ground: ["#3d5a10", "#8fb524"], moon: "#f7ffd1", accent: "#e4ff7a", moonAt: [0.32, 0.42, -0.85], relief: 18, seed: 23 },
+  { top: "#170a3f", low: "#a78bfa", ground: ["#33208a", "#7258d9"], moon: "#efe6ff", accent: "#cbb8ff", moonAt: [0.36, 0.26, -0.9], relief: 30, seed: 29 },
+  { top: "#0c1a24", low: "#b9d4e0", ground: ["#2f4a58", "#7c9cab"], moon: "#f4fbff", accent: "#d6eef7", moonAt: [0.38, 0.38, -0.84], relief: 42, seed: 31 },
 ];
+// Index in ATMOSPHERES, and in the landings, of the first little planet
+export const FIRST_OFFICE = WORLD_POS.length;
 
 // The page can outrun the capped camera, so it waits at the chat until Axie has got there and had a moment to say hello
 const CHAT_HOLD = 1.5;
@@ -159,6 +200,34 @@ export function followStep(now: number, target: number, dt: number) {
   const most = (CRUISE + Math.max(0, Math.abs(gap) - LONG_BACKLOG) * CATCH_UP) * dt;
   return now + Math.max(-most, Math.min(most, gap * (1 - Math.exp(-dt * 2.5))));
 }
+
+// The show moves chapter by chapter. Any scroll past this much sets off a flight to the next chapter that way, which plays out by itself at the capped
+// speed however little or however hard they scrolled, and stops there. Scrolling the other way mid-flight turns back to the chapter behind
+const NUDGE = 0.015;
+export const ARRIVED = 0.02;
+// A gap this long in the wheel means they let go, and whatever comes next is a new gesture rather than the last one's momentum
+export const LET_GO_MS = 140;
+// However they're scrolling, each chapter holds for this long on arrival. A hand spamming the wheel has gaps of its own, and this is the time it takes to see the chapter and stop
+export const REST_MS = 650;
+
+const chapterFrom = (stops: number[], now: number, direction: number) =>
+  direction > 0 ? (stops.find((stop) => stop > now + ARRIVED) ?? stops[stops.length - 1]) : (stops.findLast((stop) => stop < now - ARRIVED) ?? stops[0]);
+
+// Where the page should be heading, or null if it's staying put. `ready` is false just after arriving, until a new gesture starts, so momentum can't carry on through the chapter
+export function nextGoal(stops: number[], now: number, wanted: number, goal: number | null, ready: boolean) {
+  const pull = wanted - (goal ?? now);
+  if (Math.abs(pull) < NUDGE) return goal;
+  const direction = Math.sign(pull);
+  if (goal !== null) {
+    if (Math.sign(goal - now) === direction) return goal;
+    // Turning round goes back to the chapter just left, however soon after leaving it
+    return direction > 0 ? (stops.find((stop) => stop >= now) ?? goal) : (stops.findLast((stop) => stop <= now) ?? goal);
+  }
+  return ready ? chapterFrom(stops, now, direction) : null;
+}
+
+// Whether Axie is talking right now. The chat sets it while an answer appears, and the 3D scene reads it to move their mouth
+export const voice = { talking: false };
 
 // How far a star strays from the middle of its cell. Sideways is kept small, because a label is as wide as a cell allows
 export const STAR_DRIFT = 0.1;

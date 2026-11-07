@@ -30,6 +30,7 @@ import {
   Scene,
   ShaderMaterial,
   SphereGeometry,
+  TorusGeometry,
   TubeGeometry,
   Vector3,
   type WebGLRenderer,
@@ -246,7 +247,189 @@ function buildListing(look: Look) {
   };
 }
 
-const LANDMARKS = [buildLinks, buildWatch, buildListing];
+// A soft cone of light for the stage and broadcast worlds, brightest at its source
+const lightCone = (length: number, wide: number, tint: string) =>
+  new Mesh(
+    new ConeGeometry(wide, length, 20, 1, true).translate(0, -length / 2, 0),
+    new ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: AdditiveBlending,
+      side: DoubleSide,
+      uniforms: { uTint: { value: display(tint) } },
+      vertexShader: "varying float vUp;void main(){vUp=uv.y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+      fragmentShader: "uniform vec3 uTint;varying float vUp;void main(){gl_FragColor=vec4(uTint*vUp*vUp*.3,1.);}",
+    }),
+  );
+
+// Operations: a show being put on. Lighting towers either side of a stage, their beams sweeping across it
+function buildStage(look: Look) {
+  const group = new Group();
+  const z = -170;
+  const parts = [new BoxGeometry(120, 7, 44).translate(20, 3.5, z), new BoxGeometry(100, 44, 3).translate(20, 22, z - 21)];
+  [-48, 88].forEach((x) => {
+    parts.push(new BoxGeometry(5, 86, 5).translate(x, 43, z + 8), new BoxGeometry(44, 3, 3).translate(x + (x < 0 ? 18 : -18), 84, z + 8));
+    for (let y = 8; y < 84; y += 11) parts.push(new BoxGeometry(6, 0.8, 6).translate(x, y, z + 8));
+  });
+  group.add(new Mesh(mergeGeometries(parts.map((part) => part.toNonIndexed())), new MeshLambertMaterial({ color: look.ground[0] })));
+  const screen = new Mesh(new PlaneGeometry(84, 32).translate(20, 24, z - 19), new MeshBasicMaterial({ color: look.accent, fog: false }));
+  group.add(screen);
+  const beams = [-34, -20, 60, 74].map((x) => {
+    const beam = lightCone(105, 20, look.moon);
+    beam.position.set(x, 83, z + 8);
+    group.add(beam);
+    return beam;
+  });
+  return {
+    group,
+    update(time: number) {
+      beams.forEach((beam, i) => (beam.rotation.z = (i < 2 ? -0.42 : 0.42) + Math.sin(time * 0.5 + i * 1.3) * 0.32));
+    },
+  };
+}
+
+// Creatives: a studio in the open. Big frames hang in the air, each holding one bright swatch, with drops of paint drifting up past them
+function buildStudio(look: Look) {
+  const group = new Group();
+  const swatches = ["#ff9be4", "#ffd34d", "#5ee0e0", "#ffffff", "#ff7a59", "#b78cff"];
+  // All on the right, where the words aren't
+  const frames = [[36, 62, -150, 34, 44], [86, 80, -190, 46, 32], [134, 52, -160, 30, 40], [190, 72, -205, 40, 30], [150, 92, -250, 44, 56], [250, 60, -290, 40, 52]].map(([x, y, z, wide, tall], i) => {
+    const frame = new Group();
+    frame.add(
+      new Mesh(new BoxGeometry(wide + 4, tall + 4, 1.4), new MeshLambertMaterial({ color: look.ground[0] })),
+      new Mesh(new PlaneGeometry(wide, tall).translate(0, 0, 0.9), new MeshBasicMaterial({ color: swatches[i], fog: false })),
+    );
+    frame.position.set(x, y, z);
+    group.add(frame);
+    return { frame, y };
+  });
+  const random = seeded(83);
+  const drops = new InstancedMesh(new IcosahedronGeometry(1, 1), new MeshBasicMaterial({ fog: false }), 44);
+  drops.frustumCulled = false;
+  group.add(drops);
+  const paint = new Color();
+  const places = Array.from({ length: drops.count }, (_, i) => {
+    drops.setColorAt(i, paint.set(swatches[i % swatches.length]));
+    return { x: 10 + random() * 260, z: -60 - random() * 240, size: 0.8 + random() * 2.2, phase: random() * 100 };
+  });
+  const matrix = new Matrix4();
+  return {
+    group,
+    update(time: number) {
+      frames.forEach(({ frame, y }, i) => {
+        frame.rotation.y = Math.sin(time * 0.2 + i) * 0.22;
+        frame.position.y = y + Math.sin(time * 0.5 + i) * 1.6;
+      });
+      places.forEach(({ x, z, size, phase }, i) => drops.setMatrixAt(i, matrix.makeScale(size, size, size).setPosition(x + Math.sin(time * 0.3 + phase) * 4, ((time * 3 + phase * 3) % 120) + 2, z)));
+      drops.instanceMatrix.needsUpdate = true;
+    },
+  };
+}
+
+// Marketing: getting the word out. A broadcast mast sends rings of signal rolling outward over a row of billboards
+function buildBroadcast(look: Look) {
+  const group = new Group();
+  const spots = [[44, -170, 0.2], [130, -190, -0.2], [66, -270, 0.3], [205, -250, -0.3]];
+  const boards = spots.flatMap(([x, z, turn]) => [
+    new BoxGeometry(46, 26, 1.5).rotateY(turn).translate(x, 36, z),
+    new BoxGeometry(2.4, 24, 2.4).translate(x - 14, 12, z),
+    new BoxGeometry(2.4, 24, 2.4).translate(x + 14, 12, z),
+  ]);
+  group.add(new Mesh(mergeGeometries(boards.map((part) => part.toNonIndexed())), new MeshLambertMaterial({ color: look.ground[0] })));
+  // Bars on each board, standing in for headlines nobody needs to read
+  const copy = spots.flatMap(([x, z, turn]) => [[6, 34], [0, 27], [-6, 20]].map(([up, wide]) => new PlaneGeometry(wide, 3.4).translate(0, up, 1).rotateY(turn).translate(x, 36, z)));
+  group.add(new Mesh(mergeGeometries(copy), new MeshBasicMaterial({ color: look.moon, fog: false })));
+  group.add(new Mesh(new CylinderGeometry(0.8, 3, 112, 6).translate(14, 56, -210), new MeshLambertMaterial({ color: look.ground[1] })));
+  const rings = [0, 1, 2, 3].map(() => {
+    const ring = new Mesh(new TorusGeometry(1, 0.012, 6, 64).rotateX(Math.PI / 2), new MeshBasicMaterial({ color: look.accent, transparent: true, depthWrite: false, fog: false }));
+    ring.position.set(14, 106, -210);
+    group.add(ring);
+    return ring;
+  });
+  return {
+    group,
+    update(time: number) {
+      rings.forEach((ring, i) => {
+        const run = (time * 0.16 + i / rings.length) % 1;
+        ring.scale.setScalar(6 + run * 210);
+        (ring.material as MeshBasicMaterial).opacity = (1 - run) * 0.85;
+      });
+    },
+  };
+}
+
+// Relations: people connecting. Scattered gathering places, with arcs strung between them and sparks passing along each one
+function buildBonds(look: Look) {
+  const group = new Group();
+  const hubs = [[26, -130], [74, -190], [150, -130], [230, -210], [40, -260], [140, -290]].map(([x, z]) => new Vector3(x, heightAt(x, z, look) + 9, z));
+  group.add(new Mesh(mergeGeometries(hubs.map(({ x, y, z }) => new CylinderGeometry(9, 13, 10, 7).translate(x, y - 5, z).toNonIndexed())), new MeshLambertMaterial({ color: look.ground[1], flatShading: true })));
+  group.add(new Mesh(mergeGeometries(hubs.map(({ x, y, z }) => new IcosahedronGeometry(4.4, 1).translate(x, y + 5, z))), new MeshBasicMaterial({ color: look.moon, fog: false })));
+  const links = [[0, 1], [1, 2], [2, 3], [0, 4], [1, 5], [2, 5], [4, 5], [3, 5]].map(([from, to]) => {
+    const [a, b] = [hubs[from], hubs[to]];
+    return new CatmullRomCurve3([a, a.clone().lerp(b, 0.5).setY(Math.max(a.y, b.y) + a.distanceTo(b) * 0.28), b]);
+  });
+  group.add(new Mesh(mergeGeometries(links.map((curve) => new TubeGeometry(curve, 28, 0.32, 5))), new MeshBasicMaterial({ color: look.accent, fog: false })));
+  const sparks = new InstancedMesh(new SphereGeometry(1.1, 10, 8), new MeshBasicMaterial({ color: "#ffffff", fog: false }), links.length * 2);
+  sparks.frustumCulled = false;
+  group.add(sparks);
+  const matrix = new Matrix4();
+  const place = new Vector3();
+  return {
+    group,
+    update(time: number) {
+      links.forEach((curve, i) => {
+        [0, 1].forEach((side) => {
+          const run = (time * 0.11 + i * 0.13 + side * 0.5) % 1;
+          // Half the sparks run back the other way, because connecting goes both ways
+          curve.getPoint(side ? 1 - run : run, place);
+          sparks.setMatrixAt(i * 2 + side, matrix.makeTranslation(place.x, place.y, place.z));
+        });
+      });
+      sparks.instanceMatrix.needsUpdate = true;
+    },
+  };
+}
+
+// Administrative: everything in its place. A city of filing stacks in exact rows, with records circling overhead in perfect order
+function buildArchive(look: Look) {
+  const group = new Group();
+  const stacks = new InstancedMesh(new BoxGeometry(1, 1, 1), new MeshLambertMaterial({ color: "#ffffff", flatShading: true }), 96);
+  const random = seeded(97);
+  const matrix = new Matrix4();
+  const still = new Quaternion();
+  const [low, high] = look.ground.map((tone) => new Color(tone));
+  const tone = new Color();
+  for (let i = 0; i < stacks.count; i++) {
+    const [row, col] = [Math.floor(i / 12), i % 12];
+    // A clear aisle down the middle, leading the eye to the horizon
+    const x = (col - 5.5) * 40 + (col < 6 ? -12 : 12);
+    const z = -90 - row * 42;
+    const tall = 14 + random() * 62;
+    stacks.setMatrixAt(i, matrix.compose(new Vector3(x, tall / 2 - 1, z), still, new Vector3(26, tall, 26)));
+    stacks.setColorAt(i, tone.copy(low).lerp(high, random()));
+  }
+  stacks.frustumCulled = false;
+  group.add(stacks);
+  const records = new InstancedMesh(new BoxGeometry(5, 0.5, 7), new MeshBasicMaterial({ color: look.moon, fog: false }), 40);
+  records.frustumCulled = false;
+  group.add(records);
+  const turn = new Quaternion();
+  const up = new Vector3(0, 1, 0);
+  const place = new Vector3();
+  const size = new Vector3(1, 1, 1);
+  return {
+    group,
+    update(time: number) {
+      for (let i = 0; i < records.count; i++) {
+        const a = (i / records.count) * Math.PI * 2 + time * 0.07;
+        records.setMatrixAt(i, matrix.compose(place.set(Math.cos(a) * 100, 96 + (i % 2) * 6, -210 + Math.sin(a) * 100), turn.setFromAxisAngle(up, -a), size));
+      }
+      records.instanceMatrix.needsUpdate = true;
+    },
+  };
+}
+
+const LANDMARKS = [buildLinks, buildWatch, buildListing, buildStage, buildStudio, buildBroadcast, buildBonds, buildArchive];
 
 const CAMERA_Z = 62;
 const FOV = 52;

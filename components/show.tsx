@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crews, events, JOIN_URL, LAUNCH_URL, unissued, worlds } from "@/lib/content";
-import { AT, ATMOSPHERES, initialSky, SCREENS_PER_UNIT, starChart } from "@/lib/story";
+import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crews, events, JOIN_URL, LAUNCH_URL, offices, unissued, worlds } from "@/lib/content";
+import { AT, ATMOSPHERES, FIRST_OFFICE, initialSky, SCREENS_PER_UNIT, starChart, voice } from "@/lib/story";
 
 // What an asteroid carries: one lilac print with its caption and a contact strip to pick another, and the notes beside it
 function LogStop({ event }: { event: (typeof events)[number] }) {
@@ -139,9 +139,10 @@ function Crew() {
   );
 }
 
-// Inside a planet: what the department is about and who leads it, standing in that planet's own air. Without the show it's plain text in the chapter
-function Planet({ world, index }: { world: (typeof worlds)[number]; index: number }) {
+// Inside a planet: what the department is about and who's in it, standing in that planet's own air. Without the show it's plain text in the chapter
+function Planet({ world, index }: { world: { id: string; name: string; line: string; covers: string[]; leads: { name: string; role: string }[]; source?: { name: string; url: string } }; index: number }) {
   const { top, low, accent } = ATMOSPHERES[index];
+  const everyone = world.leads.length > 8;
   return (
     <dialog className="planet" data-planet={index} aria-labelledby={`${world.id}-name`} style={{ "--top": top, "--low": low, "--accent": accent } as React.CSSProperties}>
       <form method="dialog" className="planet-back live-only">
@@ -152,7 +153,7 @@ function Planet({ world, index }: { world: (typeof worlds)[number]; index: numbe
           {world.name}
         </h2>
         <p className="planet-line">{world.line}</p>
-        <div className="planet-facts">
+        <div className={`planet-facts ${everyone ? "planet-facts-long" : ""}`}>
           <section>
             <h3>What it covers</h3>
             <ul>
@@ -162,7 +163,7 @@ function Planet({ world, index }: { world: (typeof worlds)[number]; index: numbe
             </ul>
           </section>
           <section>
-            <h3>Who leads here</h3>
+            <h3>{world.source ? "Who leads here" : "Who’s here"}</h3>
             <ul>
               {world.leads.map((person) => (
                 <li key={person.name}>
@@ -173,43 +174,109 @@ function Planet({ world, index }: { world: (typeof worlds)[number]; index: numbe
             </ul>
           </section>
         </div>
-        <p className="planet-source">
-          Based on how Cisco describes{" "}
-          <a href={world.source.url} target="_blank" rel="noreferrer">
-            {world.source.name}
-          </a>
-          .
-        </p>
+        {world.source ? (
+          <p className="planet-source">
+            Based on how Cisco describes{" "}
+            <a href={world.source.url} target="_blank" rel="noreferrer">
+              {world.source.name}
+            </a>
+            .
+          </p>
+        ) : null}
       </div>
     </dialog>
   );
 }
 
-// placeholder: answers come from a keyword lookup in lib/content.ts until the real chatbot exists
+// The five departments that run the org, as little planets to pick from. The sky keeps each button on top of its planet
+function Fleet() {
+  return (
+    <div className="beat fleet" data-beat="fleet">
+      <div className="chapter">
+        <h2>The crew behind the missions.</h2>
+        <p data-rest>Five more departments keep the org flying. Pick a planet to land on it.</p>
+      </div>
+      <ul className="fleet-list">
+        {offices.map((office, i) => (
+          <li key={office.id}>
+            <button type="button" className="fleet-planet live-only" data-land={FIRST_OFFICE + i} data-office={i} aria-label={`Land on the ${office.name}`}>
+              <span>{office.name}</span>
+            </button>
+            <Planet world={office} index={FIRST_OFFICE + i} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// An answer appears a little at a time, like subtitles, and Axie's mouth moves for as long as it takes. A screen reader gets all of it at once
+function Spoken({ text }: { text: string }) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    voice.talking = true;
+    let count = 0;
+    const timer = setInterval(() => {
+      count += 2;
+      setShown(count);
+      if (count >= text.length) {
+        clearInterval(timer);
+        voice.talking = false;
+      }
+    }, 38);
+    return () => {
+      clearInterval(timer);
+      voice.talking = false;
+    };
+  }, [text]);
+  return (
+    <>
+      <span aria-hidden="true">{text.slice(0, shown)}</span>
+      <span className="sr-only">{text}</span>
+    </>
+  );
+}
+
+const TOO_MANY = "That's a lot of questions at once! Give me a minute, then ask again.";
+
+// Answers come from Gemini through app/api/axie, which holds the key and the guardrails. If that's out of reach, the keyword lookup in lib/content.ts stands in
 function AxieChat() {
   const [messages, setMessages] = useState([{ from: "axie", text: AXIE_GREETING }]);
   const [draft, setDraft] = useState("");
+  const [thinking, setThinking] = useState(false);
   const log = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     log.current?.scrollTo({ top: log.current.scrollHeight });
-  }, [messages]);
+  }, [messages, thinking]);
 
-  const ask = (text: string) => {
+  const ask = async (text: string) => {
     const question = text.trim();
-    if (!question) return;
-    setMessages((all) => [...all, { from: "you", text: question }, { from: "axie", text: axieReply(question) }]);
+    if (!question || thinking) return;
+    const earlier = messages.filter((message) => message.from === "you").map((message) => message.text);
+    setMessages((all) => [...all, { from: "you", text: question }]);
     setDraft("");
+    setThinking(true);
+    let reply: string;
+    try {
+      const response = await fetch("/api/axie", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question, earlier }) });
+      reply = response.ok ? (await response.json()).reply : response.status === 429 ? TOO_MANY : axieReply(question);
+    } catch {
+      reply = axieReply(question);
+    }
+    setThinking(false);
+    setMessages((all) => [...all, { from: "axie", text: reply }]);
   };
 
   return (
     <div className="chat">
-      <div className="chat-log" ref={log} role="log" aria-label="Conversation with Axie">
+      <div className="chat-log" ref={log} role="log" aria-label="Conversation with Axie" aria-busy={thinking}>
         {messages.map((message, i) => (
           <p className={`chat-line chat-${message.from}`} key={i}>
-            {message.text}
+            {i && message.from === "axie" ? <Spoken text={message.text} /> : message.text}
           </p>
         ))}
+        {thinking ? <p className="chat-line chat-axie chat-thinking">Axie is thinking</p> : null}
       </div>
       <form
         className="chat-form"
@@ -219,18 +286,18 @@ function AxieChat() {
         }}
       >
         <input aria-label="Message Axie" placeholder="Say something to Axie" autoComplete="off" maxLength={200} value={draft} onChange={(e) => setDraft(e.target.value)} />
-        <button type="submit" disabled={!draft.trim()}>
+        <button type="submit" disabled={!draft.trim() || thinking}>
           Send
         </button>
       </form>
       <div className="chat-suggest">
         {AXIE_SUGGESTIONS.map((suggestion) => (
-          <button type="button" key={suggestion} onClick={() => ask(suggestion)}>
+          <button type="button" key={suggestion} disabled={thinking} onClick={() => ask(suggestion)}>
             {suggestion}
           </button>
         ))}
       </div>
-      <p className="chat-note">Axie is a placeholder for now, so the answers are short.</p>
+      <p className="chat-note">Axie only talks about Cisco NetConnect PUP - Manila, and can get things wrong.</p>
     </div>
   );
 }
@@ -349,6 +416,8 @@ export function Show() {
               </div>
             ))}
 
+            <Fleet />
+
             <div className="beat log" data-beat="log">
               <h2>The flight log.</h2>
               <ol className="log-track">
@@ -374,7 +443,7 @@ export function Show() {
             <div className="beat world world-left" data-beat="home">
               <div className="chapter">
                 <h2>Back on Earth.</h2>
-                <p data-rest>Axie has been to all three worlds, and has plenty to tell you about them.</p>
+                <p data-rest>Axie has been to every world on the map, and has plenty to tell you about them.</p>
               </div>
             </div>
 

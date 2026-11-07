@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import test from "node:test";
-import { axieReply, crews, events, worlds } from "./content.ts";
-import { AT, ATMOSPHERES, CAMERA_GAP, CRUISE, FLIGHT, floatAt, followStep, GROUND_Y, holdsAtChat, LOGO_STROKES, MARK, passBy, ROCK_DEPTH, STAR_DRIFT, starChart, STOP, WALK_CYCLES, WALK_TIME, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
+import { axieReply, crews, events, offices, worlds } from "./content.ts";
+import { ARRIVED, AT, ATMOSPHERES, BRIDGE, CAMERA_GAP, CRUISE, FIRST_OFFICE, FLEET, FLIGHT, floatAt, followStep, FULL_STATURE, GROUND_Y, holdsAtChat, LET_GO_MS, LOGO_STROKES, MARK, nextGoal, offBridge, officeSpots, OFFICE_RADIUS, passBy, RAMP_FOOT, ROCK_DEPTH, SILL, STAR_DRIFT, starChart, statureAt, STOP, WALK_CYCLES, WALK_TIME, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
 
 test("the show never outruns its cruising speed on an ordinary scroll, in either direction", () => {
   const dt = 1 / 60;
@@ -19,6 +19,64 @@ test("the show settles exactly on the scroll position", () => {
 test("a long backlog clears faster than cruising speed, so a scroll bar drag doesn't play the whole flight", () => {
   const dt = 1 / 60;
   assert.ok(followStep(0, 15, dt) / dt > 1.5);
+});
+
+test("one small scroll flies to the next chapter, and however hard it's scrolled it can't pass that chapter", () => {
+  const stops = [0, 3, 5, 8];
+  assert.equal(nextGoal(stops, 3, 3.05, null, true), 5, "a small scroll is enough");
+  assert.equal(nextGoal(stops, 3, 7.9, null, true), 5, "a huge one still stops at the next chapter");
+  assert.equal(nextGoal(stops, 3, 3.002, null, true), null, "the slightest touch does nothing");
+  assert.equal(nextGoal(stops, 4, 8, 5, true), 5, "scrolling on mid-flight doesn't change where it's going");
+  assert.equal(nextGoal(stops, 3, 2.5, null, true), 0, "and it goes back the same way");
+  assert.equal(nextGoal(stops, 8, 9, null, true), 8, "the last chapter is as far as it goes");
+});
+
+test("scrolling back mid-flight turns round to the chapter just left, even moments after leaving it", () => {
+  assert.equal(nextGoal([0, 3, 5, 8], 4, 4.5, 5, true), 3);
+  assert.equal(nextGoal([0, 3, 5, 8], 3.005, 4.5, 5, true), 3);
+  assert.equal(nextGoal([0, 3, 5, 8], 2.995, 2.5, 0, true), 3);
+});
+
+test("momentum left over from the last gesture can't carry on past a chapter, until a new gesture starts", () => {
+  assert.equal(nextGoal([0, 3, 5], 3, 3.5, null, false), null);
+  assert.equal(nextGoal([0, 3, 5], 3, 3.5, null, true), 5);
+});
+
+test("a flight counts as arrived before it has fully eased to a stop, and that isn't confused for the next chapter", () => {
+  assert.equal(nextGoal([0, 3, 5], 5 - ARRIVED / 2, 5.5, null, true), 5);
+  assert.equal(nextGoal([0, 3, 5, 8], 5 - ARRIVED / 2, 5.5, null, true), 8);
+});
+
+test("every chapter is further apart than the nudge, so one scroll can't land between two", () => {
+  const times = Object.values(AT);
+  times.slice(1).forEach((time, i) => assert.ok(time - times[i] > ARRIVED * 2));
+  assert.ok(LET_GO_MS > 0);
+});
+
+test("trees clear the bridge along its whole length, and only near it", () => {
+  const [cos, sin] = [Math.cos(BRIDGE.turn), Math.sin(BRIDGE.turn)];
+  for (let along = -BRIDGE.reach; along <= BRIDGE.reach; along += 20) assert.ok(!offBridge(BRIDGE.x + along * cos, BRIDGE.z - along * sin), `over the deck at ${along}`);
+  assert.ok(offBridge(0, 0), "the plaza");
+  assert.ok(offBridge(170, -120), "the far side of the headland");
+});
+
+test("Axie shrinks to door size on the ramp, without a jump, and fits through the door", () => {
+  assert.equal(statureAt(RAMP_FOOT), FULL_STATURE);
+  assert.equal(statureAt(SILL.along), 1);
+  for (let along = SILL.along; along < RAMP_FOOT; along += 0.1) assert.ok(statureAt(along + 0.1) - statureAt(along) < 0.05);
+});
+
+test("each little planet stays in view with room for its name, on a wide screen and a phone", () => {
+  // At the camera's distance and 42 degree view: half the height of the view in world units, and half its width at 16:9 and on a tall phone
+  const halfUp = CAMERA_GAP * Math.tan((21 * Math.PI) / 180);
+  [[true, 16 / 9], [false, 390 / 844]].forEach(([wide, aspect]) => {
+    const radius = wide ? OFFICE_RADIUS.wide : OFFICE_RADIUS.tall;
+    officeSpots(wide as boolean).forEach(([x, y, z]) => {
+      assert.equal(z, FLEET.z);
+      assert.ok(Math.abs(x - FLEET.x) + radius <= halfUp * (aspect as number), `in the width at ${x}`);
+      assert.ok(Math.abs(y - FLEET.y) + radius + 2 <= halfUp, `in the height at ${y}`);
+    });
+  });
 });
 
 test("an asteroid rests where it was told, comes from far off and leaves past the camera", () => {
@@ -57,11 +115,12 @@ test("every event has somewhere to show at least one photo with a description", 
   });
 });
 
-test("Axie answers what it knows and admits being a placeholder otherwise", () => {
+test("offline, Axie answers what it knows and says the link is down otherwise", () => {
   assert.equal(axieReply("Tell me about ROUTING"), worlds[0].line);
-  assert.match(axieReply("what are the departments?"), /Enterprise Networking/);
+  assert.match(axieReply("what are the departments?"), /Enterprise Networking.*Administrative Department/);
+  assert.equal(axieReply("what does marketing do"), offices[2].line);
   assert.match(axieReply("how do i join"), /Sign-ups/);
-  assert.match(axieReply("what's the weather like"), /placeholder/);
+  assert.match(axieReply("what's the weather like"), /link to mission control/);
 });
 
 test("the story's beats run in order", () => {
@@ -118,8 +177,16 @@ test("org.json has what the show needs from every event and officer", () => {
 });
 
 test("every planet has its own air and knows what it covers, and everyone named as a lead belongs to a real planet", () => {
-  assert.equal(ATMOSPHERES.length, worlds.length);
-  assert.equal(new Set(ATMOSPHERES.map((air) => air.low)).size, worlds.length);
+  assert.equal(ATMOSPHERES.length, worlds.length + offices.length);
+  assert.equal(FIRST_OFFICE, worlds.length);
+  assert.equal(new Set(ATMOSPHERES.map((air) => air.low)).size, ATMOSPHERES.length);
+  assert.deepEqual(offices.map((office) => office.name), ["Operations Department", "Creatives Department", "Marketing Department", "Relations Department", "Administrative Department"]);
+  offices.forEach((office) => {
+    assert.ok(office.line && office.covers.length);
+    office.leads.forEach((person) => assert.ok(person.name && person.role && !/@/.test(person.name + person.role)));
+    assert.equal(new Set(office.leads.map((person) => person.name)).size, office.leads.length, `nobody is listed twice in ${office.name}`);
+    assert.match(office.leads[0].role, /^Chief /, "the chief comes first");
+  });
   worlds.forEach((world) => {
     assert.ok(world.line && world.covers.length);
     assert.match(world.source.url, /^https:\/\/www\.cisco\.com\//, "what a department covers says where it came from");

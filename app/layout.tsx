@@ -18,10 +18,17 @@ const ticket = Martian_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "Cisco NetConnect PUP - Manila";
+const DESCRIPTION = "A student community at PUP - Manila for enterprise networking, cybersecurity operations and development networking.";
+
+// The preview image itself is app/opengraph-image.jpg and twitter-image.jpg, the site's opening scene. Link previews need its full address, so a host without
+// its own default has to be told the site's domain through NEXT_PUBLIC_SITE_URL
 export const metadata: Metadata = {
-  title: "Cisco NetConnect PUP - Manila",
-  description:
-    "A student community at PUP - Manila for enterprise networking, cybersecurity operations and development networking.",
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION, siteName: TITLE, type: "website", locale: "en_PH" },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
 // Runs before first paint so only browsers that can't run the show get the stacked layout.

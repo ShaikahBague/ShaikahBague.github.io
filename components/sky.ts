@@ -46,7 +46,7 @@ import {
 } from "three";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import gsap from "gsap";
-import { ATMOSPHERES, EARTH_RADIUS, FLIGHT, GROUND_Y, LOGO_STROKES, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
+import { ATMOSPHERES, CAMERA_GAP, EARTH_RADIUS, FIRST_OFFICE, FLEET, FLIGHT, GROUND_Y, LOGO_STROKES, OFFICE_RADIUS, officeSpots, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
 import { buildCampus } from "./campus";
 import { suitUp } from "./astronaut";
 import { createRocket } from "./rocket";
@@ -813,6 +813,34 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     return { group, planet };
   });
 
+  // The little planets, each in the colours of the air inside it. Small enough for a small texture, and each with its own ring or moons so they read apart
+  const fleetLooks = [
+    { scale: 2.6, bands: 0, seed: 40, ring: true, moons: 1 },
+    { scale: 3.2, bands: 18, seed: 46, ring: false, moons: 2 },
+    { scale: 2.2, bands: 0, seed: 52, ring: true, moons: 0 },
+    { scale: 3.6, bands: 26, seed: 58, ring: false, moons: 3 },
+    { scale: 2.9, bands: 7, seed: 64, ring: true, moons: 1 },
+  ];
+  const fleet = fleetLooks.map((look, i) => {
+    const air = ATMOSPHERES[FIRST_OFFICE + i];
+    const group = new Group();
+    group.add(buildPlanet(renderer, low ? 256 : 512, 1, low ? 24 : 36, { ...look, a: air.ground[0], b: air.ground[1], c: air.low, rim: air.accent }));
+    if (look.ring) {
+      const ring = new Mesh(new RingGeometry(1.45, 1.62, 56).rotateX(Math.PI / 2), new MeshBasicMaterial({ color: air.accent, transparent: true, opacity: 0.6, side: DoubleSide, depthWrite: false }));
+      ring.rotation.set(0.45, 0, 0.28 - i * 0.14);
+      group.add(ring);
+    }
+    const orbit = new Group();
+    for (let moon = 0; moon < look.moons; moon++) {
+      const a = (moon / look.moons) * Math.PI * 2;
+      orbit.add(new Mesh(new SphereGeometry(0.11 + moon * 0.03, 12, 8).translate(Math.cos(a) * 1.5, Math.sin(a) * 0.25, Math.sin(a) * 1.5), new MeshBasicMaterial({ color: air.moon })));
+    }
+    group.add(orbit);
+    scene.add(group);
+    return { group, orbit, spin: group.children[0] };
+  });
+  const fleetButtons = [...canvas.parentElement!.querySelectorAll<HTMLElement>("[data-office]")];
+
   // Enterprise Networking: packets travelling round one link, with a relay satellite on it
   const packets = buildOrbiters(low ? 70 : 130, WORLD_RADIUS * 1.5, WORLD_RADIUS * 1.5, true, "#ffffff", dpr, 3);
   const linkRing = new Mesh(
@@ -858,6 +886,16 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     // Each rock is as big as it needs to be for the photo on it to sit inside its outline, whatever the screen
     const pixelsPerUnit = height / (2 * ROCK_DEPTH * Math.tan((s.fov * Math.PI) / 360));
     rockSize = (stops[0]?.querySelector<HTMLElement>(".log-frame")?.offsetWidth ?? 480) * 0.58 / pixelsPerUnit;
+    // Laid out across a wide screen and down a tall one, with each button as big as its planet looks from where the camera rests
+    const wide = camera.aspect >= 1;
+    const radius = wide ? OFFICE_RADIUS.wide : OFFICE_RADIUS.tall;
+    const spots = officeSpots(wide);
+    fleet.forEach(({ group }, i) => {
+      group.position.set(...spots[i]);
+      group.scale.setScalar(radius);
+    });
+    const across = (radius * 2 * height) / (2 * CAMERA_GAP * Math.tan((21 * Math.PI) / 180));
+    fleetButtons.forEach((button) => button.style.setProperty("--across", `${Math.round(across)}px`));
   };
   const observer = new ResizeObserver(resize);
   observer.observe(canvas.parentElement!);
@@ -957,7 +995,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     // Going down to a planet: the camera turns square on and falls towards it, with its air closing over the screen before it would reach the surface
     const fall = Math.min(1, s.inside * 2);
     if (fall > 0) {
-      core.set(...WORLD_POS[s.planet]);
+      if (s.planet < FIRST_OFFICE) core.set(...WORLD_POS[s.planet]);
+      else core.copy(fleet[s.planet - FIRST_OFFICE].group.position);
       surface.prepare(s.planet);
       camera.position.lerp(core, fall * fall * 0.72);
       aim.lerp(core, Math.min(1, fall * 1.8));
@@ -998,7 +1037,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     speed += (Math.abs(s.fly - lastFly) / Math.max(dt, 0.001) - speed) * 0.18;
     lastFly = s.fly;
     rocket.place(craft, steady, camera, s.ground);
-    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), Math.min(speed, 2), s, camera);
+    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), s, camera);
 
     trail.points.visible = s.house < 0.95 && s.burn > 0;
     if (trail.points.visible) {
@@ -1054,6 +1093,13 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       shell.rotation.y = time * 0.05;
     }
     if (worlds[2].group.visible) things.rotation.y = time * 0.06;
+    const fleetInView = Math.abs(s.cz - FLEET.z) < 170 && s.cy > 40;
+    fleet.forEach(({ group, orbit, spin }, i) => {
+      group.visible = fleetInView;
+      if (!fleetInView) return;
+      spin.rotation.y = time * 0.09 + i;
+      orbit.rotation.y = time * (0.3 + i * 0.04);
+    });
 
     const passing = s.log > -1 && s.log < stops.length;
     asteroids.group.visible = passing;
@@ -1099,6 +1145,13 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
       place(satellite.localToWorld(dish.set(0, 1.6, 0)));
       signal.style.setProperty("--sat-x", `${screenX}px`);
       signal.style.setProperty("--sat-y", `${screenY}px`);
+    }
+    // Clicking or tapping a little planet is clicking the button kept on top of it, which is also what a keyboard or screen reader gets
+    if (fleetInView) {
+      fleetButtons.forEach((button, i) => {
+        place(dish.copy(fleet[i].group.position));
+        button.style.transform = `translate(${Math.round(screenX)}px,${Math.round(screenY)}px)`;
+      });
     }
   };
 
