@@ -2,16 +2,12 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { events } from "@/lib/content";
-import { ARRIVED, AT, ATMOSPHERES, CAMERA_GAP, FLEET, followStep, holdsAtChat, initialSky, LET_GO_MS, nextGoal, REST_MS, SHOTS, STOP, WALK_TIME, WORLD_POS, type SkyState } from "@/lib/story";
+import { AT, ATMOSPHERES, CAMERA_GAP, FLEET, followStep, initialSky, SHOTS, STOP, WALK_TIME, WORLD_POS, type SkyState } from "@/lib/story";
 
 // Each asteroid rests here, evenly spaced from the chapter's start to before the crew's flight leaves, so added events still fit
 const STEP = (AT.crew - 1.1 - AT.log) / Math.max(1, events.length - 1);
 const stepAt = (i: number) => AT.log + i * STEP;
 const BEATS = Object.entries(AT);
-// Everywhere a scroll comes to rest: every chapter, and each event in the flight log
-const CHAPTERS = [...new Set([...Object.values(AT), ...events.map((_, i) => stepAt(i))])].sort((a, b) => a - b);
-// How long after the last wheel, key or finger the page is still treated as being scrolled by them. A scroll bar drag after that moves freely
-const INPUT_WINDOW_MS = 1500;
 
 export function buildShow(root: HTMLElement, s: SkyState) {
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -23,42 +19,6 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   let live: gsap.core.Timeline;
   let trigger: ScrollTrigger;
   let current = "";
-  // Set when the visitor asks for something past the show, which the wait at the chat must never get in the way of
-  let released = false;
-  // Only the wheel, keys and fingers snap to chapters. Dragging the scroll bar means they know where they're going
-  let lastInput = -Infinity;
-  let touching = false;
-  let lastStrength = 0;
-  // The chapter the page is flying to, the one it last came to rest on and until when, and whether a new gesture may start the next flight
-  let goal: number | null = null;
-  let restingAt: number | null = null;
-  let restUntil = 0;
-  let ready = true;
-  const startGesture = () => {
-    if (performance.now() >= restUntil) ready = true;
-  };
-  // A pause starts a new gesture, and so does a wheel suddenly pushing harder. A wheel easing off is a trackpad's momentum, still from the last one
-  const onWheel = ({ deltaY }: WheelEvent) => {
-    const strength = Math.abs(deltaY);
-    if (performance.now() - lastInput >= LET_GO_MS || strength > lastStrength * 1.3) startGesture();
-    lastStrength = strength;
-    lastInput = performance.now();
-  };
-  const onKey = ({ repeat }: KeyboardEvent) => {
-    if (!repeat) startGesture();
-    lastInput = performance.now();
-  };
-  const onTouchStart = () => (touching = true);
-  const onTouchEnd = () => {
-    touching = false;
-    startGesture();
-    lastInput = performance.now();
-  };
-  window.addEventListener("wheel", onWheel, { passive: true });
-  window.addEventListener("keydown", onKey);
-  window.addEventListener("touchstart", onTouchStart, { passive: true });
-  window.addEventListener("touchend", onTouchEnd, { passive: true });
-  window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
   // Stacked beats sit on top of each other, so only the visible one takes clicks
   const setBeat = (id: string) => {
@@ -74,9 +34,6 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       .timeline()
       .to(veil, { opacity: 1, duration: 0.35, ease: "power1.in" })
       .call(() => {
-        goal = restingAt = null;
-        restUntil = 0;
-        ready = true;
         window.scrollTo(0, trigger.start + (time / AT.end) * (trigger.end - trigger.start));
         ScrollTrigger.update();
         live.time(time);
@@ -101,43 +58,8 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       const marks = q("[data-stop]") as HTMLElement[];
       let front = -1;
       // The timeline is walked from here rather than scrubbed, so a hard scroll can't drive it faster than the camera should go
-      let rested = st.progress * AT.end >= AT.chat ? Infinity : 0;
       const follow = (_time: number, deltaMs: number) => {
-        const dt = deltaMs / 1000;
-        const gate = st.start + (AT.chat / AT.end) * (st.end - st.start);
-        if (window.scrollY <= gate) released = false;
-        rested = tl.time() >= AT.chat - 0.01 ? rested + dt : 0;
-        const held = !released && holdsAtChat(tl.time(), rested);
-        if (held && window.scrollY > gate) window.scrollTo(0, gate);
-        let wanted = st.progress * AT.end;
-        const idle = performance.now() - lastInput;
-        // The page keeps its place at the goal for as long as they keep scrolling, so nothing they do can take it past that chapter. A finger still down is left
-        // alone, since moving the page under it would fight it, and past the end of the show the page scrolls like any other
-        const now = tl.time();
-        const clock = performance.now();
-        if (goal !== null && Math.abs(now - goal) < ARRIVED) {
-          restingAt = goal;
-          goal = null;
-          ready = false;
-          restUntil = clock + REST_MS;
-        }
-        // No wheel for a while and the page has moved off the goal: that's the scroll bar, so let it go wherever it's dragged
-        if (released || st.progress >= 1 || (idle >= INPUT_WINDOW_MS && goal !== null && Math.abs(wanted - goal) > 0.001)) goal = restingAt = null;
-        else if (idle < INPUT_WINDOW_MS && !touching) {
-          if (!ready && idle >= LET_GO_MS && clock >= restUntil) ready = true;
-          goal = nextGoal(CHAPTERS, now, wanted, goal, ready);
-          if (goal !== null) {
-            ready = false;
-            restingAt = null;
-          }
-          if (held && goal !== null) goal = Math.min(goal, AT.chat);
-          const place = goal ?? (ready ? wanted : (restingAt ?? now));
-          if (Math.abs(place - wanted) > 0.001) {
-            window.scrollTo(0, st.start + (place / AT.end) * (st.end - st.start));
-            wanted = place;
-          }
-        }
-        const time = followStep(tl.time(), held ? Math.min(wanted, AT.chat) : wanted, dt);
+        const time = followStep(tl.time(), st.progress * AT.end, deltaMs / 1000);
         if (time !== tl.time()) tl.time(time);
         // A beat counts as current from the moment it starts to enter
         setBeat(BEATS.reduce((on, [id, at]) => (time + 0.34 >= at ? id : on), "house"));
@@ -305,7 +227,6 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   // Keyboard focus can land on a link in a beat that is not on screen yet
   const onFocus = (e: FocusEvent) => {
     const target = e.target as HTMLElement;
-    if (!target.closest("#story")) released = true;
     const stop = target.closest(".log-stop");
     if (stop) {
       if (!stop.hasAttribute("data-on")) goTo(stepAt((q(".log-stop") as Element[]).indexOf(stop)));
@@ -354,18 +275,13 @@ export function buildShow(root: HTMLElement, s: SkyState) {
 
   // Over the show the bar stays out of the picture; over reading sections it needs its own ground
   const solidBar = ScrollTrigger.create({
-    trigger: "#programme",
+    trigger: "#mission",
     start: "top 4rem",
     end: "max",
     toggleClass: { targets: q(".topbar"), className: "solid" },
   });
 
   return () => {
-    window.removeEventListener("wheel", onWheel);
-    window.removeEventListener("keydown", onKey);
-    window.removeEventListener("touchstart", onTouchStart);
-    window.removeEventListener("touchend", onTouchEnd);
-    window.removeEventListener("touchcancel", onTouchEnd);
     root.removeEventListener("focusin", onFocus);
     root.removeEventListener("click", onClick);
     planets.forEach((planet) => planet.removeEventListener("close", leave));
