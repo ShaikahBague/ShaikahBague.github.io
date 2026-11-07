@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import test from "node:test";
 import { axieReply, crews, events, offices, worlds } from "./content.ts";
-import { ARRIVED, AT, ATMOSPHERES, BRIDGE, CAMERA_GAP, CRUISE, FIRST_OFFICE, FLEET, FLIGHT, floatAt, followStep, FULL_STATURE, GROUND_Y, holdsAtChat, LET_GO_MS, LOGO_STROKES, MARK, nextGoal, offBridge, officeSpots, OFFICE_RADIUS, passBy, RAMP_FOOT, ROCK_DEPTH, SILL, STAR_DRIFT, starChart, statureAt, STOP, WALK_CYCLES, WALK_TIME, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
+import { AT, ATMOSPHERES, BRIDGE, CAMERA_GAP, CRUISE, FIRST_OFFICE, FLEET, FLIGHT, floatAt, followStep, FULL_STATURE, GROUND_Y, LOGO_STROKES, MARK, offBridge, officeSpots, OFFICE_RADIUS, passBy, RAMP_FOOT, ROCK_DEPTH, SILL, STAR_DRIFT, starChart, statureAt, STOP, WALK_CYCLES, WALK_TIME, walkPath, WORLD_POS, WORLD_RADIUS } from "./story.ts";
 
 test("the show never outruns its cruising speed on an ordinary scroll, in either direction", () => {
   const dt = 1 / 60;
@@ -19,38 +19,6 @@ test("the show settles exactly on the scroll position", () => {
 test("a long backlog clears faster than cruising speed, so a scroll bar drag doesn't play the whole flight", () => {
   const dt = 1 / 60;
   assert.ok(followStep(0, 15, dt) / dt > 1.5);
-});
-
-test("one small scroll flies to the next chapter, and however hard it's scrolled it can't pass that chapter", () => {
-  const stops = [0, 3, 5, 8];
-  assert.equal(nextGoal(stops, 3, 3.05, null, true), 5, "a small scroll is enough");
-  assert.equal(nextGoal(stops, 3, 7.9, null, true), 5, "a huge one still stops at the next chapter");
-  assert.equal(nextGoal(stops, 3, 3.002, null, true), null, "the slightest touch does nothing");
-  assert.equal(nextGoal(stops, 4, 8, 5, true), 5, "scrolling on mid-flight doesn't change where it's going");
-  assert.equal(nextGoal(stops, 3, 2.5, null, true), 0, "and it goes back the same way");
-  assert.equal(nextGoal(stops, 8, 9, null, true), 8, "the last chapter is as far as it goes");
-});
-
-test("scrolling back mid-flight turns round to the chapter just left, even moments after leaving it", () => {
-  assert.equal(nextGoal([0, 3, 5, 8], 4, 4.5, 5, true), 3);
-  assert.equal(nextGoal([0, 3, 5, 8], 3.005, 4.5, 5, true), 3);
-  assert.equal(nextGoal([0, 3, 5, 8], 2.995, 2.5, 0, true), 3);
-});
-
-test("momentum left over from the last gesture can't carry on past a chapter, until a new gesture starts", () => {
-  assert.equal(nextGoal([0, 3, 5], 3, 3.5, null, false), null);
-  assert.equal(nextGoal([0, 3, 5], 3, 3.5, null, true), 5);
-});
-
-test("a flight counts as arrived before it has fully eased to a stop, and that isn't confused for the next chapter", () => {
-  assert.equal(nextGoal([0, 3, 5], 5 - ARRIVED / 2, 5.5, null, true), 5);
-  assert.equal(nextGoal([0, 3, 5, 8], 5 - ARRIVED / 2, 5.5, null, true), 8);
-});
-
-test("every chapter is further apart than the nudge, so one scroll can't land between two", () => {
-  const times = Object.values(AT);
-  times.slice(1).forEach((time, i) => assert.ok(time - times[i] > ARRIVED * 2));
-  assert.ok(LET_GO_MS > 0);
 });
 
 test("trees clear the bridge along its whole length, and only near it", () => {
@@ -92,11 +60,8 @@ test("Axie's walk runs from inside the hull, up the ramp, to their mark on the g
   for (let out = 0.05; out <= 1; out += 0.05) assert.ok(walkPath(out).y <= walkPath(out - 0.05).y);
 });
 
-test("the page waits at the chat until Axie has arrived and rested there", () => {
-  assert.ok(holdsAtChat(AT.home, 99), "Axie is still walking");
-  assert.ok(holdsAtChat(AT.chat, 0.2), "Axie has only just stopped");
-  assert.ok(!holdsAtChat(AT.chat, 99));
-  assert.ok(AT.end - AT.chat >= 1.5, "there is room to chat before the show ends");
+test("there is room to chat before the show ends", () => {
+  assert.ok(AT.end - AT.chat >= 1.5);
 });
 
 test("the constellation stays inside the logo image and has stars on every stroke", () => {

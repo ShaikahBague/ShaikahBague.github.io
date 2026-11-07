@@ -185,10 +185,6 @@ export const ATMOSPHERES = [
 // Index in ATMOSPHERES, and in the landings, of the first little planet
 export const FIRST_OFFICE = WORLD_POS.length;
 
-// The page can outrun the capped camera, so it waits at the chat until Axie has got there and had a moment to say hello
-const CHAT_HOLD = 1.5;
-export const holdsAtChat = (time: number, restedFor: number) => time < AT.chat - 0.01 || restedFor < CHAT_HOLD;
-
 // The show chases the scroll rather than sitting on it. It eases in, can't pass a calm cruising speed however hard the page
 // is flung, and only speeds up past a backlog no fling reaches, so a scroll bar drag doesn't leave it flying on for a minute
 export const CRUISE = 0.5;
@@ -199,31 +195,6 @@ export function followStep(now: number, target: number, dt: number) {
   if (Math.abs(gap) < 0.001) return target;
   const most = (CRUISE + Math.max(0, Math.abs(gap) - LONG_BACKLOG) * CATCH_UP) * dt;
   return now + Math.max(-most, Math.min(most, gap * (1 - Math.exp(-dt * 2.5))));
-}
-
-// The show moves chapter by chapter. Any scroll past this much sets off a flight to the next chapter that way, which plays out by itself at the capped
-// speed however little or however hard they scrolled, and stops there. Scrolling the other way mid-flight turns back to the chapter behind
-const NUDGE = 0.015;
-export const ARRIVED = 0.02;
-// A gap this long in the wheel means they let go, and whatever comes next is a new gesture rather than the last one's momentum
-export const LET_GO_MS = 140;
-// However they're scrolling, each chapter holds for this long on arrival. A hand spamming the wheel has gaps of its own, and this is the time it takes to see the chapter and stop
-export const REST_MS = 650;
-
-const chapterFrom = (stops: number[], now: number, direction: number) =>
-  direction > 0 ? (stops.find((stop) => stop > now + ARRIVED) ?? stops[stops.length - 1]) : (stops.findLast((stop) => stop < now - ARRIVED) ?? stops[0]);
-
-// Where the page should be heading, or null if it's staying put. `ready` is false just after arriving, until a new gesture starts, so momentum can't carry on through the chapter
-export function nextGoal(stops: number[], now: number, wanted: number, goal: number | null, ready: boolean) {
-  const pull = wanted - (goal ?? now);
-  if (Math.abs(pull) < NUDGE) return goal;
-  const direction = Math.sign(pull);
-  if (goal !== null) {
-    if (Math.sign(goal - now) === direction) return goal;
-    // Turning round goes back to the chapter just left, however soon after leaving it
-    return direction > 0 ? (stops.find((stop) => stop >= now) ?? goal) : (stops.findLast((stop) => stop <= now) ?? goal);
-  }
-  return ready ? chapterFrom(stops, now, direction) : null;
 }
 
 // Whether Axie is talking right now. The chat sets it while an answer appears, and the 3D scene reads it to move their mouth
