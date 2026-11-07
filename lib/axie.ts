@@ -1,4 +1,4 @@
-import { crews, events, LAUNCH_URL, offices, worlds } from "./content.ts";
+import { crews, events, LAUNCH_URL, MISSION, offices, worlds } from "./content.ts";
 
 // What Axie says to anything that isn't about the org, whatever the model wrote. Fixed text, so a jailbreak has nothing to come back through
 export const AXIE_REFUSAL = "I only talk about Cisco NetConnect PUP - Manila: its departments, events, people and how to join. What would you like to know about those?";
@@ -12,6 +12,7 @@ const listPeople = (people: { name: string; role: string }[]) => people.map(({ n
 const FACTS = [
   "The org: Cisco NetConnect PUP - Manila, a student organization at the Polytechnic University of the Philippines - Manila. It moved from online initiatives to on-ground engagements.",
   'The hard launch: "Building Bridges, Powering Connections" at White Cloak Technologies, Strata 2000, Ortigas Center, Pasig. 54 people attended. Talks from industry experts, interactive sessions and networking.',
+  `Mission: ${MISSION}`,
   `Joining: sign-ups aren't open on the website yet. People can reach the team through the launch page: ${LAUNCH_URL}`,
   "Technical departments:",
   ...worlds.map((world) => `- ${world.name}: ${world.line} Covers: ${world.covers.join(", ")}. People: ${listPeople(world.leads)}.`),

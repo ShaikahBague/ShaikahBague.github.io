@@ -116,30 +116,6 @@ canvas,
   margin-top: 1rem;
 }
 
-.beat .origin {
-  margin-top: 1.125rem;
-}
-
-.origin {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.5rem;
-  padding: 0.1875rem 0.5rem;
-  font-family: var(--font-ticket), monospace;
-  font-size: 0.6875rem;
-  border: 1px solid currentColor;
-  border-radius: 2px;
-  background: rgb(18 7 46 / 0.6);
-  color: var(--lilac);
-  text-shadow: none;
-  text-underline-offset: 2px;
-}
-
-.origin.unissued {
-  background: none;
-  border-style: dashed;
-}
-
 /* Hero */
 .hero {
   position: relative;
@@ -504,79 +480,17 @@ canvas,
   font-style: italic;
 }
 
-/* Programme sheet */
-#programme,
-#join {
+/* Mission */
+#mission {
   background: var(--violet);
   padding: clamp(5rem, 12vh, 9rem) var(--gutter);
 }
 
-#programme {
-  padding-bottom: clamp(3rem, 7vh, 5rem);
-}
-
-.sheet {
-  margin-top: clamp(2rem, 5vh, 3.5rem);
-  border-bottom: 1px solid rgb(239 230 255 / 0.5);
-}
-
-.sheet li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: 0.5rem 2rem;
-  align-items: baseline;
-  padding-block: 1.5rem;
-  border-top: 1px solid rgb(239 230 255 / 0.5);
-}
-
-.sheet h3 {
-  font-family: var(--font-display), sans-serif;
-  font-weight: 800;
-  font-stretch: 125%;
-  font-size: clamp(1.375rem, 2.6vw, 2.25rem);
-  line-height: 1.1;
-}
-
-.sheet p {
-  font-size: 1.0625rem;
+#mission p {
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   line-height: 1.45;
-}
-
-#join {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 3rem;
-  align-items: center;
-  padding-top: clamp(3rem, 7vh, 5rem);
-}
-
-#join p {
-  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
-  line-height: 1.45;
-  max-width: 34rem;
+  max-width: 46rem;
   margin-top: 1.25rem;
-}
-
-#join .join-note {
-  font-size: 0.9375rem;
-}
-
-.join-link {
-  justify-self: center;
-  padding: 1rem 3.5rem;
-  border-radius: 6px;
-  background: var(--lilac);
-  color: var(--dome-900);
-  font-family: var(--font-display), sans-serif;
-  font-weight: 900;
-  font-stretch: 125%;
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-  text-decoration: none;
-  transition: background 0.2s;
-}
-
-.join-link:hover {
-  background: #fff;
 }
 
 .foot {
@@ -592,6 +506,12 @@ canvas,
 .foot a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
 }
 
 /* The show: one sticky stage driven by one scroll timeline */
@@ -1331,10 +1251,6 @@ html:not(.live) .fleet .planet-name {
   gap: 0.625rem;
 }
 
-.live .crew-date .origin {
-  margin-top: 0;
-}
-
 /* A big roster outgrows the screen rather than shrinking past reading size, and this scrolls it */
 .live .crew-chart {
   flex: 1;
@@ -1679,17 +1595,5 @@ html:not(.live) .fleet .planet-name {
     font-size: 0.8125rem;
     max-width: 11rem;
     line-height: 1.2;
-  }
-
-  .sheet li {
-    grid-template-columns: 1fr;
-  }
-
-  .sheet .origin {
-    justify-self: start;
-  }
-
-  #join {
-    grid-template-columns: 1fr;
   }
 }

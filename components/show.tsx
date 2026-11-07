@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, crews, events, JOIN_URL, LAUNCH_URL, offices, unissued, worlds } from "@/lib/content";
+import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, CONTACT_EMAIL, crews, events, MISSION, offices, SOCIALS, worlds } from "@/lib/content";
 import { AT, ATMOSPHERES, FIRST_OFFICE, initialSky, SCREENS_PER_UNIT, starChart, voice } from "@/lib/story";
 
 // What an asteroid carries: one lilac print with its caption and a contact strip to pick another, and the notes beside it
@@ -33,7 +33,6 @@ function LogStop({ event }: { event: (typeof events)[number] }) {
         <h3>{event.title}</h3>
         <small>{event.when}</small>
         <p>{event.note}</p>
-        {event.confirmed ? null : <span className="origin unissued">Unissued</span>}
       </div>
     </li>
   );
@@ -54,7 +53,6 @@ function CrewYear({ crew, on, leaving, from }: { crew: (typeof crews)[number]; o
     <li className="crew-year" data-on={on ? "" : undefined} data-leaving={leaving ? "" : undefined} data-moved={on && from ? "" : undefined}>
       <h3 className="crew-date">
         {crew.year}
-        {crew.confirmed ? null : <span className="origin unissued">Roster to confirm</span>}
       </h3>
       <div className="crew-chart">
         <div className="crew-sky" style={{ "--wc": wide.cols, "--wr": wide.rows, "--tc": tall.cols, "--tr": tall.rows } as React.CSSProperties}>
@@ -454,39 +452,24 @@ export function Show() {
           </div>
         </section>
 
-        <section id="programme">
-          <h2>Still on the programme</h2>
-          <ul className="sheet">
-            {unissued.map((item) => (
-              <li key={item.title}>
-                <h3>{item.title}</h3>
-                <p>{item.note}</p>
-                <span className="origin unissued">Unissued</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section id="join">
-          <div>
-            <h2>Join the crew.</h2>
-            <p>Enterprise Networking, Cybersecurity Operations, Development Networking. Come for one, stay for the people working on all three.</p>
-            <p className="join-note">
-              <span className="origin unissued">Unissued</span> Sign-ups aren&rsquo;t open here yet. Reach the team through the launch page.
-            </p>
-          </div>
-          <a className="join-link" href={JOIN_URL}>
-            Join
-          </a>
+        <section id="mission">
+          <h2>Our mission</h2>
+          <p>{MISSION}</p>
         </section>
       </main>
 
       <footer className="foot">
         <p>Cisco NetConnect PUP - Manila. A student organization at PUP - Manila.</p>
         <p>
-          Mentor or partner? <a href={LAUNCH_URL}>Talk to the team</a>{" "}
-          <span className="origin unissued">Unissued: contact pending</span>
+          Contact us: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         </p>
+        <nav aria-label="Social media">
+          {SOCIALS.map((social) => (
+            <a href={social.url} key={social.name}>
+              {social.name}
+            </a>
+          ))}
+        </nav>
       </footer>
     </div>
   );

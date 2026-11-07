@@ -275,7 +275,7 @@ export function buildShow(root: HTMLElement, s: SkyState) {
 
   // Over the show the bar stays out of the picture; over reading sections it needs its own ground
   const solidBar = ScrollTrigger.create({
-    trigger: "#programme",
+    trigger: "#mission",
     start: "top 4rem",
     end: "max",
     toggleClass: { targets: q(".topbar"), className: "solid" },
