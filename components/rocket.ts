@@ -40,7 +40,7 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
-import { DOOR_DIR, GROUND_Y, RAMP_FOOT, SILL, statureAt, voice, WALK_CYCLES, walkPath, type SkyState } from "@/lib/story";
+import { DOOR_DIR, FULL_STATURE, GROUND_Y, RAMP_FOOT, SILL, statureAt, voice, WALK_CYCLES, walkPath, type SkyState } from "@/lib/story";
 
 const SCALE = 0.8;
 const CABIN_FLOOR = 1.72;
@@ -596,7 +596,8 @@ export function createRocket(low: boolean, onAxie: (axie: Group, clip: Animation
       }
       group.quaternion.slerp(parked, ground);
     },
-    animate(time: number, dt: number, power: number, { wave, out, door: open, dim, climb, ground }: SkyState, camera: Camera) {
+    // `ride` takes over from the walk while Axie goes off on the jeepney: where their feet are, which way they face and how far through a stride
+    animate(time: number, dt: number, power: number, { wave, out, door: open, dim, climb, ground }: SkyState, camera: Camera, ride?: { foot: Vector3; yaw: number; stride: number }) {
       flameMaterial.uniforms.uTime.value = time;
       flameMaterial.uniforms.uPower.value = power;
       flame.visible = power > 0.01;
@@ -624,11 +625,14 @@ export function createRocket(low: boolean, onAxie: (axie: Group, clip: Animation
       const outside = out > 0.004;
       if (outside) {
         const { along, y } = walkPath(out);
-        const stature = statureAt(along);
-        onFoot.set(DOOR_DIR.x * along, y + FEET * SCALE * stature, DOOR_DIR.z * along);
+        const stature = ride ? FULL_STATURE : statureAt(along);
+        if (ride) onFoot.copy(ride.foot);
+        else onFoot.set(DOOR_DIR.x * along, y, DOOR_DIR.z * along);
+        onFoot.y += FEET * SCALE * stature;
         const moved = out - lastOut;
         let want = yaw;
-        if (out > 0.985) want = Math.atan2(camera.position.x - onFoot.x, camera.position.z - onFoot.z);
+        if (ride) want = ride.yaw;
+        else if (out > 0.985) want = Math.atan2(camera.position.x - onFoot.x, camera.position.z - onFoot.z);
         else if (Math.abs(moved) > 1e-5) want = moved > 0 ? DOOR_WORLD : DOOR_WORLD + Math.PI;
         if (Math.abs(moved) > 1e-5) headingOut = moved > 0;
         yaw += Math.atan2(Math.sin(want - yaw), Math.cos(want - yaw)) * (1 - Math.exp(-dt * 6));
@@ -660,7 +664,7 @@ export function createRocket(low: boolean, onAxie: (axie: Group, clip: Animation
       forearm.quaternion.copy(forearmPose);
       // The stride is tied to distance, so feet don't slide and each journey ends on the clip's standing first frame. Stepping out runs the same count from the other end, or the
       // legs would play backward while Axie walks forward. On the lift and in flight they stand still, because walking in the cabin puts their feet through its floor and console
-      if (walk) walk.time = outside ? ((headingOut ? out : 1 - out) * WALK_CYCLES % 1) * clipLength : 0;
+      if (walk) walk.time = ride ? ride.stride * clipLength : outside ? ((headingOut ? out : 1 - out) * WALK_CYCLES % 1) * clipLength : 0;
       mixer.update(0);
       armPose.copy(armRoot.quaternion);
       forearmPose.copy(forearm.quaternion);

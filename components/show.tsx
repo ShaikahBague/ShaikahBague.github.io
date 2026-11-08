@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, CONTACT_EMAIL, crews, events, MISSION, offices, SOCIALS, worlds } from "@/lib/content";
+import { AXIE_GREETING, AXIE_SUGGESTIONS, axieReply, CONTACT_EMAIL, crews, events, ID_FINDER_URL, MISSION, offices, SOCIALS, worlds } from "@/lib/content";
 import { AT, ATMOSPHERES, FIRST_OFFICE, initialSky, SCREENS_PER_UNIT, starChart, voice } from "@/lib/story";
 
 // What an asteroid carries: one lilac print with its caption and a contact strip to pick another, and the notes beside it
@@ -343,6 +343,10 @@ export function Show() {
         <a className="brand" href="#story">
           <Image src="/cncp-white.png" alt="" width={1000} height={773} sizes="56px" priority />
           <span>Cisco NetConnect PUP - Manila</span>
+        </a>
+        {/* A plain link, so it works without the show. At the start the show sends Axie there by jeepney first */}
+        <a className="finder" href={ID_FINDER_URL} data-finder>
+          ID Finder
         </a>
       </header>
 

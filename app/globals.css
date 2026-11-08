@@ -26,7 +26,8 @@ html {
   scrollbar-gutter: stable;
 }
 
-html.landed {
+html.landed,
+html.riding {
   overflow: hidden;
 }
 
@@ -88,6 +89,25 @@ html:not(.live) .live-only {
 .brand img {
   width: 3rem;
   height: auto;
+}
+
+.finder {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.125rem;
+  border-radius: 3px;
+  background: var(--lilac);
+  color: var(--dome-950);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.finder:hover {
+  background: #fff;
 }
 
 /* The plain page: no motion, no WebGL, or no JavaScript */

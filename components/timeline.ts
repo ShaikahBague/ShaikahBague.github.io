@@ -19,6 +19,8 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   let live: gsap.core.Timeline;
   let trigger: ScrollTrigger;
   let current = "";
+  // The jeepney ride to the ID Finder, while it plays
+  let riding: gsap.core.Timeline | undefined;
 
   // Stacked beats sit on top of each other, so only the visible one takes clicks
   const setBeat = (id: string) => {
@@ -59,6 +61,8 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       let front = -1;
       // The timeline is walked from here rather than scrubbed, so a hard scroll can't drive it faster than the camera should go
       const follow = (_time: number, deltaMs: number) => {
+        // Axie is leaving on the jeepney, so the scroll waits
+        if (riding) return;
         const time = followStep(tl.time(), st.progress * AT.end, deltaMs / 1000);
         if (time !== tl.time()) tl.time(time);
         // A beat counts as current from the moment it starts to enter
@@ -243,6 +247,8 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   const html = document.documentElement;
   let visit: gsap.core.Timeline | undefined;
   const onClick = (e: MouseEvent) => {
+    const finder = (e.target as HTMLElement).closest<HTMLAnchorElement>("[data-finder]");
+    if (finder) return ride(e, finder.href);
     const mark = (e.target as HTMLElement).closest<HTMLElement>("[data-stop]");
     if (mark) return goTo(stepAt(Number(mark.dataset.stop)));
     const button = (e.target as HTMLElement).closest<HTMLElement>("[data-land]");
@@ -270,6 +276,32 @@ export function buildShow(root: HTMLElement, s: SkyState) {
       .to(s, { inside: 0, duration: 1.3, ease: "power2.out" })
       .to(atmos, { opacity: 0, duration: 0.8, ease: "power1.out" }, "<0.1");
   };
+  // Axie takes a jeepney to the ID Finder, but only from where the show starts: standing on their mark at headquarters, before the
+  // walk. Anywhere later (on the way to the rocket, in space, or back home after the flight) the link just goes there, and so does
+  // a click meant for a new tab
+  const ride = (e: MouseEvent, href: string) => {
+    const start = live && Math.max(live.time(), trigger.progress * AT.end) < 0.05 && s.inside === 0;
+    const plain = e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+    if (riding || !start || plain || !q("canvas.on").length) return;
+    e.preventDefault();
+    html.classList.add("riding");
+    riding = gsap
+      .timeline({ onComplete: () => location.assign(href) })
+      .to(".hero-action", { opacity: 0, duration: 0.4, ease: "power1.in" }, 0)
+      .to(s, { jeep: 1, duration: 2.4, ease: "power2.out" }, 0)
+      .to(s, { jeep: 2, duration: 1.6, ease: "none" })
+      .to(s, { jeep: 3, duration: 2.2, ease: "power2.in" })
+      .to(".cover", { opacity: 1, duration: 0.5, ease: "power1.in" }, "-=0.5");
+  };
+  // Coming back with the browser's Back button can restore this page as it was left, mid-ride, so it starts over at headquarters
+  const onShow = (e: PageTransitionEvent) => {
+    if (!e.persisted || !riding) return;
+    riding.progress(0).kill();
+    riding = undefined;
+    html.classList.remove("riding");
+  };
+  window.addEventListener("pageshow", onShow);
+
   const planets = q(".planet") as HTMLDialogElement[];
   planets.forEach((planet) => planet.addEventListener("close", leave));
 
@@ -284,6 +316,9 @@ export function buildShow(root: HTMLElement, s: SkyState) {
   return () => {
     root.removeEventListener("focusin", onFocus);
     root.removeEventListener("click", onClick);
+    window.removeEventListener("pageshow", onShow);
+    riding?.kill();
+    html.classList.remove("riding");
     planets.forEach((planet) => planet.removeEventListener("close", leave));
     visit?.kill();
     html.classList.remove("landed");

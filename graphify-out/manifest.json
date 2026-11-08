@@ -48,22 +48,22 @@
     "semantic_hash": "55a4abeceeb28521bb786e11c9588ab3"
   },
   "components/rocket.ts": {
-    "mtime": 1794077000.8029487,
-    "seen": 1794105781.8457038,
-    "ast_hash": "151ef67da25c9ac51b6acc4eb6a29780",
-    "semantic_hash": "151ef67da25c9ac51b6acc4eb6a29780"
+    "mtime": 1794106870.4673073,
+    "seen": 1794107393.744885,
+    "ast_hash": "8448e27d3f98425e8e868fbf18b0f08f",
+    "semantic_hash": ""
   },
   "components/show.tsx": {
-    "mtime": 1794103769.2220626,
-    "seen": 1794105781.8457072,
-    "ast_hash": "21d3f3c6869a0c7d5922d7a66a86c29b",
-    "semantic_hash": "21d3f3c6869a0c7d5922d7a66a86c29b"
+    "mtime": 1794106910.1711555,
+    "seen": 1794107393.7448888,
+    "ast_hash": "514bd9182aaac186e211c1cd10ddab31",
+    "semantic_hash": ""
   },
   "components/sky.ts": {
-    "mtime": 1794077000.8059494,
-    "seen": 1794105781.84571,
-    "ast_hash": "ef9b7a930fd2554e2954e65b48aa44e2",
-    "semantic_hash": "ef9b7a930fd2554e2954e65b48aa44e2"
+    "mtime": 1794106880.4705114,
+    "seen": 1794107393.7448936,
+    "ast_hash": "a9b0ef24179e6ee9d715eb60ab2fa4e0",
+    "semantic_hash": ""
   },
   "components/surface.ts": {
     "mtime": 1794077000.806949,
@@ -72,10 +72,10 @@
     "semantic_hash": "9c7d6d993d347f8ab6e1481d1186449b"
   },
   "components/timeline.ts": {
-    "mtime": 1794103769.223579,
-    "seen": 1794105781.845717,
-    "ast_hash": "bd87ed947b7c6bad1787e466144c5bf1",
-    "semantic_hash": "bd87ed947b7c6bad1787e466144c5bf1"
+    "mtime": 1794107277.203374,
+    "seen": 1794107393.7449017,
+    "ast_hash": "204e618ce09c4f72d2f1d4f9498b35cf",
+    "semantic_hash": ""
   },
   "eslint.config.mjs": {
     "mtime": 1792328866.9124985,
@@ -96,10 +96,10 @@
     "semantic_hash": "57776c28b771b647c231242e0d5b0bc2"
   },
   "lib/content.ts": {
-    "mtime": 1794103769.2275805,
-    "seen": 1794105781.8457372,
-    "ast_hash": "da3fedf9a0f5c16e68c4811a1d2b1042",
-    "semantic_hash": "da3fedf9a0f5c16e68c4811a1d2b1042"
+    "mtime": 1794106742.7461834,
+    "seen": 1794107393.7449188,
+    "ast_hash": "5edabe5fa0990e1cb840f9ca706eca87",
+    "semantic_hash": ""
   },
   "lib/org.json": {
     "mtime": 1794077000.8109481,
@@ -114,10 +114,10 @@
     "semantic_hash": "e27cb95353d7d76372b42bbcb1d7aae3"
   },
   "lib/story.ts": {
-    "mtime": 1794103769.2305763,
-    "seen": 1794105781.8457458,
-    "ast_hash": "bcc1c6240b61128fa6f0df66feb85331",
-    "semantic_hash": "bcc1c6240b61128fa6f0df66feb85331"
+    "mtime": 1794106757.8405292,
+    "seen": 1794107393.7449312,
+    "ast_hash": "3c37a65ce821a0289f641f84b76fd7a1",
+    "semantic_hash": ""
   },
   "next.config.ts": {
     "mtime": 1794077291.8363264,
@@ -202,5 +202,413 @@
     "seen": 1794105781.8458335,
     "ast_hash": "bfccdf8d0ab4201e8df9e46d96ffd1e5",
     "semantic_hash": "bfccdf8d0ab4201e8df9e46d96ffd1e5"
+  },
+  "components/jeepney.ts": {
+    "mtime": 1794107185.308882,
+    "seen": 1794107393.7448792,
+    "ast_hash": "46b85b97ca26f9999b1479cc3a64a62b",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-cybersecurity.png": {
+    "mtime": 1794077000.6745808,
+    "seen": 1794107393.744988,
+    "ast_hash": "a0f0af49ca8f197d78a798efc64838df",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-data.png": {
+    "mtime": 1794077000.6815825,
+    "seen": 1794107393.7449915,
+    "ast_hash": "0b92f67927636d94d47c297fd3eec113",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-descent.png": {
+    "mtime": 1794077000.6875918,
+    "seen": 1794107393.7449946,
+    "ast_hash": "1b85b440a18f600e2d004f6a5831b4a5",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-houselights.png": {
+    "mtime": 1794077000.6935897,
+    "seen": 1794107393.7449985,
+    "ast_hash": "a6749f9fd56a1349553821f24567f1b7",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-iot.png": {
+    "mtime": 1794077000.7001011,
+    "seen": 1794107393.7450018,
+    "ast_hash": "92a35e6614f8ef5f9c0511e8ecea6cb8",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-join.png": {
+    "mtime": 1794077000.7020986,
+    "seen": 1794107393.7450051,
+    "ast_hash": "ab6fe545e945548ac9d2ee8aa174680f",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-launch.png": {
+    "mtime": 1794077000.7076128,
+    "seen": 1794107393.7450078,
+    "ast_hash": "d96e1257604004c2b87133dc8c16517f",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-lights.png": {
+    "mtime": 1794077000.7136128,
+    "seen": 1794107393.745011,
+    "ast_hash": "3d686042d3fd00b3c2072d24c3dda3a0",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-links.png": {
+    "mtime": 1794077000.7206144,
+    "seen": 1794107393.7450163,
+    "ast_hash": "a72c483cafa44c5a37f9dc99e505dd43",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-networking.png": {
+    "mtime": 1794077000.727131,
+    "seen": 1794107393.7450194,
+    "ast_hash": "98d2dc89b5e3b40d6096ef4271e6291e",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-plain.png": {
+    "mtime": 1794077000.736281,
+    "seen": 1794107393.7450223,
+    "ast_hash": "88077bffcd2e595b19c40fe866cd508a",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-seat.png": {
+    "mtime": 1794077000.7432842,
+    "seen": 1794107393.7450254,
+    "ast_hash": "1f7f1a2a5eb01dab3698d107088adee3",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop-signal.png": {
+    "mtime": 1794077000.7508001,
+    "seen": 1794107393.7450283,
+    "ast_hash": "0aa5b0ae7090bcf48023562d579b9f30",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/desktop.png": {
+    "mtime": 1794077000.7568004,
+    "seen": 1794107393.7450316,
+    "ast_hash": "292c6880d28eb8860a0d8834a0658cc8",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile-data.png": {
+    "mtime": 1794077000.7633102,
+    "seen": 1794107393.7450347,
+    "ast_hash": "e0ce9d26b1c210163337886b7f854ed3",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile-join.png": {
+    "mtime": 1794077000.7663083,
+    "seen": 1794107393.745038,
+    "ast_hash": "66b7547faa5f40dc2e9a1a90ad1ca356",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile-programme.png": {
+    "mtime": 1794077000.7683086,
+    "seen": 1794107393.7450416,
+    "ast_hash": "9c72df268ac6fabdfa011dd808b2e325",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile-seat.png": {
+    "mtime": 1794077000.773823,
+    "seen": 1794107393.7450447,
+    "ast_hash": "3ea4e05def6d7d5d640478828c9dea40",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile-signal.png": {
+    "mtime": 1794077000.7808251,
+    "seen": 1794107393.7450478,
+    "ast_hash": "13d071f02800c247d292cfc042ad4d4b",
+    "semantic_hash": ""
+  },
+  ".impeccable/review/mobile.png": {
+    "mtime": 1794077000.7858293,
+    "seen": 1794107393.745051,
+    "ast_hash": "cd90e0f7659b1d5f3108c135d0ce8d93",
+    "semantic_hash": ""
+  },
+  "app/opengraph-image.jpg": {
+    "mtime": 1794077000.7968316,
+    "seen": 1794107393.745054,
+    "ast_hash": "e887162258dc8d117d3addc4c5bd7efa",
+    "semantic_hash": ""
+  },
+  "app/twitter-image.jpg": {
+    "mtime": 1794077000.7999487,
+    "seen": 1794107393.745057,
+    "ast_hash": "e887162258dc8d117d3addc4c5bd7efa",
+    "semantic_hash": ""
+  },
+  "public/cisco-constellation-not-polished.png": {
+    "mtime": 1794077000.8915148,
+    "seen": 1794107393.7450604,
+    "ast_hash": "2dca35de29211658f457392343b6f16c",
+    "semantic_hash": ""
+  },
+  "public/cncp-decal.webp": {
+    "mtime": 1794077000.892517,
+    "seen": 1794107393.7450638,
+    "ast_hash": "3ed8e9328337dbf42e02966e914c8626",
+    "semantic_hash": ""
+  },
+  "public/cncp-white.png": {
+    "mtime": 1794077000.896514,
+    "seen": 1794107393.7450671,
+    "ast_hash": "2f963b4e8d98cf81c4ff1e144560f29b",
+    "semantic_hash": ""
+  },
+  "public/events/devnet-call.webp": {
+    "mtime": 1794077000.8980238,
+    "seen": 1794107393.74507,
+    "ast_hash": "73316973268e8a021ead5113b7775b34",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-booth.webp": {
+    "mtime": 1794077000.9000356,
+    "seen": 1794107393.745073,
+    "ast_hash": "34cd1064d71efd04978bbab5b3780a29",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-floor.webp": {
+    "mtime": 1794077000.9010313,
+    "seen": 1794107393.7450762,
+    "ast_hash": "83e5864cb3f2808c245700672a6a5ce0",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-group.webp": {
+    "mtime": 1794077000.9020298,
+    "seen": 1794107393.7450793,
+    "ast_hash": "9860c099aebaac2a6369eb85cc6578d9",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-hall.webp": {
+    "mtime": 1794077000.9030297,
+    "seen": 1794107393.7450821,
+    "ast_hash": "90afaa958f02d85f25b086749c0ce85a",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-members.webp": {
+    "mtime": 1794077000.9040313,
+    "seen": 1794107393.7450852,
+    "ast_hash": "84ba42bba07579b161edb17eb8ef8279",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-prosple.webp": {
+    "mtime": 1794077000.9060297,
+    "seen": 1794107393.7450883,
+    "ast_hash": "726dec566d5f3a36f424b537184403fe",
+    "semantic_hash": ""
+  },
+  "public/events/ecega-table.webp": {
+    "mtime": 1794077000.9060297,
+    "seen": 1794107393.7450914,
+    "ast_hash": "1b822812ffc49c196991c2317d902591",
+    "semantic_hash": ""
+  },
+  "public/events/entnet-careers.webp": {
+    "mtime": 1794077000.9070296,
+    "seen": 1794107393.7450943,
+    "ast_hash": "5c1d970ed3be28f921d7c366943a0d82",
+    "semantic_hash": ""
+  },
+  "public/events/packet-kickoff.webp": {
+    "mtime": 1794077000.908033,
+    "seen": 1794107393.7450974,
+    "ast_hash": "80748f5d7c99057b3270d7e882876adc",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-audience.webp": {
+    "mtime": 1794077000.909541,
+    "seen": 1794107393.7451005,
+    "ast_hash": "8048f852209be2fce1d5b71039f4b1bf",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-certificates.webp": {
+    "mtime": 1794077000.910547,
+    "seen": 1794107393.7451038,
+    "ast_hash": "c7faffc2112908be0ddf8802b55bb044",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-crew.webp": {
+    "mtime": 1794077000.9115465,
+    "seen": 1794107393.7451072,
+    "ast_hash": "40efda87cb3650e266cec37730b66d4e",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-engineering.webp": {
+    "mtime": 1794077000.9125469,
+    "seen": 1794107393.7451103,
+    "ast_hash": "a7109f6af6c0d6550ce994559366fa8a",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-group.webp": {
+    "mtime": 1794077000.913548,
+    "seen": 1794107393.7451131,
+    "ast_hash": "bdb03704ef1f148864c303da1ec7d4b9",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-networking.webp": {
+    "mtime": 1794077000.913548,
+    "seen": 1794107393.7451165,
+    "ast_hash": "bd945929d0db89615dc2937b107e42d2",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-room.webp": {
+    "mtime": 1794077000.915548,
+    "seen": 1794107393.7451198,
+    "ast_hash": "3ea9d0a27462ba31390357f1d01cd721",
+    "semantic_hash": ""
+  },
+  "public/events/stellaris-title.webp": {
+    "mtime": 1794077000.916547,
+    "seen": 1794107393.7451236,
+    "ast_hash": "4715011487cbeb87c9d23d1795b642d3",
+    "semantic_hash": ""
+  },
+  "public/file.svg": {
+    "mtime": 1792328866.9870493,
+    "seen": 1794107393.7451274,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": ""
+  },
+  "public/globe.svg": {
+    "mtime": 1792328867.0121174,
+    "seen": 1794107393.7451308,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": ""
+  },
+  "public/images/october/development-networking-onboarding/876370273_1147360114902489_5714409598028842660_n.png": {
+    "mtime": 1794077000.924547,
+    "seen": 1794107393.745134,
+    "ast_hash": "4e0e192cda25b9252fb18f0418d79193",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/843611198_1633603774897443_92365688878961514_n.jpg": {
+    "mtime": 1794077000.9275455,
+    "seen": 1794107393.7451372,
+    "ast_hash": "334b672266cc2f4ceb4aca13441d031c",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/846430343_2128052888072011_1392235905771486106_n.jpg": {
+    "mtime": 1794077000.9305463,
+    "seen": 1794107393.7451396,
+    "ast_hash": "4c96047b7ca267dbd45f2cd5a4d6513a",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/849892226_2390077215135385_8311902517263639419_n.jpg": {
+    "mtime": 1794077000.934555,
+    "seen": 1794107393.7451437,
+    "ast_hash": "c8962f6674a20cd9603b5e0e657ed2e4",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/850413084_1428320202846513_3395786474768394562_n.jpg": {
+    "mtime": 1794077000.9365528,
+    "seen": 1794107393.7451465,
+    "ast_hash": "f6291cdf615caa05a16aef8a17777222",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/850497827_2331856214223464_5553306709012786611_n.jpg": {
+    "mtime": 1794077000.9385526,
+    "seen": 1794107393.7451496,
+    "ast_hash": "99292daba016480369611df5942afd0c",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/850922796_2245841629593982_7235855251522770566_n.jpg": {
+    "mtime": 1794077000.9415567,
+    "seen": 1794107393.7451553,
+    "ast_hash": "cedf35d6f0f3543006e0b3153b4d5a21",
+    "semantic_hash": ""
+  },
+  "public/images/october/ecega/850931850_2163697724217773_3287653213654483665_n.jpg": {
+    "mtime": 1794077000.9435523,
+    "seen": 1794107393.745159,
+    "ast_hash": "8259228b449100a81daa60f2cc259ecc",
+    "semantic_hash": ""
+  },
+  "public/images/october/enterprise-networking-onboarding/entnet-on.png": {
+    "mtime": 1794077000.9500701,
+    "seen": 1794107393.7451622,
+    "ast_hash": "d5f4bf21487738cce679d1781c0b31b5",
+    "semantic_hash": ""
+  },
+  "public/images/october/packet-capture/833185520_122189969150805200_161513062845852741_n.jpg": {
+    "mtime": 1794077000.954067,
+    "seen": 1794107393.745166,
+    "ast_hash": "fe7df4ca819e2db22f2965032d6542f9",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/829519081_1082859614739396_7372412686107446294_n.jpg": {
+    "mtime": 1794077000.9580672,
+    "seen": 1794107393.7451692,
+    "ast_hash": "13a431ffd953e77e8bb6f1cc6258fc7d",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/829806987_1742416390359652_76045589954640301_n.jpg": {
+    "mtime": 1794077000.9615703,
+    "seen": 1794107393.7451723,
+    "ast_hash": "aa2420998eb304e9c760c8628864ec97",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/830243612_3332704476916401_1144676053490422094_n.jpg": {
+    "mtime": 1794077000.9645743,
+    "seen": 1794107393.7451756,
+    "ast_hash": "ec3025c9507e4f6f796ebddca0043a75",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/830834363_2260414501474490_6120085811691388971_n.jpg": {
+    "mtime": 1794077000.9685774,
+    "seen": 1794107393.745179,
+    "ast_hash": "a3248a48469093927418511517a23577",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/832403059_1383384827116665_118540544127177738_n.jpg": {
+    "mtime": 1794077000.972085,
+    "seen": 1794107393.745182,
+    "ast_hash": "fa857d04e61d8c48f35f65af2053d54a",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/833219111_1588095566384729_3546680233257423807_n.jpg": {
+    "mtime": 1794077000.9750924,
+    "seen": 1794107393.7451851,
+    "ast_hash": "98b52983a6ab3456c1096100895b68f1",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/833333723_29500018539586080_5901172234924128337_n.jpg": {
+    "mtime": 1794077000.978093,
+    "seen": 1794107393.745188,
+    "ast_hash": "dfe921ce7a0e244ee89d12b1f0cc0899",
+    "semantic_hash": ""
+  },
+  "public/images/september/stellaris-ascensus/833992601_2043735869587578_3272209341545541975_n.jpg": {
+    "mtime": 1794077000.9810908,
+    "seen": 1794107393.7451913,
+    "ast_hash": "3f94838bdf846ee8cb56396f95a92c9c",
+    "semantic_hash": ""
+  },
+  "public/next.svg": {
+    "mtime": 1792328867.0372264,
+    "seen": 1794107393.7451944,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": ""
+  },
+  "public/vercel.svg": {
+    "mtime": 1792328867.0631351,
+    "seen": 1794107393.7451973,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": ""
+  },
+  "public/window.svg": {
+    "mtime": 1792328867.0847154,
+    "seen": 1794107393.7452004,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1794077462.582482,
+    "seen": 1794107393.7452037,
+    "ast_hash": "8f842c1be9df4d5ae58212572eb80004",
+    "semantic_hash": ""
   }
 }

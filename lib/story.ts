@@ -293,6 +293,8 @@ export const initialSky = () => ({
   // Which planet the visitor went down to, and how far: 0 in orbit, 0.5 passing through its air, 1 on the ground
   planet: 0,
   inside: 0,
+  // The ride to the ID Finder: 0 not here, 1 pulled up by Axie, 2 Axie on its back step, 3 gone off screen
+  jeep: 0,
 });
 
 export type SkyState = ReturnType<typeof initialSky>;

@@ -49,6 +49,7 @@ import gsap from "gsap";
 import { ATMOSPHERES, CAMERA_GAP, EARTH_RADIUS, FIRST_OFFICE, FLEET, FLIGHT, GROUND_Y, LOGO_STROKES, OFFICE_RADIUS, officeSpots, passBy, ROCK_DEPTH, WORLD_POS, WORLD_RADIUS, type SkyState } from "@/lib/story";
 import { buildCampus } from "./campus";
 import { suitUp } from "./astronaut";
+import { buildJeepney } from "./jeepney";
 import { createRocket } from "./rocket";
 import { createSurface } from "./surface";
 
@@ -774,6 +775,8 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
   // The same Axie that flies the rocket, dressed up for going outside
   const rocket = createRocket(low, (axie, clip) => surface.give(suitUp(axie, clip)));
   scene.add(rocket.group, rocket.yard);
+  const jeepney = buildJeepney();
+  scene.add(jeepney.group);
   const trailCount = low ? 50 : 90;
   const trail = buildTrail(trailCount, dpr);
   scene.add(trail.points);
@@ -1037,7 +1040,7 @@ export function createSky(canvas: HTMLCanvasElement, s: SkyState) {
     speed += (Math.abs(s.fly - lastFly) / Math.max(dt, 0.001) - speed) * 0.18;
     lastFly = s.fly;
     rocket.place(craft, steady, camera, s.ground);
-    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), s, camera);
+    rocket.animate(time, dt, s.burn * Math.min(1, 0.32 + speed * 0.5), s, camera, jeepney.place(s.jeep, time));
 
     trail.points.visible = s.house < 0.95 && s.burn > 0;
     if (trail.points.visible) {

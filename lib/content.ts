@@ -2,6 +2,8 @@ import org from "./org.json" with { type: "json" };
 
 export const LAUNCH_URL = "https://luma.com/2ntq5ce1";
 
+export const ID_FINDER_URL = "https://cncp-id-finder.vercel.app/";
+
 export const CONTACT_EMAIL = "pupcisconetconmain@gmail.com";
 
 export const SOCIALS = [
