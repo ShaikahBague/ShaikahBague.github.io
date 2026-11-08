@@ -1,0 +1,4137 @@
+{
+  "nodes": [
+    {
+      "id": "g0",
+      "type": "group",
+      "label": "Page, Show & Axie API",
+      "x": 0,
+      "y": 0,
+      "width": 1540,
+      "height": 820,
+      "color": "1"
+    },
+    {
+      "id": "n_lib_content_axie_answers",
+      "type": "file",
+      "file": "AXIE_ANSWERS.md",
+      "x": 20,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_axie_greeting",
+      "type": "file",
+      "file": "AXIE_GREETING.md",
+      "x": 220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_axie_instructions",
+      "type": "file",
+      "file": "AXIE_INSTRUCTIONS.md",
+      "x": 420,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_axie_refusal",
+      "type": "file",
+      "file": "AXIE_REFUSAL.md",
+      "x": 620,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_axie_suggestions",
+      "type": "file",
+      "file": "AXIE_SUGGESTIONS.md",
+      "x": 820,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_axiechat",
+      "type": "file",
+      "file": "AxieChat().md",
+      "x": 1020,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_contact_email",
+      "type": "file",
+      "file": "CONTACT_EMAIL.md",
+      "x": 1220,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_crew",
+      "type": "file",
+      "file": "Crew().md",
+      "x": 20,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_crewyear",
+      "type": "file",
+      "file": "CrewYear().md",
+      "x": 220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_facts",
+      "type": "file",
+      "file": "FACTS.md",
+      "x": 420,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_fleet",
+      "type": "file",
+      "file": "Fleet().md",
+      "x": 620,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_page_home",
+      "type": "file",
+      "file": "Home().md",
+      "x": 820,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_launch_url",
+      "type": "file",
+      "file": "LAUNCH_URL.md",
+      "x": 1020,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_logstop",
+      "type": "file",
+      "file": "LogStop().md",
+      "x": 1220,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_max_question",
+      "type": "file",
+      "file": "MAX_QUESTION.md",
+      "x": 20,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_mission",
+      "type": "file",
+      "file": "MISSION.md",
+      "x": 220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_api_axie_route_post",
+      "type": "file",
+      "file": "POST().md",
+      "x": 420,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_planet",
+      "type": "file",
+      "file": "Planet().md",
+      "x": 620,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_socials",
+      "type": "file",
+      "file": "SOCIALS.md",
+      "x": 820,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_show",
+      "type": "file",
+      "file": "Show().md",
+      "x": 1020,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show_spoken",
+      "type": "file",
+      "file": "Spoken().md",
+      "x": 1220,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_api_axie_route_allowed",
+      "type": "file",
+      "file": "allowed().md",
+      "x": 20,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_test_answer",
+      "type": "file",
+      "file": "answer().md",
+      "x": 220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_test",
+      "type": "file",
+      "file": "axie.test.ts.md",
+      "x": 420,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie",
+      "type": "file",
+      "file": "axie.ts.md",
+      "x": 620,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_axiereply",
+      "type": "file",
+      "file": "axieReply().md",
+      "x": 820,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_axierequest",
+      "type": "file",
+      "file": "axieRequest().md",
+      "x": 1020,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content",
+      "type": "file",
+      "file": "content.ts.md",
+      "x": 1220,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_crews",
+      "type": "file",
+      "file": "crews.md",
+      "x": 20,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_events",
+      "type": "file",
+      "file": "events.md",
+      "x": 220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_api_axie_route_fail",
+      "type": "file",
+      "file": "fail().md",
+      "x": 420,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_org",
+      "type": "file",
+      "file": "lib_org.md",
+      "x": 620,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_listpeople",
+      "type": "file",
+      "file": "listPeople().md",
+      "x": 820,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_offices",
+      "type": "file",
+      "file": "offices.md",
+      "x": 1020,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_page",
+      "type": "file",
+      "file": "page.tsx.md",
+      "x": 1220,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_readanswer",
+      "type": "file",
+      "file": "readAnswer().md",
+      "x": 20,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_axie_readquestions",
+      "type": "file",
+      "file": "readQuestions().md",
+      "x": 220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_api_axie_route_recent",
+      "type": "file",
+      "file": "recent.md",
+      "x": 420,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_node_assert",
+      "type": "file",
+      "file": "ref_node_assert.md",
+      "x": 620,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_node_test",
+      "type": "file",
+      "file": "ref_node_test.md",
+      "x": 820,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_api_axie_route",
+      "type": "file",
+      "file": "route.ts.md",
+      "x": 1020,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_show",
+      "type": "file",
+      "file": "show.tsx.md",
+      "x": 1220,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_starchart",
+      "type": "file",
+      "file": "starChart().md",
+      "x": 20,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_content_worlds",
+      "type": "file",
+      "file": "worlds.md",
+      "x": 220,
+      "y": 560,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g1",
+      "type": "group",
+      "label": "Story Timeline & Constants",
+      "x": 1620,
+      "y": 0,
+      "width": 1540,
+      "height": 720,
+      "color": "2"
+    },
+    {
+      "id": "n_lib_story_at",
+      "type": "file",
+      "file": "AT.md",
+      "x": 1640,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_atmospheres",
+      "type": "file",
+      "file": "ATMOSPHERES.md",
+      "x": 1840,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_timeline_beats",
+      "type": "file",
+      "file": "BEATS.md",
+      "x": 2040,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_bridge",
+      "type": "file",
+      "file": "BRIDGE.md",
+      "x": 2240,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_camera_gap",
+      "type": "file",
+      "file": "CAMERA_GAP.md",
+      "x": 2440,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_cruise",
+      "type": "file",
+      "file": "CRUISE.md",
+      "x": 2640,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_door_dir",
+      "type": "file",
+      "file": "DOOR_DIR.md",
+      "x": 2840,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_earth_radius",
+      "type": "file",
+      "file": "EARTH_RADIUS.md",
+      "x": 1640,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_first_office",
+      "type": "file",
+      "file": "FIRST_OFFICE.md",
+      "x": 1840,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_fleet",
+      "type": "file",
+      "file": "FLEET.md",
+      "x": 2040,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_flight",
+      "type": "file",
+      "file": "FLIGHT.md",
+      "x": 2240,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_full_stature",
+      "type": "file",
+      "file": "FULL_STATURE.md",
+      "x": 2440,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_ground_y",
+      "type": "file",
+      "file": "GROUND_Y.md",
+      "x": 2640,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_logo_strokes",
+      "type": "file",
+      "file": "LOGO_STROKES.md",
+      "x": 2840,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_mark",
+      "type": "file",
+      "file": "MARK.md",
+      "x": 1640,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_office_offsets",
+      "type": "file",
+      "file": "OFFICE_OFFSETS.md",
+      "x": 1840,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_office_radius",
+      "type": "file",
+      "file": "OFFICE_RADIUS.md",
+      "x": 2040,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_pad",
+      "type": "file",
+      "file": "PAD.md",
+      "x": 2240,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_point",
+      "type": "file",
+      "file": "Point.md",
+      "x": 2440,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_ramp_foot",
+      "type": "file",
+      "file": "RAMP_FOOT.md",
+      "x": 2640,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_rock_depth",
+      "type": "file",
+      "file": "ROCK_DEPTH.md",
+      "x": 2840,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_screens_per_unit",
+      "type": "file",
+      "file": "SCREENS_PER_UNIT.md",
+      "x": 1640,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_shots",
+      "type": "file",
+      "file": "SHOTS.md",
+      "x": 1840,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_sill",
+      "type": "file",
+      "file": "SILL.md",
+      "x": 2040,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_star_drift",
+      "type": "file",
+      "file": "STAR_DRIFT.md",
+      "x": 2240,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_stop",
+      "type": "file",
+      "file": "STOP.md",
+      "x": 2440,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_skystate",
+      "type": "file",
+      "file": "SkyState.md",
+      "x": 2640,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_walk_cycles",
+      "type": "file",
+      "file": "WALK_CYCLES.md",
+      "x": 2840,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_walk_time",
+      "type": "file",
+      "file": "WALK_TIME.md",
+      "x": 1640,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_world_pos",
+      "type": "file",
+      "file": "WORLD_POS.md",
+      "x": 1840,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_world_radius",
+      "type": "file",
+      "file": "WORLD_RADIUS.md",
+      "x": 2040,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_timeline_buildshow",
+      "type": "file",
+      "file": "buildShow().md",
+      "x": 2240,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_followstep",
+      "type": "file",
+      "file": "followStep().md",
+      "x": 2440,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_initialsky",
+      "type": "file",
+      "file": "initialSky().md",
+      "x": 2640,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_node_fs",
+      "type": "file",
+      "file": "ref_node_fs.md",
+      "x": 2840,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_shot",
+      "type": "file",
+      "file": "shot().md",
+      "x": 1640,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_timeline_stepat",
+      "type": "file",
+      "file": "stepAt().md",
+      "x": 1840,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_test",
+      "type": "file",
+      "file": "story.test.ts.md",
+      "x": 2040,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story",
+      "type": "file",
+      "file": "story.ts.md",
+      "x": 2240,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_timeline",
+      "type": "file",
+      "file": "timeline.ts.md",
+      "x": 2440,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_voice",
+      "type": "file",
+      "file": "voice.md",
+      "x": 2640,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_worldleg",
+      "type": "file",
+      "file": "worldLeg().md",
+      "x": 2840,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g2",
+      "type": "group",
+      "label": "Package Dependencies & Lint",
+      "x": 3240,
+      "y": 0,
+      "width": 1540,
+      "height": 720,
+      "color": "3"
+    },
+    {
+      "id": "n_ref_tailwindcss_turbopack",
+      "type": "file",
+      "file": "@tailwindcssturbopack.md",
+      "x": 3260,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_tailwindcss_turbopack",
+      "type": "file",
+      "file": "@tailwindcssturbopack@4.md",
+      "x": 3460,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_types_node",
+      "type": "file",
+      "file": "@typesnode.md",
+      "x": 3660,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_types_node",
+      "type": "file",
+      "file": "@typesnode@20.md",
+      "x": 3860,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_types_react",
+      "type": "file",
+      "file": "@typesreact.md",
+      "x": 4060,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_types_react_dom",
+      "type": "file",
+      "file": "@typesreact-dom.md",
+      "x": 4260,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_types_react_dom",
+      "type": "file",
+      "file": "@typesreact-dom@19.md",
+      "x": 4460,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_types_react",
+      "type": "file",
+      "file": "@typesreact@19.md",
+      "x": 3260,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_types_three",
+      "type": "file",
+      "file": "@typesthree.md",
+      "x": 3460,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_types_three",
+      "type": "file",
+      "file": "@typesthree@0.187.0.md",
+      "x": 3660,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts_build",
+      "type": "file",
+      "file": "build.md",
+      "x": 3860,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies",
+      "type": "file",
+      "file": "dependencies.md",
+      "x": 4060,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts_dev",
+      "type": "file",
+      "file": "dev.md",
+      "x": 4260,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies",
+      "type": "file",
+      "file": "devDependencies.md",
+      "x": 4460,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_eslint",
+      "type": "file",
+      "file": "eslint.md",
+      "x": 3260,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_eslint_config_next",
+      "type": "file",
+      "file": "eslint-config-next.md",
+      "x": 3460,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_eslint_config_next",
+      "type": "file",
+      "file": "eslint-config-next@16.4.2.md",
+      "x": 3660,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_eslint_config",
+      "type": "file",
+      "file": "eslint.config.mjs.md",
+      "x": 3860,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_eslint",
+      "type": "file",
+      "file": "eslint@9.md",
+      "x": 4060,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_eslint_config_eslintconfig",
+      "type": "file",
+      "file": "eslintConfig.md",
+      "x": 4260,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_gsap",
+      "type": "file",
+      "file": "gsap.md",
+      "x": 4460,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies_gsap",
+      "type": "file",
+      "file": "gsap@3.15.1.md",
+      "x": 3260,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts_lint",
+      "type": "file",
+      "file": "lint.md",
+      "x": 3460,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_name",
+      "type": "file",
+      "file": "name.md",
+      "x": 3660,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package",
+      "type": "file",
+      "file": "package.json.md",
+      "x": 3860,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_private",
+      "type": "file",
+      "file": "private.md",
+      "x": 4060,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_react",
+      "type": "file",
+      "file": "react.md",
+      "x": 4260,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_react_dom",
+      "type": "file",
+      "file": "react-dom.md",
+      "x": 4460,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies_react_dom",
+      "type": "file",
+      "file": "react-dom@19.3.0.md",
+      "x": 3260,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies_react",
+      "type": "file",
+      "file": "react@19.3.0.md",
+      "x": 3460,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts",
+      "type": "file",
+      "file": "scripts.md",
+      "x": 3660,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts_start",
+      "type": "file",
+      "file": "start.md",
+      "x": 3860,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_tailwindcss",
+      "type": "file",
+      "file": "tailwindcss.md",
+      "x": 4060,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_tailwindcss",
+      "type": "file",
+      "file": "tailwindcss@4.md",
+      "x": 4260,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_scripts_test",
+      "type": "file",
+      "file": "test.md",
+      "x": 4460,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_typescript",
+      "type": "file",
+      "file": "typescript.md",
+      "x": 3260,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_devdependencies_typescript",
+      "type": "file",
+      "file": "typescript@5.md",
+      "x": 3460,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_version",
+      "type": "file",
+      "file": "version.md",
+      "x": 3660,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g3",
+      "type": "group",
+      "label": "Pages Deploy Workflow",
+      "x": 4860,
+      "y": 0,
+      "width": 1320,
+      "height": 720,
+      "color": "4"
+    },
+    {
+      "id": "n_github_workflows_deploy_env_next_public_site_url",
+      "type": "file",
+      "file": "NEXT_PUBLIC_SITE_URL.md",
+      "x": 4880,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_env_static_export",
+      "type": "file",
+      "file": "STATIC_EXPORT.md",
+      "x": 5080,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_push_branches",
+      "type": "file",
+      "file": "branches.md",
+      "x": 5280,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_jobs_build",
+      "type": "file",
+      "file": "build_1.md",
+      "x": 5480,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_with_cache",
+      "type": "file",
+      "file": "cache.md",
+      "x": 5680,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_concurrency_cancel_in_progress",
+      "type": "file",
+      "file": "cancel-in-progress.md",
+      "x": 5880,
+      "y": 80,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_concurrency",
+      "type": "file",
+      "file": "concurrency.md",
+      "x": 4880,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_permissions_contents",
+      "type": "file",
+      "file": "contents.md",
+      "x": 5080,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_jobs_deploy",
+      "type": "file",
+      "file": "deploy.md",
+      "x": 5280,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy",
+      "type": "file",
+      "file": "deploy.yml.md",
+      "x": 5480,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_steps_env",
+      "type": "file",
+      "file": "env.md",
+      "x": 5680,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_deploy_environment",
+      "type": "file",
+      "file": "environment.md",
+      "x": 5880,
+      "y": 160,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_concurrency_group",
+      "type": "file",
+      "file": "group.md",
+      "x": 4880,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_steps_id",
+      "type": "file",
+      "file": "id.md",
+      "x": 5080,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_permissions_id_token",
+      "type": "file",
+      "file": "id-token.md",
+      "x": 5280,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_jobs",
+      "type": "file",
+      "file": "jobs.md",
+      "x": 5480,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_environment_name",
+      "type": "file",
+      "file": "name_1.md",
+      "x": 5680,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_name",
+      "type": "file",
+      "file": "name_2.md",
+      "x": 5880,
+      "y": 240,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_deploy_needs",
+      "type": "file",
+      "file": "needs.md",
+      "x": 4880,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_with_node_version",
+      "type": "file",
+      "file": "node-version.md",
+      "x": 5080,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_on",
+      "type": "file",
+      "file": "on.md",
+      "x": 5280,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_permissions_pages",
+      "type": "file",
+      "file": "pages.md",
+      "x": 5480,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_with_path",
+      "type": "file",
+      "file": "path.md",
+      "x": 5680,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_permissions",
+      "type": "file",
+      "file": "permissions.md",
+      "x": 5880,
+      "y": 320,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_on_push",
+      "type": "file",
+      "file": "push.md",
+      "x": 4880,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_steps_run",
+      "type": "file",
+      "file": "run.md",
+      "x": 5080,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_build_runs_on",
+      "type": "file",
+      "file": "runs-on.md",
+      "x": 5280,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_deploy_runs_on",
+      "type": "file",
+      "file": "runs-on_1.md",
+      "x": 5480,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_build_steps",
+      "type": "file",
+      "file": "steps.md",
+      "x": 5680,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_deploy_steps",
+      "type": "file",
+      "file": "steps_1.md",
+      "x": 5880,
+      "y": 400,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_environment_url",
+      "type": "file",
+      "file": "url.md",
+      "x": 4880,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_steps_uses",
+      "type": "file",
+      "file": "uses.md",
+      "x": 5080,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_steps_with",
+      "type": "file",
+      "file": "with.md",
+      "x": 5280,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_github_workflows_deploy_on_workflow_dispatch",
+      "type": "file",
+      "file": "workflow_dispatch.md",
+      "x": 5480,
+      "y": 480,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g4",
+      "type": "group",
+      "label": "Astronaut & Sky Scene",
+      "x": 0,
+      "y": 900,
+      "width": 1320,
+      "height": 620,
+      "color": "5"
+    },
+    {
+      "id": "n_components_astronaut_floating",
+      "type": "file",
+      "file": "FLOATING.md",
+      "x": 20,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_home",
+      "type": "file",
+      "file": "HOME.md",
+      "x": 220,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_land",
+      "type": "file",
+      "file": "LAND.md",
+      "x": 420,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_astronaut",
+      "type": "file",
+      "file": "astronaut.ts.md",
+      "x": 620,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_bake",
+      "type": "file",
+      "file": "bake().md",
+      "x": 820,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildasteroids",
+      "type": "file",
+      "file": "buildAsteroids().md",
+      "x": 1020,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildconstellation",
+      "type": "file",
+      "file": "buildConstellation().md",
+      "x": 20,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildearth",
+      "type": "file",
+      "file": "buildEarth().md",
+      "x": 220,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildenvironment",
+      "type": "file",
+      "file": "buildEnvironment().md",
+      "x": 420,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildorbiters",
+      "type": "file",
+      "file": "buildOrbiters().md",
+      "x": 620,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildplanet",
+      "type": "file",
+      "file": "buildPlanet().md",
+      "x": 820,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildsatellite",
+      "type": "file",
+      "file": "buildSatellite().md",
+      "x": 1020,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildsmoke",
+      "type": "file",
+      "file": "buildSmoke().md",
+      "x": 20,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildstars",
+      "type": "file",
+      "file": "buildStars().md",
+      "x": 220,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildthingnetwork",
+      "type": "file",
+      "file": "buildThingNetwork().md",
+      "x": 420,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_buildtrail",
+      "type": "file",
+      "file": "buildTrail().md",
+      "x": 620,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_createsky",
+      "type": "file",
+      "file": "createSky().md",
+      "x": 820,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_fibonacci",
+      "type": "file",
+      "file": "fibonacci().md",
+      "x": 1020,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_hex",
+      "type": "file",
+      "file": "hex().md",
+      "x": 20,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_officespots",
+      "type": "file",
+      "file": "officeSpots().md",
+      "x": 220,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_astronaut_paintsuit",
+      "type": "file",
+      "file": "paintSuit().md",
+      "x": 420,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_passby",
+      "type": "file",
+      "file": "passBy().md",
+      "x": 620,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_planetmesh",
+      "type": "file",
+      "file": "planetMesh().md",
+      "x": 820,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky_seeded",
+      "type": "file",
+      "file": "seeded().md",
+      "x": 1020,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_sky",
+      "type": "file",
+      "file": "sky.ts.md",
+      "x": 20,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_astronaut_suitup",
+      "type": "file",
+      "file": "suitUp().md",
+      "x": 220,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_three",
+      "type": "file",
+      "file": "three.md",
+      "x": 420,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies_three",
+      "type": "file",
+      "file": "three@0.187.0.md",
+      "x": 620,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_astronaut_visor",
+      "type": "file",
+      "file": "visor().md",
+      "x": 820,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g5",
+      "type": "group",
+      "label": "Design Direction Docs",
+      "x": 1620,
+      "y": 900,
+      "width": 1100,
+      "height": 620,
+      "color": "6"
+    },
+    {
+      "id": "n_product_axie_chatbot_guardrails",
+      "type": "file",
+      "file": "Axie Gemini chatbot with guardrails.md",
+      "x": 1640,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_axie_mascot",
+      "type": "file",
+      "file": "Axie the axolotl mascot.md",
+      "x": 1840,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_launch_event",
+      "type": "file",
+      "file": "Building Bridges launch event (54 attended).md",
+      "x": 2040,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_mocks_decision_canon_category_standard_mock",
+      "type": "file",
+      "file": "Category standard mock (canon).md",
+      "x": 2240,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_chapter_snap_scrolling",
+      "type": "file",
+      "file": "Chapter-by-chapter snap scrolling.md",
+      "x": 2440,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_cisco_netconnect_pup_manila",
+      "type": "file",
+      "file": "Cisco NetConnect PUP - Manila (CNCP).md",
+      "x": 1640,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_three_departments",
+      "type": "file",
+      "file": "Departments Enterprise Networking, Cybersecurity Operations, Development Networking.md",
+      "x": 1840,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_campus_earth_scene",
+      "type": "file",
+      "file": "Earth campus scene (mergedinstanced).md",
+      "x": 2040,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_surfaces_app_page_tsx_direction_contract",
+      "type": "file",
+      "file": "Home route direction contract.md",
+      "x": 2240,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_surfaces_app_page_tsx_lights_down_form",
+      "type": "file",
+      "file": "Lights Down form (seed 84c6e0078c5ee889).md",
+      "x": 2440,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_mocks_decision_assigned_lights_down_mock",
+      "type": "file",
+      "file": "Lights Down mock (assigned direction).md",
+      "x": 1640,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_surfaces_app_page_tsx_empty_seat_moment",
+      "type": "file",
+      "file": "Memorable moment 54 lit seats and one empty seat.md",
+      "x": 1840,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_no_fabrication_rule",
+      "type": "file",
+      "file": "No fabricated facts; visible placeholders (Unissued stamp).md",
+      "x": 2040,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_opengraph_image_alt_alt_text",
+      "type": "file",
+      "file": "Open Graph image alt text.md",
+      "x": 2240,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_surfaces_app_page_tsx_planetarium_show_thesis",
+      "type": "file",
+      "file": "Planetarium show thesis.md",
+      "x": 2440,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_product_brief",
+      "type": "file",
+      "file": "Product brief (PRODUCT.md).md",
+      "x": 1640,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_product_principles",
+      "type": "file",
+      "file": "Product principles.md",
+      "x": 1840,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_rocket_story",
+      "type": "file",
+      "file": "Rocket and planets scroll story.md",
+      "x": 2040,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_surfaces_app_page_tsx_scroll_master_timeline",
+      "type": "file",
+      "file": "Scroll-driven master timeline.md",
+      "x": 2240,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_mocks_decision_assigned_seat_ticket_join",
+      "type": "file",
+      "file": "Seat ticket Join CTA (Row A  Seat 55).md",
+      "x": 2440,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n__impeccable_mocks_decision_assigned_star_projector",
+      "type": "file",
+      "file": "Star projector illustration.md",
+      "x": 1640,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_twitter_image_alt_alt_text",
+      "type": "file",
+      "file": "Twitter image alt text.md",
+      "x": 1840,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_product_org_json",
+      "type": "file",
+      "file": "liborg.json org data.md",
+      "x": 2040,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g6",
+      "type": "group",
+      "label": "Campus Builder",
+      "x": 3240,
+      "y": 900,
+      "width": 1100,
+      "height": 620,
+      "color": "1"
+    },
+    {
+      "id": "n_components_campus_beam",
+      "type": "file",
+      "file": "beam().md",
+      "x": 3260,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_block",
+      "type": "file",
+      "file": "block().md",
+      "x": 3460,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_buildbridge",
+      "type": "file",
+      "file": "buildBridge().md",
+      "x": 3660,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_buildcampus",
+      "type": "file",
+      "file": "buildCampus().md",
+      "x": 3860,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus",
+      "type": "file",
+      "file": "campus.ts.md",
+      "x": 4060,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_canvas2d",
+      "type": "file",
+      "file": "canvas2d().md",
+      "x": 3260,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_coloured",
+      "type": "file",
+      "file": "coloured().md",
+      "x": 3460,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_dice",
+      "type": "file",
+      "file": "dice().md",
+      "x": 3660,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_distant",
+      "type": "file",
+      "file": "distant().md",
+      "x": 3860,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_facadetextures",
+      "type": "file",
+      "file": "facadeTextures().md",
+      "x": 4060,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_grasstexture",
+      "type": "file",
+      "file": "grassTexture().md",
+      "x": 3260,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_lobbytexture",
+      "type": "file",
+      "file": "lobbyTexture().md",
+      "x": 3460,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_offbridge",
+      "type": "file",
+      "file": "offBridge().md",
+      "x": 3660,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_painted",
+      "type": "file",
+      "file": "painted().md",
+      "x": 3860,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_palmshape",
+      "type": "file",
+      "file": "palmShape().md",
+      "x": 4060,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_pavingtexture",
+      "type": "file",
+      "file": "pavingTexture().md",
+      "x": 3260,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_personshape",
+      "type": "file",
+      "file": "personShape().md",
+      "x": 3460,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_plazatexture",
+      "type": "file",
+      "file": "plazaTexture().md",
+      "x": 3660,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_signtexture",
+      "type": "file",
+      "file": "signTexture().md",
+      "x": 3860,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_sitetexture",
+      "type": "file",
+      "file": "siteTexture().md",
+      "x": 4060,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_treeshape",
+      "type": "file",
+      "file": "treeShape().md",
+      "x": 3260,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_campus_watertexture",
+      "type": "file",
+      "file": "waterTexture().md",
+      "x": 3460,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g7",
+      "type": "group",
+      "label": "Planet Surface Builder",
+      "x": 4860,
+      "y": 900,
+      "width": 1100,
+      "height": 620,
+      "color": "2"
+    },
+    {
+      "id": "n_components_surface_landmarks",
+      "type": "file",
+      "file": "LANDMARKS.md",
+      "x": 4880,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_look",
+      "type": "file",
+      "file": "Look.md",
+      "x": 5080,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_createsurface_build",
+      "type": "file",
+      "file": "build().md",
+      "x": 5280,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildarchive",
+      "type": "file",
+      "file": "buildArchive().md",
+      "x": 5480,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildbonds",
+      "type": "file",
+      "file": "buildBonds().md",
+      "x": 5680,
+      "y": 980,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildbroadcast",
+      "type": "file",
+      "file": "buildBroadcast().md",
+      "x": 4880,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildground",
+      "type": "file",
+      "file": "buildGround().md",
+      "x": 5080,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildlinks",
+      "type": "file",
+      "file": "buildLinks().md",
+      "x": 5280,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildlisting",
+      "type": "file",
+      "file": "buildListing().md",
+      "x": 5480,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildmotes",
+      "type": "file",
+      "file": "buildMotes().md",
+      "x": 5680,
+      "y": 1060,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildsky",
+      "type": "file",
+      "file": "buildSky().md",
+      "x": 4880,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildstage",
+      "type": "file",
+      "file": "buildStage().md",
+      "x": 5080,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildstudio",
+      "type": "file",
+      "file": "buildStudio().md",
+      "x": 5280,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_buildwatch",
+      "type": "file",
+      "file": "buildWatch().md",
+      "x": 5480,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_createsurface",
+      "type": "file",
+      "file": "createSurface().md",
+      "x": 5680,
+      "y": 1140,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_display",
+      "type": "file",
+      "file": "display().md",
+      "x": 4880,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_floatat",
+      "type": "file",
+      "file": "floatAt().md",
+      "x": 5080,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_heightat",
+      "type": "file",
+      "file": "heightAt().md",
+      "x": 5280,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_lightcone",
+      "type": "file",
+      "file": "lightCone().md",
+      "x": 5480,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface_seeded",
+      "type": "file",
+      "file": "seeded()_1.md",
+      "x": 5680,
+      "y": 1220,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_surface",
+      "type": "file",
+      "file": "surface.ts.md",
+      "x": 4880,
+      "y": 1300,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g8",
+      "type": "group",
+      "label": "Rocket Builder",
+      "x": 0,
+      "y": 1600,
+      "width": 1100,
+      "height": 520,
+      "color": "3"
+    },
+    {
+      "id": "n_components_rocket_door_world",
+      "type": "file",
+      "file": "DOOR_WORLD.md",
+      "x": 20,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_hull_profile",
+      "type": "file",
+      "file": "HULL_PROFILE.md",
+      "x": 220,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_mouth",
+      "type": "file",
+      "file": "MOUTH.md",
+      "x": 420,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_buildbay",
+      "type": "file",
+      "file": "buildBay().md",
+      "x": 620,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_buildcabin",
+      "type": "file",
+      "file": "buildCabin().md",
+      "x": 820,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_buildcraft",
+      "type": "file",
+      "file": "buildCraft().md",
+      "x": 20,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_builddoor",
+      "type": "file",
+      "file": "buildDoor().md",
+      "x": 220,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_buildliftdeck",
+      "type": "file",
+      "file": "buildLiftDeck().md",
+      "x": 420,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_canvas2d",
+      "type": "file",
+      "file": "canvas2d()_1.md",
+      "x": 620,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_createrocket",
+      "type": "file",
+      "file": "createRocket().md",
+      "x": 820,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_cutdoorway",
+      "type": "file",
+      "file": "cutDoorway().md",
+      "x": 20,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_hulltextures",
+      "type": "file",
+      "file": "hullTextures().md",
+      "x": 220,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_lathe",
+      "type": "file",
+      "file": "lathe().md",
+      "x": 420,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_onwall",
+      "type": "file",
+      "file": "onWall().md",
+      "x": 620,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket",
+      "type": "file",
+      "file": "rocket.ts.md",
+      "x": 820,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_smooth",
+      "type": "file",
+      "file": "smooth().md",
+      "x": 20,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_statureat",
+      "type": "file",
+      "file": "statureAt().md",
+      "x": 220,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_texture",
+      "type": "file",
+      "file": "texture().md",
+      "x": 420,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_components_rocket_tinted",
+      "type": "file",
+      "file": "tinted().md",
+      "x": 620,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_lib_story_walkpath",
+      "type": "file",
+      "file": "walkPath().md",
+      "x": 820,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g9",
+      "type": "group",
+      "label": "TypeScript Config",
+      "x": 1620,
+      "y": 1600,
+      "width": 1100,
+      "height": 520,
+      "color": "4"
+    },
+    {
+      "id": "n_tsconfig_compileroptions_allowimportingtsextensions",
+      "type": "file",
+      "file": "allowImportingTsExtensions.md",
+      "x": 1640,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_allowjs",
+      "type": "file",
+      "file": "allowJs.md",
+      "x": 1840,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions",
+      "type": "file",
+      "file": "compilerOptions.md",
+      "x": 2040,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_esmoduleinterop",
+      "type": "file",
+      "file": "esModuleInterop.md",
+      "x": 2240,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_exclude",
+      "type": "file",
+      "file": "exclude.md",
+      "x": 2440,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_include",
+      "type": "file",
+      "file": "include.md",
+      "x": 1640,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_incremental",
+      "type": "file",
+      "file": "incremental.md",
+      "x": 1840,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_isolatedmodules",
+      "type": "file",
+      "file": "isolatedModules.md",
+      "x": 2040,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_jsx",
+      "type": "file",
+      "file": "jsx.md",
+      "x": 2240,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_lib",
+      "type": "file",
+      "file": "lib.md",
+      "x": 2440,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_module",
+      "type": "file",
+      "file": "module.md",
+      "x": 1640,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_moduleresolution",
+      "type": "file",
+      "file": "moduleResolution.md",
+      "x": 1840,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_noemit",
+      "type": "file",
+      "file": "noEmit.md",
+      "x": 2040,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_paths",
+      "type": "file",
+      "file": "paths.md",
+      "x": 2240,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_plugins",
+      "type": "file",
+      "file": "plugins.md",
+      "x": 2440,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_resolvejsonmodule",
+      "type": "file",
+      "file": "resolveJsonModule.md",
+      "x": 1640,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_skiplibcheck",
+      "type": "file",
+      "file": "skipLibCheck.md",
+      "x": 1840,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_strict",
+      "type": "file",
+      "file": "strict.md",
+      "x": 2040,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig_compileroptions_target",
+      "type": "file",
+      "file": "target.md",
+      "x": 2240,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_tsconfig",
+      "type": "file",
+      "file": "tsconfig.json.md",
+      "x": 2440,
+      "y": 1920,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g10",
+      "type": "group",
+      "label": "Layout & Next Config",
+      "x": 3240,
+      "y": 1600,
+      "width": 880,
+      "height": 420,
+      "color": "5"
+    },
+    {
+      "id": "n_app_layout_rootlayout",
+      "type": "file",
+      "file": "RootLayout().md",
+      "x": 3260,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_globals",
+      "type": "file",
+      "file": "app_globals.md",
+      "x": 3460,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_layout_body",
+      "type": "file",
+      "file": "body.md",
+      "x": 3660,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_layout_display",
+      "type": "file",
+      "file": "display.md",
+      "x": 3860,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_layout",
+      "type": "file",
+      "file": "layout.tsx.md",
+      "x": 3260,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_layout_metadata",
+      "type": "file",
+      "file": "metadata.md",
+      "x": 3460,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_ref_next",
+      "type": "file",
+      "file": "next.md",
+      "x": 3660,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_next_config",
+      "type": "file",
+      "file": "next.config.ts.md",
+      "x": 3860,
+      "y": 1760,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_package_dependencies_next",
+      "type": "file",
+      "file": "next@16.4.2.md",
+      "x": 3260,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_next_config_nextconfig",
+      "type": "file",
+      "file": "nextConfig.md",
+      "x": 3460,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_app_layout_ticket",
+      "type": "file",
+      "file": "ticket.md",
+      "x": 3660,
+      "y": 1840,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g11",
+      "type": "group",
+      "label": "Next.js Agent Notes",
+      "x": 4860,
+      "y": 1600,
+      "width": 600,
+      "height": 400,
+      "color": "6"
+    },
+    {
+      "id": "n_agents_nextjs_agent_rules",
+      "type": "file",
+      "file": "Next.js agent rules (read node_modulesnext docs).md",
+      "x": 4880,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "n_readme_create_next_app_readme",
+      "type": "file",
+      "file": "create-next-app README.md",
+      "x": 5080,
+      "y": 1680,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g12",
+      "type": "group",
+      "label": "Far Side Mock",
+      "x": 0,
+      "y": 2200,
+      "width": 600,
+      "height": 400,
+      "color": "1"
+    },
+    {
+      "id": "n__impeccable_mocks_decision_challenger_wpa_see_the_far_side_mock",
+      "type": "file",
+      "file": "See The Far Side mock (challenger WPA).md",
+      "x": 20,
+      "y": 2280,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g13",
+      "type": "group",
+      "label": "Star Atlas Mock",
+      "x": 1620,
+      "y": 2200,
+      "width": 600,
+      "height": 400,
+      "color": "2"
+    },
+    {
+      "id": "n__impeccable_mocks_decision_model_pick_star_atlas_topology_mock",
+      "type": "file",
+      "file": "Star Atlas Topology mock (model pick).md",
+      "x": 1640,
+      "y": 2280,
+      "width": 180,
+      "height": 60
+    },
+    {
+      "id": "g14",
+      "type": "group",
+      "label": "graphify Project Rules",
+      "x": 3240,
+      "y": 2200,
+      "width": 600,
+      "height": 400,
+      "color": "3"
+    },
+    {
+      "id": "n_claude_graphify_rules",
+      "type": "file",
+      "file": "graphify project rules.md",
+      "x": 3260,
+      "y": 2280,
+      "width": 180,
+      "height": 60
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_lib_story_lib_story_point",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_point",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_rocket_lib_story_skystate",
+      "fromNode": "n_components_rocket",
+      "toNode": "n_lib_story_skystate",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_lib_story_skystate",
+      "fromNode": "n_components_sky",
+      "toNode": "n_lib_story_skystate",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_lib_story_skystate",
+      "fromNode": "n_components_timeline",
+      "toNode": "n_lib_story_skystate",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_skystate",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_skystate",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_surface_components_surface_look",
+      "fromNode": "n_components_surface",
+      "toNode": "n_components_surface_look",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_post_app_api_axie_route_allowed",
+      "fromNode": "n_app_api_axie_route_post",
+      "toNode": "n_app_api_axie_route_allowed",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_app_api_axie_route_allowed",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_app_api_axie_route_allowed",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_post_app_api_axie_route_fail",
+      "fromNode": "n_app_api_axie_route_post",
+      "toNode": "n_app_api_axie_route_fail",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_app_api_axie_route_fail",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_app_api_axie_route_fail",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_post_lib_axie_readquestions",
+      "fromNode": "n_app_api_axie_route_post",
+      "toNode": "n_lib_axie_readquestions",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_post_lib_axie_axierequest",
+      "fromNode": "n_app_api_axie_route_post",
+      "toNode": "n_lib_axie_axierequest",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_post_lib_axie_readanswer",
+      "fromNode": "n_app_api_axie_route_post",
+      "toNode": "n_lib_axie_readanswer",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_app_api_axie_route_post",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_app_api_axie_route_post",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_page_home_components_show_show",
+      "fromNode": "n_app_page_home",
+      "toNode": "n_components_show_show",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_app_page_app_page_home",
+      "fromNode": "n_app_page",
+      "toNode": "n_app_page_home",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_axiechat_lib_content_axiereply",
+      "fromNode": "n_components_show_axiechat",
+      "toNode": "n_lib_content_axiereply",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_axiechat_components_show_spoken",
+      "fromNode": "n_components_show_axiechat",
+      "toNode": "n_components_show_spoken",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_show_axiechat",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_show_axiechat",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_axiechat",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_axiechat",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_crew_components_show_crewyear",
+      "fromNode": "n_components_show_crew",
+      "toNode": "n_components_show_crewyear",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_show_crew",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_show_crew",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_crew",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_crew",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_crewyear_lib_story_starchart",
+      "fromNode": "n_components_show_crewyear",
+      "toNode": "n_lib_story_starchart",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_crewyear",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_crewyear",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_fleet_components_show_planet",
+      "fromNode": "n_components_show_fleet",
+      "toNode": "n_components_show_planet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_show_fleet",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_show_fleet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_fleet",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_fleet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_show_logstop",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_show_logstop",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_logstop",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_logstop",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_show_planet",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_show_planet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_planet",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_planet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_lib_story_initialsky",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_lib_story_initialsky",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_timeline",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_timeline",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_show_components_sky",
+      "fromNode": "n_components_show_show",
+      "toNode": "n_components_sky",
+      "label": "imports_from [EXTRACTED]"
+    },
+    {
+      "id": "e_app_page_components_show_show",
+      "fromNode": "n_app_page",
+      "toNode": "n_components_show_show",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_show",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_show",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_components_show_spoken",
+      "fromNode": "n_components_show",
+      "toNode": "n_components_show_spoken",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_lib_axie_axierequest",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_lib_axie_axierequest",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_test_lib_axie_axierequest",
+      "fromNode": "n_lib_axie_test",
+      "toNode": "n_lib_axie_axierequest",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_lib_axie_axierequest",
+      "fromNode": "n_lib_axie",
+      "toNode": "n_lib_axie_axierequest",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_facts_lib_axie_listpeople",
+      "fromNode": "n_lib_axie_facts",
+      "toNode": "n_lib_axie_listpeople",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_lib_axie_listpeople",
+      "fromNode": "n_lib_axie",
+      "toNode": "n_lib_axie_listpeople",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_lib_axie_readanswer",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_lib_axie_readanswer",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_test_lib_axie_readanswer",
+      "fromNode": "n_lib_axie_test",
+      "toNode": "n_lib_axie_readanswer",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_lib_axie_readanswer",
+      "fromNode": "n_lib_axie",
+      "toNode": "n_lib_axie_readanswer",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_app_api_axie_route_lib_axie_readquestions",
+      "fromNode": "n_app_api_axie_route",
+      "toNode": "n_lib_axie_readquestions",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_test_lib_axie_readquestions",
+      "fromNode": "n_lib_axie_test",
+      "toNode": "n_lib_axie_readquestions",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_lib_axie_readquestions",
+      "fromNode": "n_lib_axie",
+      "toNode": "n_lib_axie_readquestions",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_axie_test_lib_axie_test_answer",
+      "fromNode": "n_lib_axie_test",
+      "toNode": "n_lib_axie_test_answer",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_lib_content_axiereply",
+      "fromNode": "n_components_show",
+      "toNode": "n_lib_content_axiereply",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_content_axiereply",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_content_axiereply",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_content_lib_content_axiereply",
+      "fromNode": "n_lib_content",
+      "toNode": "n_lib_content_axiereply",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_lib_story_starchart",
+      "fromNode": "n_components_show",
+      "toNode": "n_lib_story_starchart",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_story_starchart",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_story_starchart",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_starchart",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_starchart",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_buildshow_components_timeline_stepat",
+      "fromNode": "n_components_timeline_buildshow",
+      "toNode": "n_components_timeline_stepat",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_buildshow_lib_story_initialsky",
+      "fromNode": "n_components_timeline_buildshow",
+      "toNode": "n_lib_story_initialsky",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_buildshow_lib_story_followstep",
+      "fromNode": "n_components_timeline_buildshow",
+      "toNode": "n_lib_story_followstep",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_components_timeline_buildshow",
+      "fromNode": "n_components_timeline",
+      "toNode": "n_components_timeline_buildshow",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_components_timeline_stepat",
+      "fromNode": "n_components_timeline",
+      "toNode": "n_components_timeline_stepat",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_lib_story_followstep",
+      "fromNode": "n_components_timeline",
+      "toNode": "n_lib_story_followstep",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_story_followstep",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_story_followstep",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_followstep",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_followstep",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_show_lib_story_initialsky",
+      "fromNode": "n_components_show",
+      "toNode": "n_lib_story_initialsky",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_timeline_lib_story_initialsky",
+      "fromNode": "n_components_timeline",
+      "toNode": "n_lib_story_initialsky",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_initialsky",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_initialsky",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_shot",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_shot",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_worldleg",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_worldleg",
+      "label": "indirect_call [INFERRED]"
+    },
+    {
+      "id": "e_app_layout_app_layout_rootlayout",
+      "fromNode": "n_app_layout",
+      "toNode": "n_app_layout_rootlayout",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_astronaut_suitup_components_astronaut_paintsuit",
+      "fromNode": "n_components_astronaut_suitup",
+      "toNode": "n_components_astronaut_paintsuit",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_astronaut_components_astronaut_paintsuit",
+      "fromNode": "n_components_astronaut",
+      "toNode": "n_components_astronaut_paintsuit",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_astronaut_suitup_components_astronaut_visor",
+      "fromNode": "n_components_astronaut_suitup",
+      "toNode": "n_components_astronaut_visor",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_astronaut_suitup",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_astronaut_suitup",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_astronaut_suitup",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_astronaut_suitup",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_surface_components_astronaut_suitup",
+      "fromNode": "n_components_surface",
+      "toNode": "n_components_astronaut_suitup",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_astronaut_components_astronaut_suitup",
+      "fromNode": "n_components_astronaut",
+      "toNode": "n_components_astronaut_suitup",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_astronaut_components_astronaut_visor",
+      "fromNode": "n_components_astronaut",
+      "toNode": "n_components_astronaut_visor",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildearth_components_sky_bake",
+      "fromNode": "n_components_sky_buildearth",
+      "toNode": "n_components_sky_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildplanet_components_sky_bake",
+      "fromNode": "n_components_sky_buildplanet",
+      "toNode": "n_components_sky_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_bake",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_bake",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_bake",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_bake",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildasteroids",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildasteroids",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildasteroids",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildasteroids",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildconstellation_components_sky_seeded",
+      "fromNode": "n_components_sky_buildconstellation",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildconstellation",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildconstellation",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildconstellation",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildconstellation",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildearth_components_sky_planetmesh",
+      "fromNode": "n_components_sky_buildearth",
+      "toNode": "n_components_sky_planetmesh",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildearth",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildearth",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildearth",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildearth",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildenvironment",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildenvironment",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildenvironment",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildenvironment",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildorbiters_components_sky_seeded",
+      "fromNode": "n_components_sky_buildorbiters",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildorbiters_components_sky_hex",
+      "fromNode": "n_components_sky_buildorbiters",
+      "toNode": "n_components_sky_hex",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildorbiters",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildorbiters",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildorbiters",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildorbiters",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildplanet_components_sky_hex",
+      "fromNode": "n_components_sky_buildplanet",
+      "toNode": "n_components_sky_hex",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildplanet_components_sky_planetmesh",
+      "fromNode": "n_components_sky_buildplanet",
+      "toNode": "n_components_sky_planetmesh",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildplanet",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildplanet",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildplanet",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildplanet",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildsatellite",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildsatellite",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildsatellite",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildsatellite",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildsmoke_components_sky_seeded",
+      "fromNode": "n_components_sky_buildsmoke",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildsmoke",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildsmoke",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildsmoke",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildsmoke",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildstars_components_sky_seeded",
+      "fromNode": "n_components_sky_buildstars",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildstars",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildstars",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildstars",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildstars",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildstars_components_sky_hex",
+      "fromNode": "n_components_sky_buildstars",
+      "toNode": "n_components_sky_hex",
+      "label": "indirect_call [INFERRED]"
+    },
+    {
+      "id": "e_components_sky_buildthingnetwork_components_sky_seeded",
+      "fromNode": "n_components_sky_buildthingnetwork",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildthingnetwork_components_sky_fibonacci",
+      "fromNode": "n_components_sky_buildthingnetwork",
+      "toNode": "n_components_sky_fibonacci",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildthingnetwork",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildthingnetwork",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildthingnetwork",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildthingnetwork",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_buildtrail_components_sky_seeded",
+      "fromNode": "n_components_sky_buildtrail",
+      "toNode": "n_components_sky_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_sky_buildtrail",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_sky_buildtrail",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_buildtrail",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_buildtrail",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_lib_story_passby",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_lib_story_passby",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_surface_createsurface",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_surface_createsurface",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_rocket_createrocket",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_rocket_createrocket",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_components_campus_buildcampus",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_components_campus_buildcampus",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_createsky_lib_story_officespots",
+      "fromNode": "n_components_sky_createsky",
+      "toNode": "n_lib_story_officespots",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_createsky",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_createsky",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_fibonacci",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_fibonacci",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_planetmesh_components_sky_hex",
+      "fromNode": "n_components_sky_planetmesh",
+      "toNode": "n_components_sky_hex",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_hex",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_hex",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_planetmesh",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_planetmesh",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_sky_seeded",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_sky_seeded",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_lib_story_officespots",
+      "fromNode": "n_components_sky",
+      "toNode": "n_lib_story_officespots",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_story_officespots",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_story_officespots",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_officespots",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_officespots",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_lib_story_passby",
+      "fromNode": "n_components_sky",
+      "toNode": "n_lib_story_passby",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_story_passby",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_story_passby",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_passby",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_passby",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildbridge_components_campus_beam",
+      "fromNode": "n_components_campus_buildbridge",
+      "toNode": "n_components_campus_beam",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_beam",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_beam",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_block",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_block",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_block",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_block",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_buildbridge",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_buildbridge",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_buildbridge",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_buildbridge",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_dice",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_lib_story_offbridge",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_lib_story_offbridge",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_grasstexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_grasstexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_sitetexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_sitetexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_pavingtexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_pavingtexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_plazatexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_plazatexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_facadetextures",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_facadetextures",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_lobbytexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_lobbytexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_coloured",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_coloured",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_personshape",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_personshape",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_signtexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_signtexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_distant",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_distant",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_watertexture",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_watertexture",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_treeshape",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_treeshape",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_buildcampus_components_campus_palmshape",
+      "fromNode": "n_components_campus_buildcampus",
+      "toNode": "n_components_campus_palmshape",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_sky_components_campus_buildcampus",
+      "fromNode": "n_components_sky",
+      "toNode": "n_components_campus_buildcampus",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_buildcampus",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_buildcampus",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_facadetextures_components_campus_canvas2d",
+      "fromNode": "n_components_campus_facadetextures",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_grasstexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_grasstexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_lobbytexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_lobbytexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_pavingtexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_pavingtexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_plazatexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_plazatexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_sitetexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_sitetexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_watertexture_components_campus_canvas2d",
+      "fromNode": "n_components_campus_watertexture",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_canvas2d",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_canvas2d",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_palmshape_components_campus_coloured",
+      "fromNode": "n_components_campus_palmshape",
+      "toNode": "n_components_campus_coloured",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_personshape_components_campus_coloured",
+      "fromNode": "n_components_campus_personshape",
+      "toNode": "n_components_campus_coloured",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_treeshape_components_campus_coloured",
+      "fromNode": "n_components_campus_treeshape",
+      "toNode": "n_components_campus_coloured",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_coloured",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_coloured",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_facadetextures_components_campus_dice",
+      "fromNode": "n_components_campus_facadetextures",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_grasstexture_components_campus_dice",
+      "fromNode": "n_components_campus_grasstexture",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_pavingtexture_components_campus_dice",
+      "fromNode": "n_components_campus_pavingtexture",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_plazatexture_components_campus_dice",
+      "fromNode": "n_components_campus_plazatexture",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_sitetexture_components_campus_dice",
+      "fromNode": "n_components_campus_sitetexture",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_watertexture_components_campus_dice",
+      "fromNode": "n_components_campus_watertexture",
+      "toNode": "n_components_campus_dice",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_dice",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_dice",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_distant",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_distant",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_facadetextures_components_campus_painted",
+      "fromNode": "n_components_campus_facadetextures",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_facadetextures",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_facadetextures",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_grasstexture_components_campus_painted",
+      "fromNode": "n_components_campus_grasstexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_grasstexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_grasstexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_lobbytexture_components_campus_painted",
+      "fromNode": "n_components_campus_lobbytexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_lobbytexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_lobbytexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_pavingtexture_components_campus_painted",
+      "fromNode": "n_components_campus_pavingtexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_plazatexture_components_campus_painted",
+      "fromNode": "n_components_campus_plazatexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_sitetexture_components_campus_painted",
+      "fromNode": "n_components_campus_sitetexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_watertexture_components_campus_painted",
+      "fromNode": "n_components_campus_watertexture",
+      "toNode": "n_components_campus_painted",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_painted",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_painted",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_palmshape",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_palmshape",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_pavingtexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_pavingtexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_personshape",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_personshape",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_plazatexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_plazatexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_signtexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_signtexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_sitetexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_sitetexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_treeshape",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_treeshape",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_components_campus_watertexture",
+      "fromNode": "n_components_campus",
+      "toNode": "n_components_campus_watertexture",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_campus_lib_story_offbridge",
+      "fromNode": "n_components_campus",
+      "toNode": "n_lib_story_offbridge",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_test_lib_story_offbridge",
+      "fromNode": "n_lib_story_test",
+      "toNode": "n_lib_story_offbridge",
+      "label": "imports [EXTRACTED]"
+    },
+    {
+      "id": "e_lib_story_lib_story_offbridge",
+      "fromNode": "n_lib_story",
+      "toNode": "n_lib_story_offbridge",
+      "label": "contains [EXTRACTED]"
+    },
+    {
+      "id": "e_components_surface_buildarchive_components_surface_seeded",
+      "fromNode": "n_components_surface_buildarchive",
+      "toNode": "n_components_surface_seeded",
+      "label": "calls [EXTRACTED]"
+    },
+    {
+      "id": "e_components_surface_components_surface_buildarchive",
+      "fromNode": "n_components_surface",
+      "toNode": "n_components_surface_buildarchive",
+      "label": "indirect_call [INFERRED]"
+    }
+  ]
+}
